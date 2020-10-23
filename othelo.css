@@ -1,0 +1,177 @@
+h1 { 
+    color:            red;
+    font-weight:      500;
+}
+
+
+
+* { box-sizing:border-box; }
+
+body { 
+  
+  margin:0;
+  background-color: blue; 
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.barra {
+
+  overflow:hidden;
+  background-color: #333;
+
+
+  top:0;
+  position: sticky;
+  width: 100%;
+
+}
+
+.barra a {
+
+  float:right;
+  display: block;
+  color: #f2f2f2 ;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration:none;
+  font-size: 17px;
+
+}
+
+.barra a:hover {
+
+  background: #ddd;
+  color: black;
+
+}
+
+.barra a.active{
+  background-color: red;
+  color:white;
+}
+
+.barra .login {
+  float: left;
+}
+
+
+.barra input[type=text] , [type=password] {
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  border: none;
+  width: 150px;
+  color: green;
+
+}
+
+.barra .login botao {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-left: : 16px;
+  background-color: #555;
+  color: white;
+  font-size: 17px;
+  border:none;
+  cursor:pointer;
+}
+
+.barra .login botao:hover {
+  background-color:green;
+}
+
+.coluna {
+    display:          flex-inline; /*inline-block*/
+    width:            20%;
+    background-color: grey;
+    color:            black;
+}
+
+.tabuleiro {
+    width: 50vw;
+    height: 50vw;
+
+    display:          flex;
+    flex-wrap:        nowrap;
+    flex-direction:   column;
+    justify-content:  center;
+    align-items:      center;
+
+    /*
+    border-style:     outset;
+    border-width:     2px;
+    padding:          10px;*/   
+    background:       green;
+    margin:           auto;
+}
+
+.linha {
+    width:            40vw;
+    height:           5vw;
+
+    display:          flex;
+    flex-wrap:        nowrap;
+    justify-content:  space-around;
+    align-items:      center;
+}
+
+.celula {
+    width:            5vw;
+    height:           100%;
+     
+    display:          flex-inline;
+    flex-wrap:        wrap;
+    justify-content:  space-around;
+    align-items:      center;
+    align-content:    center;
+    
+    border-style:     outset;
+    border-collapse:  collapse;
+    background:       orange;
+}
+
+.peça {
+    width:            90%;
+    height:           90%;
+
+    visibility:       hidden;
+
+    margin:           auto;
+    margin-top:       5%;
+    margin-bottom:    5%;
+    /*
+    position:         relative; 
+    top:              50%; 
+    margin-top:       -45%;
+    */
+    border-radius:    50%;
+    background:       white;
+}
+
+
+table {
+    width:            70%;
+    
+    margin:           auto;
+}
+table,td, th {
+    border:           3px solid black;
+    border-collapse:  collapse;
+    background-color: white;
+}
+td, th {
+    padding:          20px;
+    width:            12%;
+    height:           12%;
+}
+
+.branco { 
+    background-color: white;
+    color:            black;
+}
+.preto {
+    background-color: black;
+    color:            white;
+}
+
