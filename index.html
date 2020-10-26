@@ -4,29 +4,69 @@
     <meta charset="UTF-8">
     <title> Othelo </title>
     <link rel="stylesheet" href="othelo.css" type="text/css">
-    <link rel = "icon" href = "bolinhas.png" 
-      type = "image/x-icon"> 
+    <link rel = "icon" href = "bolinhas.png" type = "image/x-icon"> 
   </head>
+
 
   <body>
     <div class=barra> 
 
-
-      <a > Classificações </a> <a > Estatísticas </a> <a > Instruções </a> 
-
+      
       <div class=login>
         <input type=text placeholder=Username name="username">
         <input type=password placeholder=Password name="psw">
-        <botao type="submit">Login</botao>
+        <botao type=submit>Login</botao>
       </div>
-    </div> 
+
+
+      <botao id="botaoClassif">Classificações</botao>
+
+         <div id="janelaClassif" class="janela">
+          <div class="conteudo">
+             <span class="close">&times;</span>
+             <p>  Aqui vai ficar a tabela a registar high scores </p>
+          </div>
+        </div> 
+
+      <botao id="botaoStats">Estatísticas</botao>
+
+         <div id="janelaStats" class="janela">
+          <div class="conteudo">
+             <span class="close">&times;</span>
+             <p>  QUANTAS VEZES PERDI?? </p>
+          </div>
+        </div> 
+
+      <botao id="botaoRegras">Regras</botao>
+
+         <div id="janelaRegras" class="janela">
+          <div class="conteudo">
+             <span class="close">&times;</span>
+             <p>  O Othello é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças/discos inciais nas casas centrais. </p>
+          </div>
+        </div> 
+
+
+    </div> <!--fim da barra -->
 
 
 
     <div id=ecra>
+
       <div class=coluna>
         <div class=meia_coluna>
-          <h2>CONFIG</h2>
+          <h2>Configurações</h2>
+
+          <div> 
+
+
+
+
+
+
+          </div>
+
+
         </div>
 
         <div class=meia_coluna>
@@ -34,6 +74,8 @@
         </div>
       </div>
 
+
+<!-- fim do ecrã -->
 
       <div class="coluna tabuleiro">
           <div class=linha>
@@ -105,5 +147,51 @@
       </div>
     </div>
     
+<script>
+
+var janela = document.getElementById("janelaClassif"); /*só funciona esta */
+var janela2 = document.getElementById("janelaStats");
+var janela3 = document.getElementById("janelaRegras");
+
+// Get the button that opens the modal
+var botao = document.getElementById("botaoClassif"); /*rip*/
+var botao2 = document.getElementById("botaoStats");
+var botao3 = document.getElementById("botaoRegras");
+
+
+
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+botao.onclick = function() {
+  janela.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  janela.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == janela) {
+    janela.style.display = "none";
+  }
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
   </body>
 </html>
