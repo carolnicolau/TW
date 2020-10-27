@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title> Othelo </title>
     <link rel="stylesheet" href="othelo.css" type="text/css">
-    <link rel = "icon" href = "bolinhas.png" type = "image/x-icon"> 
+   <!-- <link rel = "icon" href = "bolinhas.png" type = "image/x-icon"> --> 
+
+    <script type="text/javascript" src="game.js"></script>
   </head>
 
 
@@ -18,33 +20,35 @@
         <botao type=submit>Login</botao>
       </div>
 
+      <div class=menu>
 
-      <botao id="botaoClassif">Classificações</botao>
-
-         <div id="janelaClassif" class="janela">
-          <div class="conteudo">
-             <span class="close">&times;</span>
-             <p>  Aqui vai ficar a tabela a registar high scores </p>
-          </div>
-        </div> 
-
-      <botao id="botaoStats">Estatísticas</botao>
-
-         <div id="janelaStats" class="janela">
-          <div class="conteudo">
-             <span class="close">&times;</span>
-             <p>  QUANTAS VEZES PERDI?? </p>
-          </div>
-        </div> 
-
-      <botao id="botaoRegras">Regras</botao>
+        <botao id="botaoRegras" class="botaojanela">Regras</botao>
 
          <div id="janelaRegras" class="janela">
           <div class="conteudo">
              <span class="close">&times;</span>
-             <p>  O Othello é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças/discos inciais nas casas centrais. </p>
+             <p>  O Othello é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças inciais nas casas centrais. A cada jogador é atribuída uma cor e respectiva peça.
+              <br>
+            Durante o jogo os jogadores jogam alternadamente, colocam uma peça da sua cor numa casa livre onde seja possível virar alguma peça. Peças da cor contrária, que estão na mesma linha, coluna e diagonal da peça jogada viram para a cor do jogador desde que num dos extremos esteja presente uma peça da mesma cor. 
+            <br>
+          Se não for possível o jogador virar peças, terá de passar a jogada.O jogo termina quando nenhum jogador pode jogar, sendo o vencedor o jogador com maior número de peças da sua cor.
+          <br> 
+        Boa sorte</p>
           </div>
         </div> 
+
+
+        <botao id="botaoClassif" class="botaojanela">Classificações</botao>
+
+          <div id="janelaClassif" class="janela">
+          <div class="conteudo">
+             <span class="close">&times;</span>
+             <p>  Aqui vai ficar a tabela a registar high scores 
+             </p>
+          </div>
+          </div>
+
+      </div>
 
 
     </div> <!--fim da barra -->
@@ -54,28 +58,59 @@
     <div id=ecra>
 
       <div class=coluna>
+
         <div class=meia_coluna>
-          <h2>Configurações</h2>
-
-          <div> 
-
-
-
-
-
-
+            <br>
+          <div class=logo>
+            <img id ="logotipo" src="teste4.png" alt= "logo">
           </div>
 
-
         </div>
-
+                      <br>
         <div class=meia_coluna>
-          <h2>Mensagens</h2>
+
+
+          <h2>Configurações</h2>
+
+          <div id="configs">
+
+            <div class="oponente">
+              <h3> Selecione o tipo de oponente </h3>
+
+              <div id="Oponente">
+                <input type="radio" name="Oponente" value="Outro Jogador"  id="jogador"/>Outro jogador
+                <input type="radio" name="Oponente" value="Computador" id="computador"/>Computador
+              </div>  
+
+            </div>
+            <br>
+            <div class="cor">
+              <h3> Selecione a sua cor </h3>
+               <input type="button" value="Branco" id="branco">
+               <input type="button" value="Preto" id="preto">
+            </div>
+            <br>
+            <div class="dificuldade"> 
+              <h3> Selecione a dificuldade </h3>
+                <select>
+                    <option selected>Fácil</option>
+                    <option >Média</option>
+                    <option>Difícil</option>
+                </select>
+            </div>
+            <br>
+            <div class="inicio">
+               <button> Iniciar </button>
+            </div>
+
+         </div>
+
+
+
         </div>
-      </div>
 
-
-<!-- fim do ecrã -->
+        
+      </div> <!--termina coluna da esquerda -->
 
       <div class="coluna tabuleiro">
           <div class=linha>
@@ -130,59 +165,34 @@
 
       
       <div class=coluna>
-        <h2> Estado </h2>
 
+
+        <div class=meia_coluna>
+        <h2>Mensagens</h2>
+        </div> 
+        
+        <div class=meia_coluna>
+        <h2> Número de Peças </h2>
         <table>
           	<tr>
-          	  <th class=preto> Jogador 1 </th>
-              <th class=branco> Jogador 2 </th>
-              <th class=branco> Peças Livres </th>
+          	  <th class=preto>  Escuras </th>
+              <th class=branco> Claras  </th>
+              <th class=livres> Livres  </th>
           	</tr>
           	<tr>
-          	  <td> </td>
-              <td> </td>
-              <td> </td>
+          	  <td class=preto> npretas  </td>
+              <td class=branco> nbrancas </td>
+              <td class=livres> nlivres  </td>
           	</tr>
         </table>
+        </div>
+
+
       </div>
+
     </div>
     
-<script>
-
-var janela = document.getElementById("janelaClassif"); /*só funciona esta */
-var janela2 = document.getElementById("janelaStats");
-var janela3 = document.getElementById("janelaRegras");
-
-// Get the button that opens the modal
-var botao = document.getElementById("botaoClassif"); /*rip*/
-var botao2 = document.getElementById("botaoStats");
-var botao3 = document.getElementById("botaoRegras");
-
-
-
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks the button, open the modal 
-botao.onclick = function() {
-  janela.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  janela.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == janela) {
-    janela.style.display = "none";
-  }
-}
-
-
-</script>
+<script src="game.js"> </script>
 
 
 
