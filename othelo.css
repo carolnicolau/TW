@@ -134,6 +134,12 @@ font-size: 20px;
     justify-content:center;  
 }
 
+#base {
+    width:            60%;
+    background-color: orange;
+
+}
+
 .meia_coluna {
   align-items:center;
   justify-content:center;
@@ -142,7 +148,7 @@ font-size: 20px;
 .tabuleiro {
     width: 50vw;
     height: 50vw;
-
+    
     display:          flex;
     flex-wrap:        nowrap;
     flex-direction:   column;
