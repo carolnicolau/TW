@@ -38,27 +38,27 @@ window.onload = function() {
 
     if(document.getElementById("computador").checked){
      oponente="Computador";
-    }
-    if (document.getElementById("jogador").checked){
+   }
+   if (document.getElementById("jogador").checked){
      oponente="Jogador";
-    }
-  }
+   }
+ }
 
-  var cor="";
+ var cor="Preto";
 
-  document.getElementById("preto").onclick = function() {
-    cor=(document.getElementById("preto").value);
-  } 
+ document.getElementById("preto").onclick = function() {
+  cor=(document.getElementById("preto").value);
+} 
 
-  document.getElementById("branco").onclick = function() {
-    cor=(document.getElementById("branco").value);
-  }
+document.getElementById("branco").onclick = function() {
+  cor=(document.getElementById("branco").value);
+}
 
-  var dificuldade="";
+var dificuldade="";
 
-  function selectDificuldade(){
-    dificuldade=(document.getElementById("Dificuldade").value)
-  }
+function selectDificuldade(){
+  dificuldade=(document.getElementById("Dificuldade").value)
+}
 
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
@@ -67,12 +67,58 @@ window.onload = function() {
       alert("Selecione as configurações");
     }
     else {
+
       alert( "oioioioi");
+
+      
       const base = document.getElementById("base");
       const tabul = document.createElement("div");
 
       tabul.className = "tabuleiro";
       base.appendChild(tabul);
+
+      for(let l = 0; l<8; l++) {
+        const linha = document.createElement("div");
+        linha.className="linha";
+        tabul.appendChild(linha);
+        for(let c=0; c<8; c++) {
+          const celula = document.createElement("div");
+          celula.className="celula";
+          linha.appendChild(celula);
+
+          const peca =document.createElement("div");
+          peca.className="peca livres";
+         // peca.className="livres";
+          celula.appendChild(peca);
+          
+
+        }
+        
+
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
   }
 
