@@ -30,19 +30,54 @@ window.onclick = function(event) {
 }
 //FIM DA NAVBAR
 
-var cor=null;
+var oponente="";
 
-var branco= document.getElementById("branco");
+function selectOponente(){
 
-branco.addEventListener("click", function( ) {
-    cor = branco.getAttribute("value");
-}, false);
+  if(document.getElementById("computador").checked){
+   oponente="Computador";
+ }
+ else (document.getElementById("jogador").checked){
+   oponente="Jogador";
+ }
 
-var preto= document.getElementById("preto");
-preto.addEventListener("click", function( ) {
-    cor= preto.getAttribute("value");
+}
 
-}, false);
+var cor="";
+
+document.getElementById("preto").onclick = function() {
+  cor=(document.getElementById("preto").value);
+} 
+
+document.getElementById("branco").onclick = function() {
+  cor=(document.getElementById("branco").value);
+}
+
+var dificuldade="";
+
+function selectDificuldade(){
+	dificuldade=(document.getElementById("Dificuldade").value)
+}
+
+//ACCIONAR BOTÃO DE INICIAR
+document.getElementById("iniciar").onclick = function() {
+
+	
+  if(cor=="" && oponente == "") {
+    alert("Selecione as configurações");
+  }
+  else {
+
+    alert("GERAR TABULEIRO");
+  }
+  
+}
+
+
+
+
+
+
 
 
 
