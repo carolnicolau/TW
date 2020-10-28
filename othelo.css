@@ -10,7 +10,7 @@ h1 {
 body { 
   
   margin:0;
-  background-color: blue; 
+  background-color: BlanchedAlmond; 
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -88,7 +88,7 @@ body {
 .coluna {
     display:          flex-inline; /*inline-block*/
     width:            20%;
-    background-color: grey;
+    background-color: DimGrey;/*Grey;/*SandyBrown; */
     color:            black;
 }
 
@@ -102,7 +102,7 @@ body {
     height: 50vw;
 
     display:          flex;
-    flex-wrap:        nowrap;
+    
     flex-direction:   column;
     justify-content:  center;
     align-items:      center;
@@ -111,7 +111,6 @@ body {
     border-style:     outset;
     border-width:     2px;
     padding:          10px;*/   
-    background:       green;
     margin:           auto;
 }
 
@@ -137,7 +136,7 @@ body {
     
     border-style:     outset;
     border-collapse:  collapse;
-    background:       orange;
+    background:       DarkGreen;
 }
 
 .peça {
