@@ -1,100 +1,142 @@
-h1 { 
-    color:            red;
-    font-weight:      500;
-}
-
-
-
-* { box-sizing:border-box; }
-
 body { 
-  
   margin:0;
-  background-color: BlanchedAlmond; 
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: blue; 
+  font-family: Arial, Lucida Sans Unicode;
 }
+
+h2 {
+text-align: center;
+color:white;
+text-transform: capitalize;
+font-size: 20px;
+}
+
+/*****************************/
 
 .barra {
-
-  overflow:hidden;
-  background-color: #333;
-
-
-  top:0;
-  position: sticky;
+  display:flex;
   width: 100%;
+  background-color: #333;
+  align-items:center;
+  justify-content:space-between;
 
-}
-
-.barra a {
-
-  float:right;
-  display: block;
-  color: #f2f2f2 ;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration:none;
-  font-size: 17px;
-
-}
-
-.barra a:hover {
-
-  background: #ddd;
-  color: black;
-
-}
-
-.barra a.active{
-  background-color: red;
-  color:white;
 }
 
 .barra .login {
-  float: left;
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  
 }
 
 
-.barra input[type=text] , [type=password] {
-  padding: 6px;
-  margin-top: 8px;
-  font-size: 17px;
-  border: none;
-  width: 150px;
+.barra .login input[type=text] , [type=password] {
   color: green;
-
+  justify-content: space-between;
 }
 
 .barra .login botao {
-  float: right;
-  padding: 6px 10px;
-  margin-top: 8px;
-  margin-left: : 16px;
-  background-color: #555;
+  font-weight: bold;
   color: white;
-  font-size: 17px;
-  border:none;
   cursor:pointer;
+  
 }
 
 .barra .login botao:hover {
   background-color:green;
 }
 
+.barra .menu {
+  display:flex;
+  align-self:end;
+  justify-content: end;
+  align-content:end;
+  align-items:end;
+}
+
+.barra .menu botao { 
+
+  display: flex;
+  align-self: flex-end;
+  color: #f2f2f2 ;
+  text-align: center;
+
+  padding: 14px 16px;
+  font-size: 17px;
+  
+
+}
+.barra .menu botao:hover {
+  background: red;
+  color: black;
+
+}
+
+.barra botao.active{  /*não tenho a certeza se isto é necessário porque não temos links */
+  background-color: red;
+  color:white;
+}
+
+.janela {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.conteudo {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+
+}
+
+.close { ;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,.close:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*****************************/
+
+ .logo{
+     display:flex;
+     align-content:center;
+     justify-content:center;  
+ }
+
 #ecra {
     display: flex;
 }
 
 .coluna {
-    display:          flex-inline; /*inline-block*/
+    display:          flex-inline;
     width:            20%;
-    background-color: DimGrey;/*Grey;/*SandyBrown; */
+    background-color: grey;
     color:            black;
+
+    align-content:center;
+    justify-content:center;  
 }
 
 .meia_coluna {
-    width:            100%;
-    height:           50%;
+  align-items:center;
+  justify-content:center;
 }
 
 .tabuleiro {
@@ -102,7 +144,7 @@ body {
     height: 50vw;
 
     display:          flex;
-    
+    flex-wrap:        nowrap;
     flex-direction:   column;
     justify-content:  center;
     align-items:      center;
@@ -111,6 +153,7 @@ body {
     border-style:     outset;
     border-width:     2px;
     padding:          10px;*/   
+    background:       green;
     margin:           auto;
 }
 
@@ -136,7 +179,7 @@ body {
     
     border-style:     outset;
     border-collapse:  collapse;
-    background:       DarkGreen;
+    background:       orange;
 }
 
 .peça {
@@ -159,20 +202,18 @@ body {
 
 
 table {
-    width:            70%;
     
-    margin:           auto;
+    width:            50%;
+    
 }
 table,td, th {
-    border:           3px solid black;
+    border:           5px;
     border-collapse:  collapse;
-    background-color: white;
 }
-td, th {
-    padding:          20px;
+  td, th {
     width:            12%;
     height:           12%;
-}
+  }
 
 .branco { 
     background-color: white;
@@ -181,5 +222,9 @@ td, th {
 .preto {
     background-color: black;
     color:            white;
+}
+.livres{
+  background-color: grey
+  color: green;
 }
 
