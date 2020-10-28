@@ -1,6 +1,5 @@
-window.onload = function() {
 
-  var janela = document.getElementsByClassName('janela');
+var janela = document.getElementsByClassName('janela');
   // Get the button that opens the modal
   var botao = document.getElementsByClassName("botaojanela");
   // Get the <span> element that closes the modal
@@ -39,7 +38,7 @@ window.onload = function() {
     if(document.getElementById("computador").checked){
      oponente="Computador";
    }
-   else (document.getElementById("jogador").checked){
+    if (document.getElementById("jogador").checked){
      oponente="Jogador";
    }
 
@@ -69,15 +68,12 @@ function selectDificuldade(){
       alert("Selecione as configurações");
     }
     else {
-        const base = document.getElementById("base");
-        const tabul = document.createElement("div");
-
-        tabul.className = "tabuleiro";
-        base.id ="base";
-        base.appendChild(tabul);
-      //alert("GERAR TABULEIRO");
+      alert( "oioioioi")
     }
   }
+
+
+
 
 
   /*
@@ -111,4 +107,3 @@ function selectDificuldade(){
   }
 }
 */
-}
