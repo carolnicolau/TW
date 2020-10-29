@@ -140,6 +140,8 @@ h2 {
 #base {
   width:            60%;
   background-color: orange;
+  justify-content:  space-around;
+  align-items:center;
 }
 
 .meia_coluna {

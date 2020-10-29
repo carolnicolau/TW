@@ -71,79 +71,113 @@ window.onload = function() {
     }
   }
 
+  function desistir() {
+    alert("ganhou alguém");
+  }
 
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
-    var tabuleiro = new Tabuleiro();
+    var jogo = new Jogo();
   }
 
-  class Tabuleiro {
-      constructor() {
-        //this.conteudo  = nome;
 
+  class Jogo { 
+    play(l, c) {
+      var peca1 = this.tabuleiro[l][c].firstChild;
+      peca1.className= "peca branco";
+    }
+
+    constructor() {
+
+      if (!Jogo._instance) {
+        Jogo._instance = this;
+
+        this.conteudo = new Array(8);
+        this.tabuleiro = new Array(8);
+
+
+        /*
+        for (var k = 0; k < 8; k++) {
+          matrix[k] = new Array(8);
+          for(let x = 0; x < 8; x++) {
+            matrix[k][x] = "qqcena"; 
+          }
+        }
+        */
         const base = document.getElementById("base");
         const tabul = document.createElement("div");
+        const passar = document.createElement("button");
+        const desistir = document.createElement("button");
+
 
         tabul.className = "tabuleiro";
+        passar.innerText = "Passar jogada";
+        desistir.innerText = "Desistir";
+        desistir.id = "desistir";
+
+        document.getElementById("desistir").onclick = desistir();
+
         base.appendChild(tabul);
+        base.appendChild(passar);
+        base.appendChild(desistir);
+
 
         for(let l = 0; l<8; l++) {
 
           const linha = document.createElement("div");
           linha.className="linha";
           tabul.appendChild(linha);
+          this.conteudo[l] = new Array(8);
+          this.tabuleiro[l] = new Array(8);
+
 
           for(let c=0; c<8; c++) {
             const celula = document.createElement("div");
             celula.className="celula";
+            this.tabuleiro[l][c] = celula;
+
+
             linha.appendChild(celula);
 
             const peca =document.createElement("div");
 
             if((l==3 & c==3) || (l==4 & c==4)) {
-              peca.className="peca preto";
+              peca.className="peca preto";            
+              this.conteudo[l][c] = "P"; 
+
             }
             else if((l==3 & c==4) || (l==4 & c==3)) {
               peca.className="peca branco";
+              this.conteudo[l][c] = "B"; 
+
             }
             else {
               peca.className="peca livre";
+              this.conteudo[l][c] = "L"; 
+
             }
             celula.appendChild(peca);
-
-            //celula.onclick = ( (fun,pos) => {return () => fun(pos);} ) (this.play.bind(this),i);
-        }
-      }
-    }
-/*
-    clicar() {}
-
-    limpar_jogo() {}
-    */
-    
-  } 
-
-  /*
-    class Singleton {
-      constructor() {
-        if (!Singleton._instance) {
-          Singleton._instance = this;
-        }
-        return Singleton._instance;
-      }
-      static getInstance() {
-        return this._instance;
-      }
-      function Singleton() {
-        if (!Singleton._instance) {
-          Singleton._instance = this;
-        }
-
-        Singleton.getInstance = function () {
-          return this._instance;
-        };
-        return Singleton._instance;
-      }
-
-*/
+            
+            /*
+            peca.addEventListener("click",function(event, l, c) {
+              alert("clicou!");
+              play(l,c);
+            },false);
+            */
+            if(vez==0) {
+              celula.onclick = ((fun, posl, posc) => {
+               return () => fun(posl, posc);
+             })(this.play.bind(this), l, c);
+           }
+         }
+       }
+       console.log(this.conteudo);
+       console.log(this.tabuleiro);
+     }
+     return Jogo._instance;
+   }
+   static getInstance() {
+    return this._instance;
+  }
+} 
 }
