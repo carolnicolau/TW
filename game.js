@@ -35,7 +35,6 @@ window.onload = function() {
   var oponente="";
 
   function selectOponente(){
-
     if(document.getElementById("computador").checked){
      oponente="Computador";
    }
@@ -44,114 +43,107 @@ window.onload = function() {
    }
  }
 
- var cor="Preto";
+  var vez = 0; //0-user 1-oponente
+  var cor="Preto";
 
- document.getElementById("preto").onclick = function() {
-  cor=(document.getElementById("preto").value);
-} 
+  document.getElementById("preto").onclick = function() {
+    cor=(document.getElementById("preto").value);
+    vez=0;
+  } 
 
-document.getElementById("branco").onclick = function() {
-  cor=(document.getElementById("branco").value);
-}
+  document.getElementById("branco").onclick = function() {
+    cor=(document.getElementById("branco").value);
+    vez = 1;
+  }
 
-var dificuldade="";
+  var dificuldade="";
 
-function selectDificuldade(){
-  dificuldade=(document.getElementById("Dificuldade").value)
-}
+  function selectDificuldade(){
+    dificuldade=(document.getElementById("Dificuldade").value)
+  }
+
+  function MudarDeVez(){
+    if(vez == 1 ){
+      vez=0;
+    }
+    else if(vez==0){
+      vez=1;
+    }
+  }
+
 
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
-
-    if(cor=="" && oponente == "") {
-      alert("Selecione as configurações");
-    }
-    else {
-
-      alert( "oioioioi");
-
-      
-      const base = document.getElementById("base");
-      const tabul = document.createElement("div");
-
-      tabul.className = "tabuleiro";
-      base.appendChild(tabul);
-
-      for(let l = 0; l<8; l++) {
-        const linha = document.createElement("div");
-        linha.className="linha";
-        tabul.appendChild(linha);
-        for(let c=0; c<8; c++) {
-          const celula = document.createElement("div");
-          celula.className="celula";
-          linha.appendChild(celula);
-
-          const peca =document.createElement("div");
-          peca.className="peca livres";
-         // peca.className="livres";
-          celula.appendChild(peca);
-          
-
-        }
-        
-
-      }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
+    var tabuleiro = new Tabuleiro();
   }
+
+  class Tabuleiro {
+      constructor() {
+        //this.conteudo  = nome;
+
+        const base = document.getElementById("base");
+        const tabul = document.createElement("div");
+
+        tabul.className = "tabuleiro";
+        base.appendChild(tabul);
+
+        for(let l = 0; l<8; l++) {
+
+          const linha = document.createElement("div");
+          linha.className="linha";
+          tabul.appendChild(linha);
+
+          for(let c=0; c<8; c++) {
+            const celula = document.createElement("div");
+            celula.className="celula";
+            linha.appendChild(celula);
+
+            const peca =document.createElement("div");
+
+            if((l==3 & c==3) || (l==4 & c==4)) {
+              peca.className="peca preto";
+            }
+            else if((l==3 & c==4) || (l==4 & c==3)) {
+              peca.className="peca branco";
+            }
+            else {
+              peca.className="peca livre";
+            }
+            celula.appendChild(peca);
+
+            //celula.onclick = ( (fun,pos) => {return () => fun(pos);} ) (this.play.bind(this),i);
+        }
+      }
+    }
+/*
+    clicar() {}
+
+    limpar_jogo() {}
+    */
+    
+  } 
 
   /*
-  //Gerar Tabuleiro
-  const tabuleiro = new Tabuleiro("base"); //chamar só depois de selecionar configs?
-  
-  class Tabuleiro {
-
-    constructor(id_base) {
-
-      const base = document.getElementById(id_base);
-      const tabul = document.createElement("div");
-
-      tabul.className = "tabuleiro";
-      tabul.id = "tabul";
-      base.appendChild(tabul);
-
-
-      /*
-      for(let l = 0; l<8; l++) {
-        const linha = document.createElement("div");
-        for(let c=0; c<8; c++) {
-          const celula = document.createElement("div");
+    class Singleton {
+      constructor() {
+        if (!Singleton._instance) {
+          Singleton._instance = this;
         }
+        return Singleton._instance;
+      }
+      static getInstance() {
+        return this._instance;
+      }
+      function Singleton() {
+        if (!Singleton._instance) {
+          Singleton._instance = this;
+        }
+
+        Singleton.getInstance = function () {
+          return this._instance;
+        };
+        return Singleton._instance;
       }
 
-      parent.appendChild(counter);
-      counter.appendChild(incr);
-      counter.appendChild(reset);
-      counter.appendChild(this.display);
-      
-    }
-  }
-  */
+*/
 }

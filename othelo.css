@@ -1,6 +1,6 @@
 body { 
   margin:0;
-  background-color: blue; 
+  background-color: orange;/*blue;*/ 
   font-family: Arial, Lucida Sans Unicode;
 }
 
@@ -16,6 +16,7 @@ h2 {
 .barra {
   display:flex;
   width: 100%;
+  height: 5vh;
   background-color: #333;
   align-items:center;
   justify-content:space-between;
@@ -122,12 +123,13 @@ h2 {
 
 #ecra {
   display: flex;
+  height: 95vh;
 }
 
 .coluna {
   display:          flex-inline;
   width:            20%;
-  height: 100%;
+  height:           100%;
   background-color: grey;
   color:            black;
 
@@ -138,7 +140,6 @@ h2 {
 #base {
   width:            60%;
   background-color: orange;
-
 }
 
 .meia_coluna {
@@ -147,57 +148,64 @@ h2 {
 }
 
 .tabuleiro {
-  width: 80vh;
-  height: 80vh;
+  width: 80vmin;
+  height: 80vmin;
 
   display:          flex;
   flex-wrap:        nowrap;
   flex-direction:   column;
   justify-content:  center;
   align-items:      center;
+  
+  /*align-content:    center;
+  background-color: red
+  */
+  /*
+  border-style:     outset;
+  border-width:     2px;
+  padding:          10px;*/  
+  margin:           auto;
+  margin-top:       10px;
+  margin-bottom:    10px;
+}
 
-    /*
-    border-style:     outset;
-    border-width:     2px;
-    padding:          10px;*/   
-    background:       green;
-    margin:           auto;
-  }
 
-  .linha {
-    width:            80vh;
-    height:           10vh;
+.linha {
+  width:            80vmin;
+  height:           10vmin;
 
-    display:          flex;
-    flex-wrap:        nowrap;
-    justify-content:  space-around;
-    align-items:      center;
-  }
+  display:          flex;
+  flex-wrap:        nowrap;
+  justify-content:  space-around;
+  align-items:      center;
+}
 
-  .celula {
-    width:            10vh;
-    height:           100%;
+.celula {
+  width:            10vmin;
+  height:           10vmin;
+  /*height:           100%;*/
 
-    display:          flex-inline;
-    flex-wrap:        wrap;
-    justify-content:  space-around;
-    align-items:      center;
-    align-content:    center;
-    
-    border-style:     outset;
-    border-collapse:  collapse;
-    background:       orange;
-  }
+  display:          flex-inline;
+  flex-wrap:        wrap;
+  justify-content:  space-around;
+  align-items:      center;
+  align-content:    center;
 
-  .peca {
-    width:            90%;
-    height:           90%;
+  border:           0.2vmin;
+  border-style:     outset;
+  border-collapse:  collapse;
+  background:       DarkGreen;/*orange;*/
+}
 
-    /* visibility:       hidden; */
+.peca {
+  width:            90%;
+  height:           90%;
 
-    margin:           auto;
-    margin-top:       5%;
-    margin-bottom:    5%;
+  /* visibility:       hidden; */
+
+  margin:           auto;
+  margin-top:       5%;
+  margin-bottom:    5%;
     /*
     position:         relative; 
     top:              50%; 
@@ -209,9 +217,7 @@ h2 {
 
 
   table {
-
     width:            50%;
-    
   }
   table,td, th {
     border:           5px;
