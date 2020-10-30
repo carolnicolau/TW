@@ -47,13 +47,17 @@ window.onload = function() {
   var cor="Preto";
 
   document.getElementById("preto").onclick = function() {
+    alert("preto!");
     cor=(document.getElementById("preto").value);
+    alert("cor = "+cor);
     vez=0;
   } 
 
   document.getElementById("branco").onclick = function() {
+    alert("branco!");
     cor=(document.getElementById("branco").value);
-    vez = 1;
+    alert("cor = "+cor);
+    vez=1;
   }
 
   var dificuldade="";
@@ -71,10 +75,11 @@ window.onload = function() {
     }
   }
 
+/*
   function desistir() {
     alert("ganhou alguém");
   }
-
+*/
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
     var jogo = new Jogo();
@@ -82,9 +87,14 @@ window.onload = function() {
 
 
   class Jogo { 
+    
     play(l, c) {
       var peca1 = this.tabuleiro[l][c].firstChild;
-      peca1.className= "peca branco";
+      if(vez==0) {
+        peca1.className= "peca preto";
+      } else {
+        peca1.className= "peca branco";
+      }
     }
 
     constructor() {
@@ -95,15 +105,6 @@ window.onload = function() {
         this.conteudo = new Array(8);
         this.tabuleiro = new Array(8);
 
-
-        /*
-        for (var k = 0; k < 8; k++) {
-          matrix[k] = new Array(8);
-          for(let x = 0; x < 8; x++) {
-            matrix[k][x] = "qqcena"; 
-          }
-        }
-        */
         const base = document.getElementById("base");
         const tabul = document.createElement("div");
         const passar = document.createElement("button");
@@ -115,7 +116,7 @@ window.onload = function() {
         desistir.innerText = "Desistir";
         desistir.id = "desistir";
 
-        document.getElementById("desistir").onclick = desistir();
+        //document.getElementById("desistir").onclick = desistir();
 
         base.appendChild(tabul);
         base.appendChild(passar);
@@ -158,12 +159,6 @@ window.onload = function() {
             }
             celula.appendChild(peca);
             
-            /*
-            peca.addEventListener("click",function(event, l, c) {
-              alert("clicou!");
-              play(l,c);
-            },false);
-            */
             if(vez==0) {
               celula.onclick = ((fun, posl, posc) => {
                return () => fun(posl, posc);
@@ -176,6 +171,7 @@ window.onload = function() {
      }
      return Jogo._instance;
    }
+   //////////????????????
    static getInstance() {
     return this._instance;
   }
