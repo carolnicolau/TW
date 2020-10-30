@@ -33,6 +33,9 @@ window.onload = function() {
   //FIM DA NAVBAR
 
   var oponente="";
+  var vez = 'P';
+  var cor="Preto";
+  var dificuldade="";
 
   function selectOponente(){
     if(document.getElementById("computador").checked){
@@ -43,54 +46,55 @@ window.onload = function() {
    }
  }
 
-  var vez = 0; //0-user 1-oponente
-  var cor="Preto";
-
   document.getElementById("preto").onclick = function() {
     alert("preto!");
     cor=(document.getElementById("preto").value);
     alert("cor = "+cor);
-    vez=0;
+    //vez='P';
   } 
 
   document.getElementById("branco").onclick = function() {
     alert("branco!");
     cor=(document.getElementById("branco").value);
     alert("cor = "+cor);
-    vez=1;
+    //vez='B';
   }
-
-  var dificuldade="";
 
   function selectDificuldade(){
     dificuldade=(document.getElementById("Dificuldade").value)
   }
 
   function MudarDeVez(){
-    if(vez == 1 ){
-      vez=0;
+    if(vez == 'B' ){
+      vez='P';
     }
-    else if(vez==0){
-      vez=1;
+    else if(vez=='P'){
+      vez='B';
     }
   }
 
-/*
+
   function desistir() {
     alert("ganhou alguém");
   }
-*/
+
+  function escondeEsconde() {
+    document.getElementById("coluna_configs").style.visibility = "hidden";
+  }
+  function mostraMostra() {
+    document.getElementById("coluna_configs").style.visibility = "visible";
+  }
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
     var jogo = new Jogo();
+    escondeEsconde();
   }
-
 
   class Jogo { 
     
     play(l, c) {
       var peca1 = this.tabuleiro[l][c].firstChild;
-      if(vez==0) {
+      if(vez=='P') {
         peca1.className= "peca preto";
       } else {
         peca1.className= "peca branco";
@@ -116,8 +120,10 @@ window.onload = function() {
         desistir.innerText = "Desistir";
         desistir.id = "desistir";
 
-        //document.getElementById("desistir").onclick = desistir();
-
+        desistir.onclick = function() {
+          mostraMostra();
+        };
+         
         base.appendChild(tabul);
         base.appendChild(passar);
         base.appendChild(desistir);
@@ -159,7 +165,7 @@ window.onload = function() {
             }
             celula.appendChild(peca);
             
-            if(vez==0) {
+            if((vez=='P' && cor=="Preto") || (vez=='B' && cor=="Branco")) {
               celula.onclick = ((fun, posl, posc) => {
                return () => fun(posl, posc);
              })(this.play.bind(this), l, c);
