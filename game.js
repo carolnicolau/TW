@@ -62,12 +62,68 @@ window.onload = function() {
     dificuldade=(document.getElementById("Dificuldade").value); 
   }
 
+  function vez_computador() {
+    if((cor=="Branco" && vez=='P') || (cor=="Preto" && vez=='B')) {
+      return true;
+    }
+    return false;
+  }
+
+  function oposto_vez(){
+    let oposta = (vez=='B')? 'P' : 'B';
+    return oposta;
+  }
+
   function MudarDeVez(){
-    if(vez == 'B' ){
+    if(n_jogadas_vez == 0 && n_jogadas_op == 0) {
+      console.log("termina!!!!");
+    } 
+
+    if(vez == 'B'){
       vez='P';
+      console.log("vez do preto");
     }
     else if(vez=='P'){
       vez='B';
+      console.log("vez do branco");
+    }
+
+    console.log("já no tabuleiro:");
+    for(let l=0; l<8; l++) {
+      for(let c=0; c<8; c++) {
+        if(jogo.conteudo[l][c] == vez) {
+          console.log("\t("+l+","+c+")");
+        }
+      }
+    }
+    
+    jogo.jogadas_legais   = jogo.calcular_legais(vez);
+    //var jogadas_legais_op = jogo.calcular_legais(oposto_vez());
+    var n_jogadas_vez     = jogo.count_legais(jogo.jogadas_legais);
+    //var n_jogadas_op      = jogo.count_legais(jogadas_legais_op);
+    
+    console.log("jogadas legais de vez: " + n_jogadas_vez);
+    console.log(jogo.jogadas_legais); 
+    for(let l=0; l<8; l++) {
+      for(let c=0; c<8; c++) {
+        if(jogo.jogadas_legais[l][c] == vez) {
+          console.log("\t("+l+","+c+")");
+        }
+      }
+    }
+    /*
+    console.log("jogadas legais de op: " + n_jogadas_op); 
+    console.log(jogadas_legais_op); 
+    for(let l=0; l<8; l++) {
+      for(let c=0; c<8; c++) {
+        if(jogadas_legais_op[l][c] == oposto_vez()) {
+          console.log("\t("+l+","+c+")");
+        }
+      }
+    }
+    */
+    if(vez_computador()) {
+      computador();
     }
   }
 
@@ -85,7 +141,24 @@ window.onload = function() {
   document.getElementById("iniciar").onclick = function() {
     jogo = new Jogo();
     escondeEsconde();
-    if((cor=="Branco" && vez=='P') || (cor=="Preto" && vez=='B'))
+
+    /***************************/
+    jogo.jogadas_legais   = jogo.calcular_legais(vez);
+    //var jogadas_legais_op = jogo.calcular_legais(oposto_vez());
+    var n_jogadas_vez     = jogo.count_legais(jogo.jogadas_legais);
+    //var n_jogadas_op      = jogo.count_legais(jogadas_legais_op);
+    
+    console.log("jogadas legais de vez: " + n_jogadas_vez);
+    console.log(jogo.jogadas_legais); 
+    for(let l=0; l<8; l++) {
+      for(let c=0; c<8; c++) {
+        if(jogo.jogadas_legais[l][c] == vez) {
+          console.log("\t("+l+","+c+")");
+        }
+      }
+    }
+    /***************************/
+    if(vez_computador())
       computador();
   }
 
@@ -110,47 +183,127 @@ window.onload = function() {
     }
 
   function computador() {
-    var peca1 = jogo.tabuleiro[1][1].firstChild;
-
-    if(vez=='P') {
-      peca1.className = "peca preto";
-      jogo.conteudo[1][1] = 'P';
-    } else {
-      peca1.className = "peca branco";
-      jogo.conteudo[1][1] = 'B';
-    }
+    //var jogadas_legais = jogo.calcular_legais(vez, jogo.conteudo);
+    jogo.play(1,1);
     MudarDeVez();
   }
 
   class Jogo { 
-    play(l, c) {
-      alert("cor = "+cor);
-      if((vez=='P' && cor=="Preto") || (vez=='B' && cor=="Branco")) {
-        var peca1 = this.tabuleiro[l][c].firstChild;
+
+    verifica_linha(v, dl, dc, l, c) {
+      //verifica se há uma cor=vez algures na linha (l,c)+d(dl,dc)
+      if(this.conteudo[l][c] == v)
+        return true;
+      if(this.conteudo[l][c] == ' ')
+        return false;
+      if((l+dl < 0) || (l+dl > 7)) {
+        return false;
+      }
+      if((c+dc < 0) || (c+dc > 7)) { //celula adjacente direta está fora do tabuleiro
+        return false;
+      }
+
+      return this.verifica_linha(v, dl, dc, l+dl, c+dc);
+    }
+
+    is_legal(v, dl, dc, l, c) {
+      //verifica se a posição adjacente a l,c têm cor oposta a vez 
+      //e se a reta (l,c)+d(dl,dc) termina em cor=vez
+      let oposta = oposto_vez();
+      
+      if((l+dl < 0) || (l+dl > 7)) {
+        return false;
+      }
+      if((c+dc < 0) || (c+dc > 7)) { //celula adjacente direta está fora do tabuleiro
+        return false;
+      }
+      if(this.conteudo[l+dl][c+dc] != oposta) { //celula adjacente direta é da cor oposta
+        return false;
+      }
+      if((l+dl+dl < 0) || (l+dl+dl > 7)) { //celulas proximas estão fora do tabuleiro
+        return false;
+      }
+      if((c+dc+dc < 0) || (c+dc+dc > 7)) {
+        return false;
+      }
+      return this.verifica_linha(v, dl, dc, l+dl+dl, c+dc+dc); //ver se a linha termina na nossa cor
+    }
+
+    calcular_legais(v) { //verificar se cada posição é legal
+      var legais = new Array(8);
+
+      for(let l = 0; l<8; l++) {
+        legais[l] = new Array(8);
         
-        if(this.conteudo[l][c] = 'L'){ //verificação passa para jogada válida
-          if(vez=='P') {
-            peca1.className = "peca preto";
-            this.conteudo[l][c] = 'P';
-          } else {
-            peca1.className = "peca branco";
-            this.conteudo[l][c] = 'B';
+        for(let c=0; c<8; c++) {
+          legais[l][c] = ' ';
+
+          let nw = this.is_legal(v, -1, -1, l, c);
+          let nn = this.is_legal(v, -1,  0, l, c);
+          let ne = this.is_legal(v, -1,  1, l, c);
+          
+          let sw = this.is_legal(v, 1, -1, l, c);
+          let ss = this.is_legal(v, 1,  0, l, c);
+          let se = this.is_legal(v, 1,  1, l, c);
+          
+          let ww = this.is_legal(v, 0, -1, l, c);
+          let ee = this.is_legal(v, 0,  1, l, c);
+
+          if(nw || nn || ne || sw || ss || se || ww || ee) {
+            legais[l][c] = v; 
           }
-          soma_pecas();
-          MudarDeVez();
-          computador();
         }
+      }
+      return legais;
+    }
+
+    count_legais(legais) {
+      let count=0;
+      for(let l = 0; l<8; l++) {    
+        for(let c=0; c<8; c++) {
+          if(legais[l][c] != ' ') {
+            count ++;
+          }
+        }
+      }
+      return count;
+    }
+
+    humano(l, c) {
+      if(!vez_computador()) {
+        this.play(l, c);
+        MudarDeVez();
       } else {
-        alert("Não é a sua vez de jogar!");
+        alert("Não é a tua vez!");
+      }
+    }
+
+    play(l, c) {
+      //this.jogadas_legais = this.calcular_legais();
+
+      var peca1 = this.tabuleiro[l][c].firstChild;
+        
+      if(this.conteudo[l][c] == ' '){ //verificação passa para jogada válida
+        if(vez =='P') {
+          peca1.className = "peca preto";
+          this.conteudo[l][c] = 'P';
+          console.log("Preto jogou!");
+        } else {
+          peca1.className = "peca branco";
+          this.conteudo[l][c] = 'B';
+          console.log("Branco jogou!");
+        }
+        soma_pecas();
       }
     }
 
     constructor() {
 
-      if (!Jogo._instance) {
-        Jogo._instance = this;
+      if (!Jogo.instancia) {
+        Jogo.instancia = this;
 
         this.conteudo = new Array(8);
+        this.jogadas_legais;
         this.tabuleiro = new Array(8);
 
         /*
@@ -210,25 +363,24 @@ window.onload = function() {
             }
             else {
               peca.className="peca livre";
-              this.conteudo[l][c] = 'L'; 
+              this.conteudo[l][c] = ' '; 
 
             }
             celula.appendChild(peca);
             
             celula.onclick = ((fun, posl, posc) => {
               return () => fun(posl, posc);
-              console.log(this.conteudo);
-            })(this.play.bind(this), l, c);
+            })(this.humano.bind(this), l, c);
            
          }
        }
        console.log(this.conteudo);
        console.log(this.tabuleiro);
      }
-     return Jogo._instance;
+     return Jogo.instancia;
    }
    //////////????????????
-   static getInstance() {
+   static getInstancia() {
     return this._instance;
   }
 } 
