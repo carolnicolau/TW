@@ -59,7 +59,7 @@ window.onload = function() {
   }
 
   function selectDificuldade(){
-    dificuldade=(document.getElementById("Dificuldade").value)
+    dificuldade=(document.getElementById("Dificuldade").value); 
   }
 
   function MudarDeVez(){
