@@ -215,7 +215,7 @@ h2 {
     top:              50%; 
     margin-top:       -45%;
     */
-    border-radius:    50%;
+  border-radius:    50%;
     
   }
 
@@ -242,5 +242,14 @@ h2 {
   }
   .livres{
     color: purple;
+    border:           2px solid red;
+  }
+  .validas_preto{
+    border:           2px solid purple;
+    border-radius:    50%;
+  }
+  .validas_branco{
+    border:           2px solid yellow;
+    border-radius:    50%;
   }
 
