@@ -1,13 +1,16 @@
 window.onload = function() {
 
-  var vez;
-  var cor;
+  var vez = 'B';
+  var cor = 'P';
+  var oponente;
+  var dificuldade;
+
   var conteudo;
   var jogadas_legais;
   var tabuleiro;
-  var desistiu;
+  var desistiu = false;
   var vencedor;
-  
+
   var janela = document.getElementsByClassName('janela');
   // Get the button that opens the modal
   var botao = document.getElementsByClassName("botaojanela");
@@ -39,14 +42,14 @@ window.onload = function() {
     }
   }
   //FIM DA NAVBAR
-
+  /*
   var oponente1="";
   var cor1="Preto";
   var dificuldade1="";
-
+  */
   function selectOponente(){
     if(document.getElementById("computador").checked){
-     oponente1="Computador";
+     oponente="Computador";
    }
    if (document.getElementById("jogador").checked){
      oponente1="Jogador";
@@ -54,17 +57,17 @@ window.onload = function() {
  }
 
  document.getElementById("preto").onclick = function() {
-  cor1=(document.getElementById("preto").value);
-  alert("cor = "+cor1);
+  cor=(document.getElementById("preto").value);
+  alert("cor = "+cor);
 } 
 
 document.getElementById("branco").onclick = function() {
-  cor1=(document.getElementById("branco").value);
-  alert("cor = "+cor1);
+  cor=(document.getElementById("branco").value);
+  alert("cor = "+cor);
 }
 
 function selectDificuldade() {
-  dificuldade1=(document.getElementById("Dificuldade").value); 
+  dificuldade=(document.getElementById("Dificuldade").value); 
 }
 
 function escondeEsconde() {
@@ -77,7 +80,7 @@ function mostraMostra() {
 
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
-    jogo(cor1);
+    jogo();
     escondeEsconde();
   }  
 
@@ -162,6 +165,16 @@ function mostraMostra() {
         return oposta;
       }
 
+      function apagar() {
+        vez = 'B';
+        cor = 'P';
+        oponente = "Computador";
+        dificuldade;
+
+        mostraMostra();
+        location.reload();
+      }
+
       function terminar() {
         console.log("terminando");
         
@@ -182,12 +195,7 @@ function mostraMostra() {
         }
         alert("vencedor: "+ vencedor);
 
-        ////////
-        oponente1="";
-        cor1="Preto";
-        dificuldade1="";
-        mostraMostra();
-        location.reload();
+        apagar();
       }
 
       function MudarDeVez(){
@@ -205,6 +213,7 @@ function mostraMostra() {
           console.log("vez do branco");
         }    
 
+        /*
         console.log("já no tabuleiro:");
         for(let l=0; l<8; l++) {
           for(let c=0; c<8; c++) {
@@ -213,7 +222,7 @@ function mostraMostra() {
             }
           }
         }
-
+        */
 
         jogadas_legais   = calcular_legais(vez);
         var n_jogadas_vez     = count_legais(jogadas_legais);
@@ -234,7 +243,7 @@ function mostraMostra() {
               else if (vez=='P') {
                 peca1.className += " validas_preto";
               }
-              console.log("\t("+l+","+c+")");
+              //console.log("\t("+l+","+c+")");
             }
           }
         }  
@@ -391,15 +400,10 @@ function mostraMostra() {
     return count;
   }
 
-  function jogo(cor1) {
+  function jogo() {
 
-    vez = 'B';
-    cor = cor1;
     conteudo = new Array(8);
-    jogadas_legais;
     tabuleiro = new Array(8);
-    desistiu = false;
-    vencedor = "";
 
     const base = document.getElementById("base");
     const tabul = document.createElement("div");
