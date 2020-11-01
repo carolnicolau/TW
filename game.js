@@ -34,144 +34,64 @@ window.onload = function() {
   }
   //FIM DA NAVBAR
 
-  var oponente="";
-  var vez = 'P';
-  var cor="Preto";
-  var dificuldade="";
+  var oponente1="";
+  var vez1 = 'P';
+  var cor1="Preto";
+  var dificuldade1="";
 
   function selectOponente(){
     if(document.getElementById("computador").checked){
-     oponente="Computador";
+     oponente1="Computador";
    }
    if (document.getElementById("jogador").checked){
-     oponente="Jogador";
+     oponente1="Jogador";
    }
  }
 
   document.getElementById("preto").onclick = function() {
-    cor=(document.getElementById("preto").value);
-    alert("cor = "+cor);
+    cor1=(document.getElementById("preto").value);
+    alert("cor = "+cor1);
   } 
 
   document.getElementById("branco").onclick = function() {
-    cor=(document.getElementById("branco").value);
-    alert("cor = "+cor);
+    cor1=(document.getElementById("branco").value);
+    alert("cor = "+cor1);
   }
 
   function selectDificuldade(){
-    dificuldade=(document.getElementById("Dificuldade").value); 
-  }
-
-  function vez_computador() {
-    if((cor=="Branco" && vez=='P') || (cor=="Preto" && vez=='B')) {
-      return true;
-    }
-    return false;
-  }
-
-  function oposto_vez(){
-    let oposta = (vez=='B')? 'P' : 'B';
-    return oposta;
-  }
-
-  function MudarDeVez(){
-    if(n_jogadas_vez == 0 && n_jogadas_op == 0) {
-      console.log("termina!!!!");
-    } 
-
-    if(vez == 'B'){
-      vez='P';
-      console.log("vez do preto");
-    }
-    else if(vez=='P'){
-      vez='B';
-      console.log("vez do branco");
-    }
-
-    console.log("já no tabuleiro:");
-    for(let l=0; l<8; l++) {
-      for(let c=0; c<8; c++) {
-        if(jogo.conteudo[l][c] == vez) {
-          console.log("\t("+l+","+c+")");
-        }
-      }
-    }
-    
-    jogo.jogadas_legais   = jogo.calcular_legais(vez);
-    //var jogadas_legais_op = jogo.calcular_legais(oposto_vez());
-    var n_jogadas_vez     = jogo.count_legais(jogo.jogadas_legais);
-    //var n_jogadas_op      = jogo.count_legais(jogadas_legais_op);
-    
-    console.log("jogadas legais de vez: " + n_jogadas_vez);
-    console.log(jogo.jogadas_legais); 
-    for(let l=0; l<8; l++) {
-      for(let c=0; c<8; c++) {
-        if(jogo.jogadas_legais[l][c] == vez) {
-          console.log("\t("+l+","+c+")");
-        }
-      }
-    }
-    /*
-    console.log("jogadas legais de op: " + n_jogadas_op); 
-    console.log(jogadas_legais_op); 
-    for(let l=0; l<8; l++) {
-      for(let c=0; c<8; c++) {
-        if(jogadas_legais_op[l][c] == oposto_vez()) {
-          console.log("\t("+l+","+c+")");
-        }
-      }
-    }
-    */
-    if(vez_computador()) {
-      computador();
-    }
-  }
-
-  function desistir() {
-    alert("ganhou alguém");
+    dificuldade1=(document.getElementById("Dificuldade").value); 
   }
 
   function escondeEsconde() {
-    document.getElementById("coluna_configs").style.visibility = "hidden";
-  }
+      document.getElementById("coluna_configs").style.visibility = "hidden";
+    }
   function mostraMostra() {
-    document.getElementById("coluna_configs").style.visibility = "visible";
-  }
+      document.getElementById("coluna_configs").style.visibility = "visible";
+    }
+  
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
-    jogo = new Jogo();
     escondeEsconde();
-
-    /***************************/
-    jogo.jogadas_legais   = jogo.calcular_legais(vez);
-    //var jogadas_legais_op = jogo.calcular_legais(oposto_vez());
-    var n_jogadas_vez     = jogo.count_legais(jogo.jogadas_legais);
-    //var n_jogadas_op      = jogo.count_legais(jogadas_legais_op);
-    
-    console.log("jogadas legais de vez: " + n_jogadas_vez);
-    console.log(jogo.jogadas_legais); 
-    for(let l=0; l<8; l++) {
-      for(let c=0; c<8; c++) {
-        if(jogo.jogadas_legais[l][c] == vez) {
-          console.log("\t("+l+","+c+")");
-        }
-      }
-    }
-    /***************************/
-    if(vez_computador())
-      computador();
+    jogo = new Jogo(cor1);
+    mostraMostra();
   }
 
-  function soma_pecas() {
+  
+
+  
+
+  class Jogo { 
+
+    soma_pecas() {
       let conta_pretas=0;
       let conta_brancas=0;
       let conta_livres=0;
 
       for(let l = 0; l<8; l++) {
         for(let c=0; c<8; c++) {
-          if(jogo.conteudo[l][c] == 'B')
+          if(this.conteudo[l][c] == 'B')
             conta_brancas ++;
-          else if(jogo.conteudo[l][c] == 'P')
+          else if(this.conteudo[l][c] == 'P')
             conta_pretas ++;
           else
             conta_livres ++;
@@ -182,14 +102,67 @@ window.onload = function() {
       document.getElementById("n_livres").innerText = conta_livres;
     }
 
-  function computador() {
-    //var jogadas_legais = jogo.calcular_legais(vez, jogo.conteudo);
-    jogo.play(1,1);
-    MudarDeVez();
-  }
+    computador() {
+      //var jogadas_legais = jogo.calcular_legais(vez, jogo.conteudo);
+      this.play(1,1);
+      this.MudarDeVez();
+    }
 
-  class Jogo { 
+    vez_computador() {
+      if((this.cor=="Branco" && this.vez=='P') || (this.cor=="Preto" && this.vez=='B')) {
+        return true;
+      }
+      return false;
+    }
 
+    oposto_vez(){
+      let oposta = (this.vez=='B')? 'P' : 'B';
+      return oposta;
+    }
+
+    MudarDeVez(){
+      if(this.vez == 'B'){
+        this.vez='P';
+        console.log("vez do preto");
+      }
+      else if(this.vez=='P'){
+        this.vez='B';
+        console.log("vez do branco");
+      }
+
+      console.log("já no tabuleiro:");
+      for(let l=0; l<8; l++) {
+        for(let c=0; c<8; c++) {
+          if(this.conteudo[l][c] == vez) {
+            console.log("\t("+l+","+c+")");
+          }
+        }
+      }
+      
+      this.jogadas_legais   = this.calcular_legais(this.vez);
+      var n_jogadas_vez     = this.count_legais(this.jogadas_legais);
+      
+      console.log("jogadas legais de vez: " + n_jogadas_vez);
+      console.log(this.jogadas_legais); 
+      for(let l=0; l<8; l++) {
+        for(let c=0; c<8; c++) {
+          if(this.jogadas_legais[l][c] == this.vez) {
+            console.log("\t("+l+","+c+")");
+          }
+        }
+      }
+
+      if(this.vez_computador()) {
+        this.computador();
+      }
+    }
+
+    desistir() {
+      alert("ganhou alguém");
+    }
+
+    
+  /****************************************************************************/
     verifica_linha(v, dl, dc, l, c) {
       //verifica se há uma cor=vez algures na linha (l,c)+d(dl,dc)
       if(this.conteudo[l][c] == v)
@@ -209,7 +182,7 @@ window.onload = function() {
     is_legal(v, dl, dc, l, c) {
       //verifica se a posição adjacente a l,c têm cor oposta a vez 
       //e se a reta (l,c)+d(dl,dc) termina em cor=vez
-      let oposta = oposto_vez();
+      let oposta = this.oposto_vez();
       
       if((l+dl < 0) || (l+dl > 7)) {
         return false;
@@ -270,9 +243,9 @@ window.onload = function() {
     }
 
     humano(l, c) {
-      if(!vez_computador()) {
+      if(!this.vez_computador()) {
         this.play(l, c);
-        MudarDeVez();
+        this.MudarDeVez();
       } else {
         alert("Não é a tua vez!");
       }
@@ -284,7 +257,7 @@ window.onload = function() {
       var peca1 = this.tabuleiro[l][c].firstChild;
         
       if(this.conteudo[l][c] == ' '){ //verificação passa para jogada válida
-        if(vez =='P') {
+        if(this.vez =='P') {
           peca1.className = "peca preto";
           this.conteudo[l][c] = 'P';
           console.log("Preto jogou!");
@@ -293,25 +266,21 @@ window.onload = function() {
           this.conteudo[l][c] = 'B';
           console.log("Branco jogou!");
         }
-        soma_pecas();
+        this.soma_pecas();
       }
     }
 
-    constructor() {
+    constructor(cor) {
 
       if (!Jogo.instancia) {
         Jogo.instancia = this;
 
+        this.vez = 'B';
+        this.cor = cor;
         this.conteudo = new Array(8);
         this.jogadas_legais;
         this.tabuleiro = new Array(8);
 
-        /*
-        oponente="";
-        vez = 'P';
-        cor="Preto";
-        dificuldade="";
-        */
         const base = document.getElementById("base");
         const tabul = document.createElement("div");
         const passar = document.createElement("button");
@@ -377,7 +346,10 @@ window.onload = function() {
        console.log(this.conteudo);
        console.log(this.tabuleiro);
      }
-     return Jogo.instancia;
+    
+    this.MudarDeVez();
+    
+    return Jogo.instancia;
    }
    //////////????????????
    static getInstancia() {
