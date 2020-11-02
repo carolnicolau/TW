@@ -1,137 +1,144 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title> Othelo </title>
-    <link rel="stylesheet" href="othelo.css" type="text/css">
-    <link rel = "icon" href = "bolinhas.png" type = "image/x-icon"> 
-    <script type="text/javascript" src="game.js"></script> 
-  </head>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title> Othelo </title>
+  <link rel="stylesheet" href="othelo.css" type="text/css">
+  <link rel = "icon" href = "bolinhas.png" type = "image/x-icon"> 
+  <script src="game.js"></script> 
+</head>
 
 
-  <body>
-    <div class=barra> 
+<body>
+  <div class=barra> 
 
-      <div class=login>
-        <input type=text placeholder=Username name="username">
-        <input type=password placeholder=Password name="psw">
-        <botao type=submit>Login</botao>
+   <div class=login> 
+    <input type=text placeholder=Username name="username">
+    <input type=password placeholder=Password name="psw">
+    <button type=submit>Login</button>
+  </div> 
+
+  <div class=menu>
+
+    <button id="botaoRegras" class="botaojanela">Regras</button>
+
+    <div id="janelaRegras" class="janela">
+      <div class="conteudo">
+
+        <span class="close">&times;</span>
+        <h3> Regras </h3>
+        <hr>
+        <br>
+         <p> O <b>Othello</b> é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças inciais nas casas centrais. A cada jogador é atribuída uma cor e respectiva peça. </p>
+         <br>
+         <p>Durante o jogo, os jogadores jogam alternadamente, colocam uma peça da sua cor numa casa livre onde seja válida uma jogada. Para uma jogada ser válida, a peça nova que irá ser colocada terá de virar alguma peça. 
+         Peças da cor contrária são viradas quando estão na mesma linha, coluna e diagonal da peça jogada desde que num dos extremos esteja presente uma peça da mesma cor. </p>
+         <br>
+         <p> Se não for possível o jogador virar peças, terá de passar a jogada. O jogo termina quando nenhum jogador pode jogar, sendo o vencedor o jogador com maior número de peças da sua cor. </p>
+
+         <br> 
+         <h3> Boa sorte </h3>
+         <br>
+
+
+       </div>
+
+
+     </div> 
+
+     <button id="botaoClassif" class="botaojanela">Classificações</button>
+
+     <div id="janelaClassif" class="janela">
+      <div class="conteudo">
+        <span class="close">&times;</span>
+        <h3> Classificações </h3>
+        <hr>
+        <p>  Aqui vai ficar a tabela a registar high scores </p>
       </div>
+    </div>
+  </div>
+</div> <!--fim da barra -->
 
-      <div class=menu>
-
-        <botao id="botaoRegras" class="botaojanela">Regras</botao>
-
-        <div id="janelaRegras" class="janela">
-          <div class="conteudo">
-            <span class="close">&times;</span>
-            <h3> Regras </h3>
-            <hr>
-            <dl>
-            <dd>  O <b>Othello</b> é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças inciais nas casas centrais. A cada jogador é atribuída uma cor e respectiva peça.
-            <br>
-            <dd>Durante o jogo os jogadores jogam alternadamente, colocam uma peça da sua cor numa casa livre onde seja possível virar alguma peça. Peças da cor contrária, que estão na mesma linha, coluna e diagonal da peça jogada viram para a cor do jogador desde que num dos extremos esteja presente uma peça da mesma cor. 
-            <br>
-            <dd>Se não for possível o jogador virar peças, terá de passar a jogada.O jogo termina quando nenhum jogador pode jogar, sendo o vencedor o jogador com maior número de peças da sua cor.
-            </dl>
-            <br> 
-            Boa sorte
-          </div>
-        </div> 
-
-        <botao id="botaoClassif" class="botaojanela">Classificações</botao>
-
-        <div id="janelaClassif" class="janela">
-          <div class="conteudo">
-            <span class="close">&times;</span>
-            <h3> Classificações </h3>
-            <hr>
-            <p>  Aqui vai ficar a tabela a registar high scores </p>
-          </div>
-        </div>
+<div id=ecra>
+  <div class=coluna>
+    <div class=meia_coluna>
+      <br>
+      <div class=logo>
+        <img id ="logotipo" src="teste4.png" alt= "logo">
       </div>
-    </div> <!--fim da barra -->
+    </div>
+    <br>
 
-    <div id=ecra>
-      <div class=coluna>
-        <div class=meia_coluna>
-          <br>
-          <div class=logo>
-            <img id ="logotipo" src="teste4.png" alt= "logo">
-          </div>
+    <div class=meia_coluna id=coluna_configs>
+      <h2>Configurações</h2>
+      <div id="configs">
+
+        <div class="oponente">
+          <h3> Selecione o tipo de oponente </h3>
+
+          <div id="Oponente">
+            <input type="radio" name="Oponente" value="Outro Jogador"  id="jogador" disabled />Outro jogador
+            <input type="radio" name="Oponente" value="Computador" id="computador" checked />Computador
+          </div>  
+
         </div>
         <br>
-          
-        <div class=meia_coluna id=coluna_configs>
-          <h2>Configurações</h2>
-          <div id="configs">
-            
-            <div class="oponente">
-              <h3> Selecione o tipo de oponente </h3>
-                
-                <div id="Oponente">
-                  <input type="radio" name="Oponente" value="Outro Jogador"  id="jogador"disabled/>Outro jogador
-                  <input type="radio" name="Oponente" value="Computador" id="computador" checked/>Computador
-                </div>  
-
-            </div>
-            <br>
-            <div class="cor">
-              <h3> Selecione a sua cor </h3>
-              <input type="button" value="Branco" id="branco" >
-              <input type="button" value="Preto" id="preto">
-            </div>
-            <br>
-            <div class="dificuldade"> 
-              <h3> Selecione a dificuldade </h3>
-              <select id=Dificuldade>
-                <option value="Fácil" selected> Fácil </option>
-                <option  value="Média"> Média </option>
-                <option value="Difícil"> Difícil </option>
-              </select>
-            </div>
-            <br>
-            <div class="inicio">
-              <button id="iniciar" > Iniciar </button>
-            </div>
-          </div>
+        <div class="cor">
+          <h3> Selecione a sua cor </h3>
+          <input type="button" value="Branco" id="branco" >
+          <input type="button" value="Preto" id="preto">
         </div>
-      </div> <!--termina coluna da esquerda -->
-
-
-
-      <div id="base"> </div>
-
-      <div class=coluna>
-        
-        <div class=meia_coluna>
-          <h2>Mensagens</h2>
-
-          <div id = "Mensagem">
-            <p id = "mensagemdavez">This is a text!</p>
-            <p id = "vez"></p>
-          </div>
-        </div> 
-
-        <div class=meia_coluna>
-          <h2> Número de Peças </h2>
-          <table>
-            <tr>
-              <th class=preto>  Escuras </th>
-              <th class=branco> Claras  </th>
-              <th class=livres> Livres  </th>
-            </tr>
-            <tr>
-              <td class=preto id=n_pretas> 2  </td>
-              <td class=branco id=n_brancas> 2 </td>
-              <td class=livres id=n_livres> 60  </td>
-            </tr>
-          </table>
+        <br>
+        <div class="dificuldade"> 
+          <h3> Selecione a dificuldade </h3>
+          <select id=Dificuldade>
+            <option value="Fácil" selected> Fácil </option>
+            <option  value="Média"> Média </option>
+            <option value="Difícil"> Difícil </option>
+          </select>
+        </div>
+        <br>
+        <div class="inicio">
+          <button id="iniciar" > Iniciar </button>
         </div>
       </div>
     </div>
+  </div> <!--termina coluna da esquerda -->
 
-    <script src="game.js"> </script>
 
-  </body>
+
+  <div id="base"> </div>
+
+  <div class=coluna>
+
+    <div class=meia_coluna>
+      <h2>Mensagens</h2>
+
+      <div id = "Mensagem">
+        <p id = "mensagemdavez">This is a text!</p>
+        <p id = "vez"></p>
+      </div>
+    </div> 
+
+    <div class=meia_coluna>
+      <h2> Número de Peças </h2>
+      <table>
+        <tr>
+          <th class=preto>  Escuras </th>
+          <th class=branco> Claras  </th>
+          <th class=livres> Livres  </th>
+        </tr>
+        <tr>
+          <td class=preto id=n_pretas> 2  </td>
+          <td class=branco id=n_brancas> 2 </td>
+          <td class=livres id=n_livres> 60  </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="game.js"> </script>
+
+</body>
 </html>
