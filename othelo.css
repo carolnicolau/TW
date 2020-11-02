@@ -1,6 +1,6 @@
 body { 
   margin:0;
-  background-color: orange;/*blue;*/ 
+  background-color: orange;
   font-family: Arial, Lucida Sans Unicode;
 }
 
@@ -27,6 +27,7 @@ h2 {
   display:flex;
   justify-content:flex-start;
   align-items:center;
+  height: 5vh;
   
 }
 
@@ -34,48 +35,43 @@ h2 {
 .barra .login input[type=text] , [type=password] {
   color: green;
   justify-content: space-between;
+  height: 5vh;
 }
 
-.barra .login botao {
+.barra .login button {
   font-weight: bold;
-  color: white;
+  color: green;
   cursor:pointer;
+  height: 5vh;
   
 }
 
-.barra .login botao:hover {
+.barra .login button:hover {
+  color:white;
   background-color:green;
 }
 
 .barra .menu {
   display:flex;
-  align-self:end;
-  justify-content: end;
-  align-content:end;
-  align-items:end;
+  justify-content:flex-end;
+  align-items:space-around;
+  height: 5vh;
 }
 
-.barra .menu botao { 
-
+.barra .menu button { 
+  font-size: 15px;
   display: flex;
   align-self: flex-end;
   color: #f2f2f2 ;
+  background-color: #333;
+  align-items:center;
   text-align: center;
-
-  padding: 14px 16px;
-  font-size: 17px;
-  
-
-}
-.barra .menu botao:hover {
-  background: red;
-  color: black;
-
+  height: 5vh;
 }
 
-.barra botao.active{  /*não tenho a certeza se isto é necessário porque não temos links */
-  background-color: red;
-  color:white;
+.barra .menu button:hover {
+  background: purple;
+  color: white;
 }
 
 .janela {
@@ -134,7 +130,7 @@ h2 {
   color:            black;
 
   align-content:center;
-  justify-content:center;  
+ justify-content:space-around;
 }
 
 #base {
@@ -147,8 +143,8 @@ h2 {
 .meia_coluna {
   display:          flex-inline;
   align-items:center;
-  justify-content:center;
   margin: 10px;
+
 }
 
 .tabuleiro {
@@ -226,6 +222,8 @@ h2 {
   table,td, th {
     border:           5px;
     border-collapse:  collapse;
+     text-align: center; 
+    vertical-align: middle;
   }
   td, th {
     width:            12%;
@@ -242,7 +240,7 @@ h2 {
   }
   .livres{
     color: purple;
-    border:           2px solid red;
+    border:           2px solid grey;
   }
   .validas_preto{
     border:           2px solid purple;
@@ -253,3 +251,32 @@ h2 {
     border-radius:    50%;
   }
 
+  #branco{
+    background-color:white;
+    color: grey;
+    font-weight: bold;
+    padding: 10px;   
+  }
+
+  #preto{
+    background-color: black;
+    color:grey;
+    padding: 11px;
+    font-weight: bold;
+   
+  }
+
+  #iniciar{
+    background-color: Green;
+    color:white;
+    padding:17px;
+    font-weight: bold;
+    font-size:15px;
+    align-self: flex-end;
+  }
+
+.inicio{
+  display: flex;
+  justify-content: flex-end;
+  align-self:flex-end;
+}
