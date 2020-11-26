@@ -1,5 +1,8 @@
 window.onload = function() {
 
+  var n_vitorias=0;
+  var n_derrotas=0;
+
   var cor="Preto";
   var oponente="";
   var dificuldade=1;
@@ -13,36 +16,28 @@ window.onload = function() {
   var pode_passar;
   
   var janela = document.getElementsByClassName('janela');
-  // Get the button that opens the modal
   var botao = document.getElementsByClassName("botaojanela");
-  // Get the <span> element that closes the modal
   var span = document.getElementsByClassName("close");
 
-  // sim funciona When the user clicks the button, open the modal 
   botao[0].onclick = function() {
     janela[0].style.display = "block";
   }
-  //extra n descrito ??
   botao[1].onclick = function() {
     janela[1].style.display = "block";
   } 
-
-  // sim funciona When the user clicks on <span> (x), close the modal
   span[0].onclick = function() {
     janela[0].style.display = "none";
   }
-
-  //??
   span[1].onclick = function() {
     janela[1].style.display = "none";
   }
-  // isto n funciona pq tá bloqueado When the user clicks anywhere outside of the modal, close it
   window.onclick = function(event) {
     if (event.target == janela) {
       janela.style.display = "none";
     }
   }
   //FIM DA NAVBAR
+  
 
   function selectOponente(){
     if(document.getElementById("computador").checked){
@@ -55,16 +50,17 @@ window.onload = function() {
 
  document.getElementById("preto").onclick = function() {
   cor=(document.getElementById("preto").value);
-  alert("cor = "+cor);
+  document.getElementById("mensagemdavez").innerText=("Escolheste as peças pretas.");
 } 
 
 document.getElementById("branco").onclick = function() {
   cor=(document.getElementById("branco").value);
-  alert("cor = "+cor);
+  document.getElementById("mensagemdavez").innerText=("Escolheste as peças brancas.");
 }
 
 function selectDificuldade() {
-  dificuldade=(document.getElementById("Dificuldade").value); 
+  dificuldade=(document.getElementById("Dificuldade").value);
+  alert(dificuldade);
 }
 
 function escondeEsconde() {
@@ -77,6 +73,7 @@ function mostraMostra() {
 
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
+    selectDificuldade();
     jogo();
     escondeEsconde();
   }  
@@ -211,8 +208,14 @@ function mostraMostra() {
 
       let jogada = minimax(cop, dificuldade, vez, -1, -1);
 
+      if(pode_passar) {
+          console.log("passou!");
+          document.getElementById("mensagemdavez").innerText=("O computador passou a vez.");
+          pode_passar = false;
+      }
+      else 
+        play(jogada[1],jogada[2],conteudo,vez,false);
 
-      play(jogada[1],jogada[2],conteudo,vez,false);
       //play(0,0);
       soma_pecas(conteudo);
       MudarDeVez();
@@ -226,7 +229,7 @@ function mostraMostra() {
           MudarDeVez();
         }
       } else {
-        alert("Não é a tua vez!");
+        document.getElementById("mensagemdavez").innerText=("Não é a tua vez!");
       }
     }
 
@@ -290,6 +293,13 @@ function mostraMostra() {
         mostraMostra();
         let base = document.getElementById("base");
         base.innerHTML = "";
+        document.getElementById("mensagemdavez").innerText=("Inicia outro jogo!");
+        document.getElementById("n_pretas").innerText=("");
+        document.getElementById("n_brancas").innerText=("");
+        document.getElementById("n_livres").innerText=("");
+
+
+
         /*
         base.removeChild(base.childNodes[0]);
         base.removeChild(base.childNodes[0]);
@@ -301,36 +311,39 @@ function mostraMostra() {
       function terminar() {
         console.log("terminando...");
         
-        if(desistiu)
+        if(desistiu) {
           vencedor = "computador";
+          
+          n_derrotas++;
+          document.getElementById("nderrotasjogador").innerText=(n_derrotas);
+          document.getElementById("mensagemdavez").innerText=("Desististe! O computador ganhou...");
+        }
         else {
           let somas = soma_pecas(conteudo);
           let p  = somas[0];
           let b  = somas[1];
           let li = somas[2];
 
-          /*
-          for(let l = 0; l<8; l++) {
-            for(let c=0; c<8; c++) {
-              if(conteudo[l][c] == 'B')
-                b ++;
-              else if(conteudo[l][c] == 'P')
-                p ++;
-              else
-                li ++;
-            }
-          }*/
-
-
-          if((p>b && cor == "Preto") || (p<b && cor == "Branco" ))
+          if((p>b && cor == "Preto") || (p<b && cor == "Branco" )) {
             vencedor = "humano";
-          else if((p<b && cor == "Preto") || (p>b && cor == "Branco" ))
+            
+            n_vitorias++;
+            document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
+            document.getElementById("mensagemdavez").innerText=("Ganhaste!");
+          }
+          else if((p<b && cor == "Preto") || (p>b && cor == "Branco" )) {
             vencedor = "computador";
+
+            n_derrotas++;
+            document.getElementById("nderrotasjogador").innerText=(n_derrotas);
+            document.getElementById("mensagemdavez").innerText=("Ganhou o computador!");
+          }
           else {
             vencedor = "empate";
             console.log("pretas: " + p);
             console.log("brancas: " + b);
             console.log("livres: " + li);
+            document.getElementById("mensagemdavez").innerText=("Foi um empate!");
           }
         }
         console.log("vencedor: "+ vencedor);
@@ -417,7 +430,6 @@ function mostraMostra() {
         let nP               = count_legais(jogadas_legaisP);
 
         if(nB == 0 && nP == 0) {
-          alert("jogo acabou!");
           return true;
         }
         else
@@ -635,6 +647,9 @@ function mostraMostra() {
 
       }
     }
+    document.getElementById("n_pretas").innerText=("2");
+        document.getElementById("n_brancas").innerText=("2");
+        document.getElementById("n_livres").innerText=("60");
     MudarDeVez();
   }
 }

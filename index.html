@@ -13,9 +13,9 @@
   <div class=barra> 
 
    <div class=login> 
-    <input type=text placeholder=Username name="username">
+    <input id=User type=text placeholder=Username name="username">
     <input type=password placeholder=Password name="psw">
-    <button type=submit>Login</button>
+    <button type=submit id=Login>Login</button>
   </div> 
 
   <div class=menu>
@@ -29,15 +29,18 @@
         <h3> Regras </h3>
         <hr>
         <br>
-         <p> O <b>Othello</b> é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças inciais nas casas centrais. A cada jogador é atribuída uma cor e respectiva peça. </p>
+         <p> O <b>Othello</b> é uma variante moderna do Rerversi. Difere deste por fixar a posição inicial das 4 peças inciais nas casas centrais. A cada jogador é atribuída uma cor. </p>
          <br>
-         <p>Durante o jogo, os jogadores jogam alternadamente, colocam uma peça da sua cor numa casa livre onde seja válida uma jogada. Para uma jogada ser válida, a peça nova que irá ser colocada terá de virar alguma peça. 
+         <p>Durante o jogo, os jogadores jogam alternadamente, colocam uma peça da sua cor numa casa livre onde é válida uma jogada. Para uma jogada ser válida, a peça nova que irá ser colocada terá de virar alguma peça do oponente. 
          Peças da cor contrária são viradas quando estão na mesma linha, coluna e diagonal da peça jogada desde que num dos extremos esteja presente uma peça da mesma cor. </p>
          <br>
          <p> Se não for possível o jogador virar peças, terá de passar a jogada. O jogo termina quando nenhum jogador pode jogar, sendo o vencedor o jogador com maior número de peças da sua cor. </p>
-
+        <br>
+          <h3> Como jogar no nosso site </h3>
+          <p>Configure as opções disponíveis, se pretender alterar as configurações default. Clique 'Iniciar'. O 1º turno será das peças escuras. As jogadas válidas aparecerão no tabeleiro realçadas a roxo, para as peças pretas, e amarelo, para as peças brancas.
+          Informações relevantes ao jogo, aparecerão na caixa de mensagens.</p>
          <br> 
-         <h3> Boa sorte </h3>
+         <h3> Boa sorte! </h3>
          <br>
 
 
@@ -63,8 +66,8 @@
     
         <tr>
            <td > Jogador </td>
-           <td  id=nvitoriasjogador > nvitoriasjogador   </td>
-           <td id=nderrotasjogador > nderrotasjogador </td>
+           <td  id=nvitoriasjogador > 0 </td>
+           <td id=nderrotasjogador > 0 </td>
         </tr>
       </table>
 
@@ -107,9 +110,9 @@
         <div class="dificuldade"> 
           <h3> Selecione a dificuldade </h3>
           <select id=Dificuldade>
-            <option value="Fácil" selected> Fácil </option>
-            <option  value="Média"> Média </option>
-            <option value="Difícil"> Difícil </option>
+            <option value=1 selected> Fácil </option>
+            <option  value=2> Média </option>
+            <option value=3 disabled> Difícil </option>
           </select>
         </div>
         <br>
