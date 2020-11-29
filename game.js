@@ -19,6 +19,14 @@ window.onload = function() {
   var botao = document.getElementsByClassName("botaojanela");
   var span = document.getElementsByClassName("close");
 
+
+  document.getElementById("Login").onclick = function() {
+    const user = document.getElementById("User").value;
+    const pass = document.getElementById("Pass").value;
+
+    register(user, pass);
+  }
+
   botao[0].onclick = function() {
     janela[0].style.display = "block";
   }
@@ -648,8 +656,31 @@ function mostraMostra() {
       }
     }
     document.getElementById("n_pretas").innerText=("2");
-        document.getElementById("n_brancas").innerText=("2");
-        document.getElementById("n_livres").innerText=("60");
+    document.getElementById("n_brancas").innerText=("2");
+    document.getElementById("n_livres").innerText=("60");
     MudarDeVez();
   }
+
+/*
+  class jogo {
+
+  constructor {
+    if (!Jogo.instancia) {
+      /*
+      var cor="Preto";
+      var oponente="";
+      var dificuldade=1;
+      
+      Jogo.instancia = this;
+    } else {
+      alert("jogo já criado");
+      return Jogo.instancia;
+    }
+  }
+
+  apaga_jogo() {
+    Jogo.instancia = null;
+  }
+
+}*/
 }
