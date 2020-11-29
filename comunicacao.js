@@ -25,10 +25,11 @@ function register(nick, pass) {
        if(response.ok) {
           response.text().then(console.log);
        } else {
+       	//error
           response.json().then((response) => func(response));
        }
     })
-	.catch(error);   
+	.catch();   //?
 }
 
 /*
