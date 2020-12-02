@@ -7,6 +7,8 @@ window.onload = function() {
   var oponente="";
   var dificuldade=1;
 
+  var id_jogo;
+
   var vez;
   var conteudo;
   var jogadas_legais;
@@ -23,21 +25,28 @@ window.onload = function() {
   document.getElementById("Login").onclick = function() {
     const user = document.getElementById("User").value;
     const pass = document.getElementById("Pass").value;
+    if(user=='' || pass=='') {
+      document.getElementById("mensagemdavez").innerText=("Preencha os campos username e password.");
+      return;
+    }
 
     register(user, pass);
   }
 
-  botao[0].onclick = function() {
+  botao[0].onclick = function() { //regras
     janela[0].style.display = "block";
   }
-  botao[1].onclick = function() {
+  botao[1].onclick = function() { //classificação
     janela[1].style.display = "block";
+    ranking();
   } 
-  span[0].onclick = function() {
+  span[0].onclick = function() { //regras
     janela[0].style.display = "none";
   }
-  span[1].onclick = function() {
+  span[1].onclick = function() { //classificação
     janela[1].style.display = "none";
+    const tabela = document.getElementById("classifacoes");
+    tabela.innerHTML = "";
   }
   window.onclick = function(event) {
     if (event.target == janela) {
@@ -82,9 +91,16 @@ function mostraMostra() {
   //ACCIONAR BOTÃO DE INICIAR
   document.getElementById("iniciar").onclick = function() {
     selectDificuldade();
+    const user = document.getElementById("User").value;
+    const pass = document.getElementById("Pass").value;
+    //id_jogo = join(user, pass);
+    //console.log("id:" + id_jogo);
     jogo();
+    
     escondeEsconde();
   }  
+
+  ////////////////////////////
 
   function soma_pecas(t) {
     let p=0;
@@ -111,102 +127,7 @@ function mostraMostra() {
     return somas;
   }
 
-  function avalia(copia) {
-    let somas = soma_pecas(copia);
-    let p  = somas[0];
-    let b  = somas[1];
-
-    if(cor=="Preto") //jogador
-      return b - p; //peças_computador - peças_jogador
-    else
-      return p - b; //peças_computador - peças_jogador
-  }
-
-  function minimax(tabuleiro_, profundidade, vez_, x, y) {
-    
-    let legais = calcular_legais(tabuleiro_, vez_);
-    let res = new Array(3);
-    
-    if(profundidade==0 || count_legais(legais) == 0) {
-      res[0] = avalia(tabuleiro_);
-      res[1] = x;
-      res[2] = y;
-      console.log("profundidade "+ profundidade+": " + res[0] + " x="+x+" y="+y );
-      return res;
-    }
-
-    let oposta_ = (vez_=='B')? 'P' : 'B';
-    console.log("vez: " + vez_);
-    console.log("cor: " + cor[0]);
-    console.log("oposta: " + oposta_);
-
-    if(vez_!=cor[0]) { //vez do computador
-      maxAval = -99999;
-      for(let l=0; l<8; l++) {
-        for(let c=0; c<8; c++) {
-          let copia = copia_tabuleiro(tabuleiro_);
-
-          if(legais[l][c]==vez_) {
-            play(l, c,copia,vez_,true);
-
-            aval = minimax(copia, profundidade-1, oposta_, l, c)[0];
-            
-            if(aval>maxAval) {
-              maxAval = aval;
-              x=l;
-              y=c;
-            }
-          }
-        }
-      }
-      console.log("profundidade"+profundidade+": max=" +maxAval+ " x=" +x+ " y=" +y);
-      res[0] = maxAval;
-      res[1] = x;
-      res[2] = y;
-      return res;
-    }
-
-    else { //vez do humano (cor=vez)
-      minAval = 99999;
-      for(let l=0; l<8; l++) {
-        for(let c=0; c<8; c++) {
-          let copia = copia_tabuleiro(tabuleiro_);
-          
-
-          if(legais[l][c]==vez_) {
-            play(l, c,copia,vez_,true);
-
-            aval = minimax(copia, profundidade-1, oposta_, l, c)[0];
-            if(aval<minAval) {
-              minAval = aval;
-              x=l;
-              y=c;
-            }
-          }
-        }
-      }
-    }
-    console.log("profundidade "+profundidade+": min=" +minAval+ " x=" +x+ " y=" +y);
-    res[0] = minAval;
-    res[1] = x;
-    res[2] = y;
-    return res;
-  }
-
-
-  function copia_tabuleiro(t) {
-    var copia_ = new Array(8);
-    
-    for(let l = 0; l<8; l++) {
-      copia_[l] = new Array(8);
-     
-      for(let c=0; c<8; c++) {
-        copia_[l][c] = t[l][c];
-      }
-    }
-    return copia_;
-  }
-
+  
   function computador() {
       console.log("conteudo: ");
       console.log(conteudo);
@@ -261,6 +182,12 @@ function mostraMostra() {
 
       flip(l,c,conteudo_,vez_,simulacao);
 
+      const user = document.getElementById("User").value;
+      const pass = document.getElementById("Pass").value;
+      //var move = {"row":l, "column":c};
+      //console.log(id_jogo);
+      //notify(user, pass, id_jogo, move);
+
       if(!simulacao) {
         let peca2;
         for(let l=0; l<8; l++) {
@@ -281,7 +208,7 @@ function mostraMostra() {
     }
 
       function vez_computador() {
-        if((cor=="Branco" && vez=='P') || (cor=="Preto" && vez=='B')) {
+        if((cor=="Branco" && vez=='P') || (cor=="Preto" && vez=='B') && oponente == "computador") {
           return true;
         }
         return false;
@@ -307,7 +234,9 @@ function mostraMostra() {
         document.getElementById("n_livres").innerText=("");
 
 
-
+        const user = document.getElementById("User").value;
+        const pass = document.getElementById("Pass").value;
+        leave(user, pass);
         /*
         base.removeChild(base.childNodes[0]);
         base.removeChild(base.childNodes[0]);
@@ -323,7 +252,7 @@ function mostraMostra() {
           vencedor = "computador";
           
           n_derrotas++;
-          document.getElementById("nderrotasjogador").innerText=(n_derrotas);
+          //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
           document.getElementById("mensagemdavez").innerText=("Desististe! O computador ganhou...");
         }
         else {
@@ -336,14 +265,14 @@ function mostraMostra() {
             vencedor = "humano";
             
             n_vitorias++;
-            document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
+            //document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
             document.getElementById("mensagemdavez").innerText=("Ganhaste!");
           }
           else if((p<b && cor == "Preto") || (p>b && cor == "Branco" )) {
             vencedor = "computador";
 
             n_derrotas++;
-            document.getElementById("nderrotasjogador").innerText=(n_derrotas);
+            //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
             document.getElementById("mensagemdavez").innerText=("Ganhou o computador!");
           }
           else {
@@ -411,7 +340,7 @@ function mostraMostra() {
             }
           }
         }  
-        if(vez_computador()) {
+        if(vez_computador()) { //vez do oponente oponente(oponente==computador? computador() : timeout/update )
           setTimeout(function(){ computador(); }, 1000);
         }     
       }
