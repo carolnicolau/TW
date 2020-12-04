@@ -1,0 +1,112 @@
+ver TIMEOUT no apagar
+
+class Utilizador {
+  getInstancia()
+}
+
+class Configs {
+  getInstancia()
+  reset()
+}
+
+class Jogo {
+  getInstancia()
+  apaga_jogo()
+
+  - Configs
+  - Utilizador
+  - desistir() !
+  - passa()  !
+  - humano()  !
+}
+
+inicializações
+  Jogo
+  //Utilizador
+  ranking();
+  register();
+  join();
+  //selectDificuldade();
+  //selectOponente();
+  MudarDeVez();
+  escondeEsconde();
+  
+//funcoes
+  computador() {
+    Jogo
+    >copia_tabuleiro();
+    >minimax();
+    >play();
+    >soma_pecas();
+    MudarDeVez(); <
+  }
+
+  humano() {
+    Jogo
+    >play();
+    >soma_pecas();
+    MudarDeVez(); <
+  }
+
+  terminar() {
+    Jogo
+    //Utilizador
+    >soma_pecas();
+    //apagar();
+  }
+
+  MudarDeVez() {
+    Jogo
+    terminou();
+    terminar();
+    >calcular_legais();
+    >count_legais();
+    vez_computador();
+    computador();
+  }
+
+  vez_computador() { Jogo }
+
+  oposto_vez() { Jogo }
+
+  apagar() {
+    //Configs
+    Jogo
+    mostraMostra();
+    leave();
+  }
+
+  passa() {
+    Jogo
+    MudarDeVez(); <
+  }
+
+  desistir() {
+    Jogo
+    MudarDeVez(); <
+  }
+
+  terminou() { Jogo }
+
+
+//flip -> DEPENDENTE de jogo
+flip_celula() { Jogo }
+flip_linha() { flip_celula() }
+flip() { flip_linha() }
+
+//jogadas_legais -> INDEPENDENTE
+verifica_linha()
+is_legal() { verifica_linha() }
+calcular_legais() { is_legal() }
+count_legais()
+
+//minimax -> DEPENDENTE de JOGADAS_LEGAIS, FLIP e SOMA_PECAS(FUNÇÕES)
+soma_pecas();
+
+play() { Jogo, flip() }
+
+avalia() { Jogo, soma_pecas() }
+
+minimax() { Jogo, calcular_legais(), count_legais(), copia_tabuleiro(), play() }
+
+copia_tabuleiro(); > Podia estar em Jogo!

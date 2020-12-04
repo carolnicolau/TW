@@ -68,7 +68,7 @@ window.onload = function() {
  document.getElementById("preto").onclick = function() {
   cor=(document.getElementById("preto").value);
   document.getElementById("mensagemdavez").innerText=("Escolheste as peças pretas.");
-} 
+  } 
 
 document.getElementById("branco").onclick = function() {
   cor=(document.getElementById("branco").value);
@@ -589,27 +589,4 @@ function mostraMostra() {
     document.getElementById("n_livres").innerText=("60");
     MudarDeVez();
   }
-
-/*
-  class jogo {
-
-  constructor {
-    if (!Jogo.instancia) {
-      /*
-      var cor="Preto";
-      var oponente="";
-      var dificuldade=1;
-      
-      Jogo.instancia = this;
-    } else {
-      alert("jogo já criado");
-      return Jogo.instancia;
-    }
-  }
-
-  apaga_jogo() {
-    Jogo.instancia = null;
-  }
-
-}*/
 }

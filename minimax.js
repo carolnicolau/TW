@@ -1,16 +1,95 @@
-function avalia(copia) {
-    let somas = soma_pecas(copia);
-    let p  = somas[0];
-    let b  = somas[1];
+///////////////////////////////
+//retorna o número de peças brancas, pretas e livres
+function soma_pecas(t) {
+  console.log("Contando peças");
 
-    if(cor=="Preto") //jogador
+  let dark=0;
+  let ligth=0;
+  let empty=0;
+  
+  for(let l = 0; l<8; l++) {
+    for(let c=0; c<8; c++) {
+      if(t[l][c] == 'B')
+        ligth ++;
+      else if(t[l][c] == 'P')
+        dark ++;
+      else if(t[l][c] == ' ')
+        empty ++;
+    }
+  }
+  
+  let somas = {dark, ligth, empty}
+  return somas;
+}
+
+
+//atualiza o elem tabuleiro (se não é uma simulação - dentro do minimax)
+//flip(l,c)
+//limpa formatação das jogadas válidas
+function play(l, c,conteudo_,vez_,simulacao) {
+  var jogo = Jogo.getInstancia();
+    
+  if(vez_ =='P') {
+    if(!simulacao) {
+      let peca1 = jogo.tabuleiro[l][c].firstChild;
+      peca1.className = "peca preto";
+      console.log("Preto jogou (" + l + "," + c + ")");
+    }
+    conteudo_[l][c] = 'P';
+  } else {
+    if(!simulacao) {
+      let peca1 = jogo.tabuleiro[l][c].firstChild;
+      peca1.className = "peca branco";
+      console.log("Branco jogou (" + l + "," + c + ")");
+    }
+    conteudo_[l][c] = 'B';
+  }
+
+  flip(l,c,conteudo_,vez_,simulacao);
+
+  
+  //notificar servidor da jogada
+  if(jogo.oponente == "Outro Jogador") {
+    const user = document.getElementById("User").value;
+    const pass = document.getElementById("Pass").value;
+    var move = {"row":l, "column":c};
+    notify(user, pass, move);
+  }
+  
+  if(!simulacao) {
+    let peca2;
+    for(let l=0; l<8; l++) {
+      for(let c=0; c<8; c++) {
+        peca2 = jogo.tabuleiro[l][c].firstChild;
+
+        if(vez == 'P'){
+          peca2.classList.remove("validas_branco");
+        }
+        else if(vez == 'B') {
+          peca2.classList.remove("validas_preto");
+        }
+      }
+    }
+  }
+}
+
+function avalia(copia) {
+
+  var jogo = Jogo.getInstancia();
+
+    let somas = soma_pecas(copia);
+    let p  = somas.dark;
+    let b  = somas.ligth;
+
+    if(jogo.cor=="Preto") //jogador
       return b - p; //peças_computador - peças_jogador
     else
       return p - b; //peças_computador - peças_jogador
   }
 
   function minimax(tabuleiro_, profundidade, vez_, x, y) {
-    
+
+    var jogo = Jogo.getInstancia();
     let legais = calcular_legais(tabuleiro_, vez_);
     let res = new Array(3);
     
@@ -18,16 +97,12 @@ function avalia(copia) {
       res[0] = avalia(tabuleiro_);
       res[1] = x;
       res[2] = y;
-      console.log("profundidade "+ profundidade+": " + res[0] + " x="+x+" y="+y );
       return res;
     }
 
     let oposta_ = (vez_=='B')? 'P' : 'B';
-    console.log("vez: " + vez_);
-    console.log("cor: " + cor[0]);
-    console.log("oposta: " + oposta_);
 
-    if(vez_!=cor[0]) { //vez do computador
+    if(vez_!=jogo.cor) { //vez do computador
       maxAval = -99999;
       for(let l=0; l<8; l++) {
         for(let c=0; c<8; c++) {
@@ -46,7 +121,6 @@ function avalia(copia) {
           }
         }
       }
-      console.log("profundidade"+profundidade+": max=" +maxAval+ " x=" +x+ " y=" +y);
       res[0] = maxAval;
       res[1] = x;
       res[2] = y;
@@ -73,7 +147,6 @@ function avalia(copia) {
         }
       }
     }
-    console.log("profundidade "+profundidade+": min=" +minAval+ " x=" +x+ " y=" +y);
     res[0] = minAval;
     res[1] = x;
     res[2] = y;
@@ -82,6 +155,7 @@ function avalia(copia) {
 
 
   function copia_tabuleiro(t) {
+
     var copia_ = new Array(8);
     
     for(let l = 0; l<8; l++) {

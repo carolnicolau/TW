@@ -2,6 +2,9 @@
   registar.onclick usar requires
 */
 var server = "http://twserver.alunos.dcc.fc.up.pt:8008/";
+var group = 55;
+var game;
+var eventSource;
 
 function error(msg) {
 	document.getElementById("mensagemdavez").innerText=(msg);
@@ -13,6 +16,7 @@ function func(r) {
 }
 
 function register(nick, pass) {
+  console.log("register");
 	var object = {nick, pass};
 	var JSONData = JSON.stringify(object);
 
@@ -70,6 +74,8 @@ function atualizar_classific(ranking) {
   }
 
 function ranking() {
+    console.log("ranking");
+
 	var object = {};
 	var JSONData = JSON.stringify(object); 
 
@@ -95,8 +101,10 @@ function ranking() {
 }
 
 function join(nick, pass) {
-	var group = 55;
+      console.log("join");
+
 	var object = {group, nick, pass};
+  console.log(object);
 	var JSONData = JSON.stringify(object); 
 
 
@@ -108,13 +116,13 @@ function join(nick, pass) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				let id = data.game;
-  				let cor = data.color;
+  				Configs.getInstancia().cor = data.color;
+  				game = data.game;
+          update(nick);
   				console.log(response);
-  				console.log(id);
-  				console.log(cor);
-
-  				return id;
+  				console.log(data.game);
+          console.log(game);
+  				console.log(data.color);
 
        		} else {
        			error("Erro no emparelhamento.");
@@ -125,13 +133,16 @@ function join(nick, pass) {
     .catch(()=>error("Erro no emparelhamento."));
 }
 
-function leave(nick, pass) {
-	var group = 55;
-	var object = {group, nick, pass};
+function leave(nick, pass, id) {
+      console.log("leave");
+
+	var object = {nick, pass, game};
+        console.log(object);
+
 	var JSONData = JSON.stringify(object); 
 
 
-	fetch(server + "join" , {
+	fetch(server + "leave" , {
 	    method: 'POST',
 	    body: JSONData
     })
@@ -140,20 +151,23 @@ function leave(nick, pass) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
   				console.log(response);
-
-       		} else {
-       			error("Erro na saída.");
-       			console.log(data.error); //?
-       		}
+          eventSource.close()
+       	} else {
+       		error("Erro na saída.");
+       		console.log(data.error); //?
+       	}
   		});
     })
     .catch(()=>error("Erro na saída."));
 }
 
-function notify(nick, pass, game, move) {
-	var group = 55;
+function notify(nick, pass, move) {
+      console.log("notify");
+
+      console.log("id: " + game);
+
 	//var move = {row, column};
-	var object = {group, nick, pass, move};
+	var object = {nick, pass, game, move};
 	var JSONData = JSON.stringify(object); 
 
 
@@ -176,17 +190,47 @@ function notify(nick, pass, game, move) {
     .catch(()=>error("Erro na notificação."));
 }
 
-/*
-function status(response) {
-    if(response.ok)
-        return Promise.resolve(response);
-    else
-        return Promise.reject(new Error('Invalid status'));
-}
 
-fetch(url)
-     .then(status)
-     .then(response => response.json())
-     .then(json => document.getElementById("mensagemdavez").innerText = JSON(json.result));
-     .catch(console.log)
-     */
+function update(nick) {
+  console.log("update");
+  console.log("id: " + game);
+
+  /*
+  var object = server + "update?nick=" + nick + "&game=" + game;
+  let encoded = encodeURIComponent(object);
+  eventSource = new EventSource(encoded, { withCredentials: true }); //??? with credentials
+  */
+  eventSource = new EventSource(server + "update?nick=" + nick + "&game=" + game);
+  
+  eventSource.onmessage = function(event) {
+    
+      const data = JSON.parse(event.data);
+      console.log(data); //?
+      Jogo.getInstancia().vez = data.turn;
+
+      for(let i=0; i<8; i++) {
+        for(let j=0; j<8; j++) {
+          if(data.board[i][j] == "empty")
+            Jogo.getInstancia().conteudo[i][j] = ' ';
+          else if(data.board[i][j] == "dark")
+            Jogo.getInstancia().conteudo[i][j] = 'P';
+          else if(data.board[i][j] == "ligth")
+            Jogo.getInstancia().conteudo[i][j] = 'B';
+        }
+      }
+      Jogo.getInstancia().contagem.ligth = data.count.ligth;
+      Jogo.getInstancia().contagem.dark = data.count.dark;
+      Jogo.getInstancia().contagem.empty = data.count.empty;
+
+      Jogo.getInstancia().pode_passar = data.skip;
+
+  }
+
+  eventSource.onerror = function(event) {
+    error("Erro no update.");
+    const data = JSON.parse(event);
+    console.log(data.error); //?
+
+   // console.log(data.error); //?
+  }
+}
