@@ -1,6 +1,12 @@
 //calcula jogada com minimax e joga ou passa (soma_peças no fim) 
 //muda de vez 
 //fazia mais sentido usar minimax só no else?
+function mensagem(msg) {
+  document.getElementById("mensagemdavez").innerText=(msg);
+  console.log(msg);
+}
+
+
 function computador() {
   var jogo = Jogo.getInstancia();
   console.log("computador");
@@ -71,7 +77,8 @@ function terminar() {
             
       jogo.user.n_derrotas++;
       //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
-      document.getElementById("mensagemdavez").innerText=("Desististe! O computador ganhou...");
+      mensagem("Desististe! O computador ganhou...");
+      alert("Desististe! O computador ganhou...");      
     }
     else {
       let somas = jogo.contagem;
@@ -84,28 +91,39 @@ function terminar() {
               
         jogo.user.n_vitorias++;
         //document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
-        document.getElementById("mensagemdavez").innerText=("Ganhaste!");
+        mensagem("Ganhaste!");
+        alert("Ganhaste!");
       }
       else if((p<b && jogo.cor == "Preto") || (p>b && jogo.cor == "Branco" )) {
         jogo.vencedor = "computador";
 
         jogo.user.n_derrotas++;
         //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
-        document.getElementById("mensagemdavez").innerText=("Ganhou o computador ...");
+        mensagem("Ganhou o computador ...");
+        alert("Ganhou o computador ...");
       }
       else {
         jogo.vencedor = "empate";
         console.log("pretas: " + p);
         console.log("brancas: " + b);
         console.log("livres: " + li);
-        document.getElementById("mensagemdavez").innerText=("Foi um empate!");
+        mensagem("Foi um empate!");
+        alert("Foi um empate!");
       }
     }
+  } else {
+    if(jogo.vencedor == null) {
+      mensagem("Foi empate.");
+      alert("Foi empate.");
+    } else {
+      mensagem( jogo.vencedor + " ganhou o jogo!");
+      alert( jogo.vencedor + " ganhou o jogo!");
+    }
   }
-  console.log("vencedor: "+ jogo.vencedor);
-
+  
   //GUARDAR VENCEDOR!!!!!!!
-  let x = setTimeout(apagar, 2500);
+  //let x = setTimeout(apagar, 2500);
+  apagar();
 }
 
 function atualiza_contagem() {
@@ -179,6 +197,7 @@ function MudarDeVez(){
     setTimeout(function(){ computador(); }, 1000);
   }     
 }
+
 function vez_humano() {
   var jogo = Jogo.getInstancia();
 
@@ -257,6 +276,8 @@ function passa() {
     console.log("jogador passou!");
     jogo.pode_passar = false;
     MudarDeVez();
+  } else {
+    mensagem("Ainda tens jogadas possíveis! Não podes passar a vez.");
   }
 }
 

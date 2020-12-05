@@ -1,6 +1,6 @@
 window.onload = function() {
   var configs = new Configs();
-  var user = null;
+  var user = new Utilizador("","");;
 
   //NAVBAR
   var janela = document.getElementsByClassName('janela');
@@ -88,22 +88,26 @@ window.onload = function() {
     selectDificuldade();
     selectOponente();
     
-    if(configs.oponente == "Outro Jogador" && user == null) {
+    if(configs.oponente == "Outro Jogador" && user.nick == "" ) {
       alert("User=null");
       document.getElementById("mensagemdavez").innerText=("Para jogar com outros jogadores online, por favor registe-se.");
       return;
 
     } else {
-      if(configs.oponente == "Outro Jogador" && user != null) {
+      if(configs.oponente == "Outro Jogador" && user.nick != "") {
 
         document.getElementById("mensagemdavez").innerText=("À espera de um jogador.");
-        join(user);
+
+        const nick = user.nick;
+        const pass = user.pass;
+
+        join(nick, pass);
+        new Jogo(user);  
         escondeEsconde(); 
 
-      } else if (configs.oponente == "Computador" && user == null) {
+      } else if (configs.oponente == "Computador") {
         
-        user = new Utilizador("","");
-        let jogo = new Jogo(configs, user);  
+        new Jogo(user);  
         comecar();
         escondeEsconde(); 
  

@@ -6,16 +6,6 @@ var group = 55;
 var game;
 var eventSource;
 
-function mensagem(msg) {
-	document.getElementById("mensagemdavez").innerText=(msg);
-  console.log(msg);
-}
-
-
-function func(r) {
-	console.log(r.error);
-}
-
 function register(nick, pass) {
   console.log("register");
 	var object = {nick, pass};
@@ -99,10 +89,8 @@ function ranking() {
     .catch(()=>error("Erro na classificação."));
 }
 
-function join(user) {
+function join(nick, pass) {
   console.log("join");
-  const nick = user.nick;
-  const pass = user.pass;
 
 	var object = {group, nick, pass};
   console.log(object);
@@ -130,7 +118,6 @@ function join(user) {
   				console.log(data);
           console.log("cor = " + Configs.getInstancia().cor);
           
-          new Jogo(user);
           update(nick, data.color);
 
        		} else {
@@ -159,9 +146,9 @@ function leave(nick, pass, id) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
   				console.log(data);
-          eventSource.close()
+          eventSource.close();
        	} else {
-       		mensagem(data.error); //?
+       		mensagem(data.error); 
        	}
   		});
     })
