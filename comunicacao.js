@@ -240,7 +240,7 @@ function update(nick, cor) {
         Jogo.getInstancia().pode_passar = data.skip;
       }
       else {
-        Jogo.vencedor = data.winner;
+        Jogo.getInstancia().vencedor = data.winner;
         terminar();
       }
 
