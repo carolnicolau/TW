@@ -230,9 +230,12 @@ function update(nick, cor) {
         atualizar_tabuleiro();
 
         Jogo.getInstancia().vez = data.turn; 
+        document.getElementById("mensagemdavez").innerText=("É a vez de " + data.turn);
+
         Jogo.getInstancia().contagem.light = data.count.light;
         Jogo.getInstancia().contagem.dark = data.count.dark;
         Jogo.getInstancia().contagem.empty = data.count.empty;
+        atualiza_contagem();
 
         Jogo.getInstancia().pode_passar = data.skip;
       }
