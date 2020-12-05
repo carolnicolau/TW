@@ -1,11 +1,15 @@
 class Jogo {
 
-  constructor(configs, user) {
+  constructor(user) {
     if (!Jogo.instancia) {  
       Jogo.instancia = this;
+      var configs = Configs.getInstancia();
 
       //configs
       this.cor = configs.cor;
+      console.log("this.cor = " + this.cor);
+      console.log("configs.cor = " + configs.cor);
+
       this.oponente = configs.oponente;
       this.dificuldade = configs.dificuldade;
       this.game = configs.game;
@@ -19,7 +23,7 @@ class Jogo {
       this.desistiu = false;
       this.pode_passar = false;
       this.vencedor = '';
-      this.contagem = {dark:"2", ligth:"2", empty:"60"};
+      this.contagem = {dark:"2", light:"2", empty:"60"};
 
       const base = document.getElementById("base");
       const tabul = document.createElement("div");
@@ -64,13 +68,13 @@ class Jogo {
           const peca =document.createElement("div");
 
           if((l==3 & c==3) || (l==4 & c==4)) {
-            peca.className="peca preto";            
-            this.conteudo[l][c] = 'P'; 
+            peca.className="peca branco";            
+            this.conteudo[l][c] = 'B'; 
 
           }
           else if((l==3 & c==4) || (l==4 & c==3)) {
-            peca.className="peca branco";
-            this.conteudo[l][c] = 'B'; 
+            peca.className="peca preto";
+            this.conteudo[l][c] = 'P'; 
 
           }
           else {

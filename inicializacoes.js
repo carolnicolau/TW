@@ -96,20 +96,18 @@ window.onload = function() {
     } else {
       if(configs.oponente == "Outro Jogador" && user != null) {
 
-        const nick = user.nick;
-        const pass = user.pass;
-
-        join(nick, pass);
+        document.getElementById("mensagemdavez").innerText=("À espera de um jogador.");
+        join(user);
+        escondeEsconde(); 
 
       } else if (configs.oponente == "Computador" && user == null) {
         
         user = new Utilizador("","");
-      }
-
-      //não deixar criar se der erros no join p.ex.!!
-      let jogo = new Jogo(configs, user);  
-      comecar();
-      escondeEsconde(); 
+        let jogo = new Jogo(configs, user);  
+        comecar();
+        escondeEsconde(); 
+ 
+      }      
     }
   }
 }

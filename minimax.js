@@ -3,13 +3,13 @@
 function soma_pecas(t) {
 
   let dark=0;
-  let ligth=0;
+  let light=0;
   let empty=0;
   
   for(let l = 0; l<8; l++) {
     for(let c=0; c<8; c++) {
       if(t[l][c] == 'B')
-        ligth ++;
+        light ++;
       else if(t[l][c] == 'P')
         dark ++;
       else if(t[l][c] == ' ')
@@ -17,8 +17,26 @@ function soma_pecas(t) {
     }
   }
   
-  let somas = {dark, ligth, empty};
+  let somas = {dark, light, empty};
   return somas;
+}
+
+
+function atualizar_tabuleiro() {
+  var jogo = Jogo.getInstancia();
+  var peca;
+
+  for(let l = 0; l<8; l++) {
+    for(let c=0; c<8; c++) {
+      peca = jogo.tabuleiro[l][c].firstChild;
+      if(jogo.conteudo[l][c] == 'P')
+        peca.className = "peca preto";
+      else if(jogo.conteudo[l][c] == 'B')
+        peca.className = "peca branco";
+      else
+        peca.className = "peca";
+    }
+  }
 }
 
 
@@ -46,16 +64,9 @@ function play(l, c,conteudo_,vez_,simulacao) {
 
   flip(l,c,conteudo_,vez_,simulacao);
 
-  
-  //notificar servidor da jogada
-  if(jogo.oponente == "Outro Jogador") {
-    const nick = jogo.user.nick;
-    const pass = jogo.user.pass;
-    var move = {row:l, column:c};
-    notify(nick, pass, move);
-  }
-  
-  if(!simulacao) {
+
+  /*
+  if(!simulacao) { //??????????????????????????????????????????????????
     let peca2;
     for(let l=0; l<8; l++) {
       for(let c=0; c<8; c++) {
@@ -69,7 +80,7 @@ function play(l, c,conteudo_,vez_,simulacao) {
         }
       }
     }
-  }
+  }*/
 }
 
 function avalia(copia) {
@@ -78,7 +89,7 @@ function avalia(copia) {
 
     let somas = soma_pecas(copia);
     let p  = somas.dark;
-    let b  = somas.ligth;
+    let b  = somas.light;
 
     if(jogo.cor=="Preto") //jogador
       return b - p; //peças_computador - peças_jogador
@@ -154,7 +165,6 @@ function avalia(copia) {
 
 
   function copia_tabuleiro(t) {
-
     var copia_ = new Array(8);
     
     for(let l = 0; l<8; l++) {
@@ -166,3 +176,4 @@ function avalia(copia) {
     }
     return copia_;
   }
+

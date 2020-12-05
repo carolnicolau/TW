@@ -20,21 +20,41 @@ function computador() {
   MudarDeVez();
 }
 
+function humano_offline(l, c) {
+  var jogo = Jogo.getInstancia();
+
+  if(vez_humano()) {
+      console.log("jogadas legais: " + jogo.jogadas_legais[l][c]);
+      
+      if(jogo.jogadas_legais[l][c] == jogo.vez){ 
+        play(l, c,jogo.conteudo,jogo.vez,false);
+        atualiza_contagem();
+        MudarDeVez();
+      }
+  } else {
+      document.getElementById("mensagemdavez").innerText=("Não é a tua vez!");
+  }
+}
+
+function humano_online(l, c) {
+  var jogo = Jogo.getInstancia();
+  let nick = jogo.user.nick;
+  let pass = jogo.user.pass;
+
+  var move = {row:l, column:c};
+  notify(nick, pass , move);
+}
+
 //se não é a vez do computador e utilizador escolhe uma jogada válida
 //joga essa jogada, soma_pecas e muda de vez
 function humano(l, c) {
   var jogo = Jogo.getInstancia();
   console.log("humano");
 
-  if(vez_humano()) {
-
-    if(jogo.jogadas_legais[l][c] == jogo.vez){ 
-      play(l, c,jogo.conteudo,jogo.vez,false);
-        atualiza_contagem();
-        MudarDeVez();
-    }
+  if(jogo.oponente == "Computador") {
+    humano_offline(l,c);
   } else {
-    document.getElementById("mensagemdavez").innerText=("Não é a tua vez!");
+    humano_online(l,c);
   }
 }
 
@@ -44,40 +64,42 @@ function terminar() {
   var jogo = Jogo.getInstancia();
   console.log("terminando....");
 
-        
-  if(jogo.desistiu) {
-    jogo.vencedor = "computador";
-          
-    jogo.user.n_derrotas++;
-    //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
-    document.getElementById("mensagemdavez").innerText=("Desististe! O computador ganhou...");
-  }
-  else {
-    let somas = jogo.contagem;
-    let p  = somas.dark;
-    let b  = somas.ligth;
-    let li = somas.empty;
-
-    if((p>b && jogo.cor == "Preto") || (p<b && jogo.cor == "Branco" )) {
-      jogo.vencedor = "humano";
-            
-      jogo.user.n_vitorias++;
-      //document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
-      document.getElementById("mensagemdavez").innerText=("Ganhaste!");
-    }
-    else if((p<b && jogo.cor == "Preto") || (p>b && jogo.cor == "Branco" )) {
+  if(jogo.oponente == "Computador") {    
+    
+    if(jogo.desistiu) {
       jogo.vencedor = "computador";
-
+            
       jogo.user.n_derrotas++;
       //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
-      document.getElementById("mensagemdavez").innerText=("Ganhou o computador ...");
+      document.getElementById("mensagemdavez").innerText=("Desististe! O computador ganhou...");
     }
     else {
-      jogo.vencedor = "empate";
-      console.log("pretas: " + p);
-      console.log("brancas: " + b);
-      console.log("livres: " + li);
-      document.getElementById("mensagemdavez").innerText=("Foi um empate!");
+      let somas = jogo.contagem;
+      let p  = somas.dark;
+      let b  = somas.light;
+      let li = somas.empty;
+
+      if((p>b && jogo.cor == "Preto") || (p<b && jogo.cor == "Branco" )) {
+        jogo.vencedor = "humano";
+              
+        jogo.user.n_vitorias++;
+        //document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
+        document.getElementById("mensagemdavez").innerText=("Ganhaste!");
+      }
+      else if((p<b && jogo.cor == "Preto") || (p>b && jogo.cor == "Branco" )) {
+        jogo.vencedor = "computador";
+
+        jogo.user.n_derrotas++;
+        //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
+        document.getElementById("mensagemdavez").innerText=("Ganhou o computador ...");
+      }
+      else {
+        jogo.vencedor = "empate";
+        console.log("pretas: " + p);
+        console.log("brancas: " + b);
+        console.log("livres: " + li);
+        document.getElementById("mensagemdavez").innerText=("Foi um empate!");
+      }
     }
   }
   console.log("vencedor: "+ jogo.vencedor);
@@ -92,7 +114,7 @@ function atualiza_contagem() {
   if(jogo.oponente == "Computador") {
     jogo.contagem = soma_pecas(jogo.conteudo);
   }
-  document.getElementById("n_brancas").innerText = jogo.contagem.ligth;
+  document.getElementById("n_brancas").innerText = jogo.contagem.light;
   document.getElementById("n_pretas").innerText = jogo.contagem.dark;
   document.getElementById("n_livres").innerText = jogo.contagem.empty;
 }
@@ -111,6 +133,12 @@ function formata_validas() {
       else if (jogo.vez=='P') {
         peca1.classList.remove("validas_branco");
       }
+    }
+  }  
+
+  for(let l=0; l<8; l++) {
+    for(let c=0; c<8; c++) {
+      peca1 = jogo.tabuleiro[l][c].firstChild;
 
       if(jogo.jogadas_legais[l][c] == jogo.vez) { //se (l,c) é uma jogada legal de vez
         if(jogo.vez=='B') {
@@ -132,7 +160,7 @@ function comecar() {
 function MudarDeVez(){
   var jogo = Jogo.getInstancia();
 
-  if(terminou() || jogo.desistiu) {
+  if(terminou() || jogo.desistiu == true) {
     terminar();
     return;
   }
@@ -203,36 +231,18 @@ function apagar() {
   var jogo = Jogo.getInstancia();
   console.log("apagando");
 
-  ////////
-  /*
-  jogo.cor="Preto";
-  jogo.dificuldade=1;
-  jogo.oponente="";
-  */
   Configs.reset();
   mostraMostra();
+
   let base = document.getElementById("base");
   base.innerHTML = "";
-  
-  if(jogo.oponente == "Outro Jogador") {
-    const nick = jogo.user.nick;
-    const pass = jogo.user.pass;
-    const game = jogo.game;
-    leave(nick, pass, game);
-  }
-  Jogo.elimina();
-
 
   document.getElementById("mensagemdavez").innerText=("Inicia outro jogo!");
   document.getElementById("n_pretas").innerText=("");
   document.getElementById("n_brancas").innerText=("");
   document.getElementById("n_livres").innerText=("");
-  /*
-  base.removeChild(base.childNodes[0]);
-  base.removeChild(base.childNodes[0]);
-  base.removeChild(base.childNodes[0]);
-  */
-  //location.reload();
+  
+  Jogo.elimina();
 }
 
 
@@ -250,11 +260,21 @@ function passa() {
 //se utilizador clica desistiu esta função é chamada
 //e desistiu passa a ter valor true
 function desistir() {
-  var jogo = Jogo.getInstancia();
-
-  jogo.desistiu = true;
   console.log("jogador desistiu!");
-  MudarDeVez();
+
+  var jogo = Jogo.getInstancia();
+  jogo.desistiu = true;
+
+  if(jogo.oponente == "Outro Jogador") {
+    const nick = jogo.user.nick;
+    const pass = jogo.user.pass;
+    const game = jogo.game;
+    
+    leave(nick, pass, game);
+
+  } else {
+    MudarDeVez();
+  }
 }
 
 //retorna true se o jogo terminoou porque não há mais jogadas possíveis para nenhum dos jogadores
@@ -265,6 +285,11 @@ function terminou() {
   let nB               = count_legais(jogadas_legaisB);
   let jogadas_legaisP  = calcular_legais(jogo.conteudo, 'P');
   let nP               = count_legais(jogadas_legaisP);
+
+  console.log("Jogadas legais de preto:");
+  console.log(jogadas_legaisP);
+  console.log("Jogadas legais de branco:");
+  console.log(jogadas_legaisB);
 
   if(nB == 0 && nP == 0) {
     console.log("jogo terminou");

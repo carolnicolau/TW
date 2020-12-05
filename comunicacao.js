@@ -100,8 +100,10 @@ function ranking() {
     .catch(()=>error("Erro na classificação."));
 }
 
-function join(nick, pass) {
-      console.log("join");
+function join(user) {
+  console.log("join");
+  const nick = user.nick;
+  const pass = user.pass;
 
 	var object = {group, nick, pass};
   console.log(object);
@@ -116,13 +118,20 @@ function join(nick, pass) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				Configs.getInstancia().cor = data.color;
-  				game = data.game;
-  				console.log(response);
-  				console.log(data.game);
-          console.log(game);
-  				console.log(data.color);
 
+          if(data.color == 'light') {
+            Configs.getInstancia().cor = "Branco";
+            document.getElementById("mensagemdavez").innerText=("Ficaste com as peças brancas.");
+          } else {
+            Configs.getInstancia().cor = "Preto";
+            document.getElementById("mensagemdavez").innerText=("Ficaste com as peças pretas.");
+          }
+  				game = data.game;
+
+  				console.log(data);
+          console.log("cor = " + Configs.getInstancia().cor);
+          
+          new Jogo(user);
           update(nick, data.color);
 
        		} else {
@@ -151,7 +160,7 @@ function leave(nick, pass, id) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				console.log(response);
+  				console.log(data);
           eventSource.close()
        	} else {
        		error("Erro na saída.");
@@ -163,16 +172,12 @@ function leave(nick, pass, id) {
 }
 
 function notify(nick, pass, move) {
-      console.log("notify");
+  console.log("notify");
 
-      console.log("id: " + game);
-
-	//var move = {row, column};
 	var object = {nick, pass, game, move};
-
 	var JSONData = JSON.stringify(object); 
 
-        console.log(JSONData);
+  console.log(JSONData);
 
 	fetch(server + "notify" , {
 	    method: 'POST',
@@ -182,7 +187,7 @@ function notify(nick, pass, move) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				console.log(response);
+  				console.log(data); 
 
        		} else {
        			error("Erro na notificação.");
@@ -210,37 +215,36 @@ function update(nick, cor) {
       const data = JSON.parse(event.data);
       console.log(data); //?
 
-      for(let i=0; i<8; i++) {
-        for(let j=0; j<8; j++) {
-          if(data.board[i][j] == "empty")
-            Jogo.getInstancia().conteudo[i][j] = ' ';
-          else if(data.board[i][j] == "dark")
-            Jogo.getInstancia().conteudo[i][j] = 'P';
-          else if(data.board[i][j] == "ligth")
-            Jogo.getInstancia().conteudo[i][j] = 'B';
+      if(!data.winner) {
+
+        for(let i=0; i<8; i++) {
+          for(let j=0; j<8; j++) {
+            if(data.board[i][j] == "empty")
+              Jogo.getInstancia().conteudo[i][j] = ' ';
+            else if(data.board[i][j] == "dark")
+              Jogo.getInstancia().conteudo[i][j] = 'P';
+            else if(data.board[i][j] == "light")
+              Jogo.getInstancia().conteudo[i][j] = 'B';
+          }
         }
+        atualizar_tabuleiro();
+
+        Jogo.getInstancia().vez = data.turn; 
+        Jogo.getInstancia().contagem.light = data.count.light;
+        Jogo.getInstancia().contagem.dark = data.count.dark;
+        Jogo.getInstancia().contagem.empty = data.count.empty;
+
+        Jogo.getInstancia().pode_passar = data.skip;
       }
-
-      if(data.turn == nick) {
-        Jogo.getInstancia().vez = (cor == 'ligth')? 'B' : 'P';
-      } else {
-        Jogo.getInstancia().vez = (cor == 'ligth')? 'P' : 'B';
+      else {
+        Jogo.vencedor = data.winner;
+        terminar();
       }
-
-
-      Jogo.getInstancia().contagem.ligth = data.count.ligth;
-      Jogo.getInstancia().contagem.dark = data.count.dark;
-      Jogo.getInstancia().contagem.empty = data.count.empty;
-
-      Jogo.getInstancia().pode_passar = data.skip;
 
   }
 
   eventSource.onerror = function(event) {
     error("Erro no update.");
-    const data = JSON.parse(event);
-    console.log(data.error); //?
-
-   // console.log(data.error); //?
+    console.log(event.error); 
   }
 }
