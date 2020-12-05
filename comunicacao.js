@@ -6,8 +6,9 @@ var group = 55;
 var game;
 var eventSource;
 
-function error(msg) {
+function mensagem(msg) {
 	document.getElementById("mensagemdavez").innerText=(msg);
+  console.log(msg);
 }
 
 
@@ -28,11 +29,10 @@ function register(nick, pass) {
        if(response.ok) { //200
           response.text().then(console.log);
        } else {
-          response.json().then((response) => func(response));
-          error("Erro na autenticação.");
+          response.json().then((response) => mensagem(response.error));
        }
     })
-	.catch(()=>error("Erro na autenticação.")); 
+	.catch(()=>mensagem("Erro na autenticação.")); 
 }
 
 function atualizar_classific(ranking) {
@@ -92,8 +92,7 @@ function ranking() {
   				console.log(rank);
   				atualizar_classific(rank);
        		} else {
-       			error("Erro na classificação.");
-       			console.log(data.error); //?
+            mensagem(data.error);
        		}
   		});
     })
@@ -121,10 +120,10 @@ function join(user) {
 
           if(data.color == 'light') {
             Configs.getInstancia().cor = "Branco";
-            document.getElementById("mensagemdavez").innerText=("Ficaste com as peças brancas.");
+            mensagem("Ficaste com as peças brancas.");
           } else {
             Configs.getInstancia().cor = "Preto";
-            document.getElementById("mensagemdavez").innerText=("Ficaste com as peças pretas.");
+            mensagem("Ficaste com as peças pretas.");
           }
   				game = data.game;
 
@@ -135,12 +134,11 @@ function join(user) {
           update(nick, data.color);
 
        		} else {
-       			error("Erro no emparelhamento.");
-       			console.log(data.error); //?
+       			mensagem(data.error);
        		}
   		});
     })
-    .catch(()=>error("Erro no emparelhamento."));
+    .catch(()=>mensagem("Erro no emparelhamento."));
 }
 
 function leave(nick, pass, id) {
@@ -163,12 +161,11 @@ function leave(nick, pass, id) {
   				console.log(data);
           eventSource.close()
        	} else {
-       		error("Erro na saída.");
-       		console.log(data.error); //?
+       		mensagem(data.error); //?
        	}
   		});
     })
-    .catch(()=>error("Erro na saída."));
+    .catch(()=>mensagem("Erro na saída."));
 }
 
 function notify(nick, pass, move) {
@@ -190,12 +187,11 @@ function notify(nick, pass, move) {
   				console.log(data); 
 
        		} else {
-       			error("Erro na notificação.");
-       			console.log(data.error); //?
+       			mensagem(data.error); //?
        		}
   		});
     })
-    .catch(()=>error("Erro na notificação."));
+    .catch(()=>mensagem("Erro na notificação."));
 }
 
 
@@ -230,7 +226,7 @@ function update(nick, cor) {
         atualizar_tabuleiro();
 
         Jogo.getInstancia().vez = data.turn; 
-        document.getElementById("mensagemdavez").innerText=("É a vez de " + data.turn);
+        mensagem("É a vez de " + data.turn);
 
         Jogo.getInstancia().contagem.light = data.count.light;
         Jogo.getInstancia().contagem.dark = data.count.dark;
@@ -247,7 +243,7 @@ function update(nick, cor) {
   }
 
   eventSource.onerror = function(event) {
-    error("Erro no update.");
-    console.log(event.error); 
+    //error("Erro no update.");
+    mensagem(event.error); 
   }
 }

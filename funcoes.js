@@ -185,6 +185,9 @@ function vez_humano() {
   if((jogo.cor=="Branco" && jogo.vez=='B') || (jogo.cor=="Preto" && jogo.vez=='P')) {
     return true;
   }
+  if(jogo.user.nick == jogo.vez) {
+    return true;
+  }
   return false;
 }
 
@@ -250,7 +253,7 @@ function apagar() {
 function passa() {
   var jogo = Jogo.getInstancia();
 
-  if(jogo.pode_passar && !vez_computador()) {
+  if(jogo.pode_passar && vez_humano()) {
     console.log("jogador passou!");
     jogo.pode_passar = false;
     MudarDeVez();
