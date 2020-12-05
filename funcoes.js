@@ -1,3 +1,5 @@
+
+
 //calcula jogada com minimax e joga ou passa (soma_peças no fim) 
 //muda de vez 
 //fazia mais sentido usar minimax só no else?
@@ -64,19 +66,65 @@ function humano(l, c) {
   }
 }
 
-//calcula o vencedor e chama apagar
-//acrescentar timeout antes de apagar para dar tempo de ler as msgs???
-function terminar() {
-  var jogo = Jogo.getInstancia();
-  console.log("terminando....");
+function classificacoes() {
+  if (typeof(Storage) !== 'undefined') {
+    let keys = Object.keys(localStorage);
+    let n = keys.length;
+    let rank = new Array(n);
 
-  if(jogo.oponente == "Computador") {    
-    
+    for(let i=0; i<n; i++) {
+      let data = localStorage.getItem(keys[i]);
+      rank[i] = JSON.parse(data);
+    }
+    atualizar_classific(rank);
+  }
+}
+
+
+function store(n_vitorias) {
+  var jogo = Jogo.getInstancia();
+
+  if (typeof(Storage) !== 'undefined') {
+      let nick = jogo.user.nick;
+      
+      if( nick == "")
+        nick = "não autenticado";
+
+      //localStorage.clear();
+      let data  = localStorage.getItem(nick);
+      let parsed;
+  
+      if(!data) {
+        parsed = { nick, victories : 0, games : 0 } ;
+      } else {
+        parsed = JSON.parse(data);
+      }
+      
+      parsed.victories = parsed.victories + n_vitorias;
+      parsed.games = parsed.games + 1;
+
+      let string = JSON.stringify(parsed);
+      localStorage.setItem(nick, string);
+    }
+}
+
+function terminar_online() {
+  if(jogo.vencedor == null) {
+      mensagem("Foi empate.");
+      alert("Foi empate.");
+    } else {
+      mensagem( jogo.vencedor + " ganhou o jogo!");
+      alert( jogo.vencedor + " ganhou o jogo!");
+    }
+}
+
+function terminar_offline() {
+  var jogo = Jogo.getInstancia();
+  let n_vitorias = 0;
+
     if(jogo.desistiu) {
       jogo.vencedor = "computador";
             
-      jogo.user.n_derrotas++;
-      //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
       mensagem("Desististe! O computador ganhou...");
       alert("Desististe! O computador ganhou...");      
     }
@@ -89,16 +137,13 @@ function terminar() {
       if((p>b && jogo.cor == "Preto") || (p<b && jogo.cor == "Branco" )) {
         jogo.vencedor = "humano";
               
-        jogo.user.n_vitorias++;
-        //document.getElementById("nvitoriasjogador").innerText=(n_vitorias);
+        n_vitorias++;
         mensagem("Ganhaste!");
         alert("Ganhaste!");
       }
       else if((p<b && jogo.cor == "Preto") || (p>b && jogo.cor == "Branco" )) {
         jogo.vencedor = "computador";
 
-        jogo.user.n_derrotas++;
-        //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
         mensagem("Ganhou o computador ...");
         alert("Ganhou o computador ...");
       }
@@ -111,20 +156,29 @@ function terminar() {
         alert("Foi um empate!");
       }
     }
+
+    store(n_vitorias);
+}
+
+
+//calcula o vencedor e chama apagar
+//acrescentar timeout antes de apagar para dar tempo de ler as msgs???
+function terminar() {
+  var jogo = Jogo.getInstancia();
+  console.log("terminando....");
+
+  if(jogo.oponente == "Computador") {    
+    terminar_offline();
   } else {
-    if(jogo.vencedor == null) {
-      mensagem("Foi empate.");
-      alert("Foi empate.");
-    } else {
-      mensagem( jogo.vencedor + " ganhou o jogo!");
-      alert( jogo.vencedor + " ganhou o jogo!");
-    }
+    terminar_online();
   }
   
   //GUARDAR VENCEDOR!!!!!!!
   //let x = setTimeout(apagar, 2500);
   apagar();
 }
+
+
 
 function atualiza_contagem() {
   var jogo = Jogo.getInstancia();

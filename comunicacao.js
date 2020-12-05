@@ -26,9 +26,9 @@ function register(nick, pass) {
 }
 
 function atualizar_classific(ranking) {
-    const tabela = document.getElementById("classifacoes");
+  const tabela = document.getElementById("classifacoes");
     
-    const h_linha = document.createElement("tr");
+  const h_linha = document.createElement("tr");
 	const h_jogador = document.createElement("th");
 	const h_vitorias = document.createElement("th");
 	const h_jogos = document.createElement("th");
@@ -36,32 +36,32 @@ function atualizar_classific(ranking) {
 	const h_vit = document.createTextNode("Vitórias");
 	const h_jogo = document.createTextNode("Jogos");
     
-    tabela.appendChild(h_linha);
-    h_linha.appendChild(h_jogador);
-    h_linha.appendChild(h_vitorias);
-    h_linha.appendChild(h_jogos);
-    h_jogador.appendChild(h_jog);
-    h_vitorias.appendChild(h_vit);
-    h_jogos.appendChild(h_jogo);
+  tabela.appendChild(h_linha);
+  h_linha.appendChild(h_jogador);
+  h_linha.appendChild(h_vitorias);
+  h_linha.appendChild(h_jogos);
+  h_jogador.appendChild(h_jog);
+  h_vitorias.appendChild(h_vit);
+  h_jogos.appendChild(h_jogo);
 	
-    for(let i=0; i<ranking.length; i++) {
-	    const linha = document.createElement("tr");
-	    const jogador = document.createElement("td");
-	    const vitorias = document.createElement("td");
-	    const jogos = document.createElement("td");
-	    const jog = document.createTextNode(ranking[i].nick);
-	    const vit = document.createTextNode(ranking[i].victories);
-	    const jogo = document.createTextNode(ranking[i].games);
+  for(let i=0; i<ranking.length; i++) {
+    const linha = document.createElement("tr");
+    const jogador = document.createElement("td");
+    const vitorias = document.createElement("td");
+    const jogos = document.createElement("td");
+    const jog = document.createTextNode(ranking[i].nick);
+    const vit = document.createTextNode(ranking[i].victories);
+    const jogo = document.createTextNode(ranking[i].games);
 
-	    tabela.appendChild(linha);
-	    linha.appendChild(jogador);
-	    linha.appendChild(vitorias);
-	    linha.appendChild(jogos);
-	    jogador.appendChild(jog);
-	    vitorias.appendChild(vit);
-	    jogos.appendChild(jogo);
+    tabela.appendChild(linha);
+    linha.appendChild(jogador);
+    linha.appendChild(vitorias);
+    linha.appendChild(jogos);
+    jogador.appendChild(jog);
+    vitorias.appendChild(vit);
+    jogos.appendChild(jogo);
 	}
-  }
+}
 
 function ranking() {
     console.log("ranking");
@@ -186,20 +186,23 @@ function update(nick, cor) {
   console.log("update");
   console.log("id: " + game);
 
-  /*
-  var object = server + "update?nick=" + nick + "&game=" + game;
-  let encoded = encodeURIComponent(object);
-  eventSource = new EventSource(encoded, { withCredentials: true }); //??? with credentials
-  */
-  eventSource = new EventSource(server + "update?nick=" + nick + "&game=" + game);
+  
+  var object = "update?nick=" + nick + "&game=" + game;
+  let encoded = encodeURI(object);
+  eventSource = new EventSource(server + encoded); //??? with credentials
+  
+  //eventSource = new EventSource(server + "update?nick=" + nick + "&game=" + game);
   
   eventSource.onmessage = function(event) {
     
       const data = JSON.parse(event.data);
       console.log(data); //?
 
-      if(!data.winner) {
-
+      if(!data.board) {
+        Jogo.getInstancia().vencedor = data.winner;
+        terminar();
+      }
+      else {
         for(let i=0; i<8; i++) {
           for(let j=0; j<8; j++) {
             if(data.board[i][j] == "empty")
@@ -221,10 +224,6 @@ function update(nick, cor) {
         atualiza_contagem();
 
         Jogo.getInstancia().pode_passar = data.skip;
-      }
-      else {
-        Jogo.getInstancia().vencedor = data.winner;
-        terminar();
       }
 
   }

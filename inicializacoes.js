@@ -26,7 +26,12 @@ window.onload = function() {
   }
   botao[1].onclick = function() { //classificação
     janela[1].style.display = "block";
-    ranking();
+    selectOponente();
+    if(configs.oponente == "Computador") {
+      classificacoes();
+    } else {
+      ranking();
+    }
   } 
   span[0].onclick = function() { //regras
     janela[0].style.display = "none";
