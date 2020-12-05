@@ -108,7 +108,7 @@ window.onload = function() {
 
       //não deixar criar se der erros no join p.ex.!!
       let jogo = new Jogo(configs, user);  
-      MudarDeVez();
+      comecar();
       escondeEsconde(); 
     }
   }

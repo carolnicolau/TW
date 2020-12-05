@@ -118,11 +118,12 @@ function join(nick, pass) {
   			if(response.ok) { //200
   				Configs.getInstancia().cor = data.color;
   				game = data.game;
-          update(nick);
   				console.log(response);
   				console.log(data.game);
           console.log(game);
   				console.log(data.color);
+
+          update(nick, data.color);
 
        		} else {
        			error("Erro no emparelhamento.");
@@ -168,8 +169,10 @@ function notify(nick, pass, move) {
 
 	//var move = {row, column};
 	var object = {nick, pass, game, move};
+
 	var JSONData = JSON.stringify(object); 
 
+        console.log(JSONData);
 
 	fetch(server + "notify" , {
 	    method: 'POST',
@@ -191,7 +194,7 @@ function notify(nick, pass, move) {
 }
 
 
-function update(nick) {
+function update(nick, cor) {
   console.log("update");
   console.log("id: " + game);
 
@@ -206,7 +209,6 @@ function update(nick) {
     
       const data = JSON.parse(event.data);
       console.log(data); //?
-      Jogo.getInstancia().vez = data.turn;
 
       for(let i=0; i<8; i++) {
         for(let j=0; j<8; j++) {
@@ -218,6 +220,14 @@ function update(nick) {
             Jogo.getInstancia().conteudo[i][j] = 'B';
         }
       }
+
+      if(data.turn == nick) {
+        Jogo.getInstancia().vez = (cor == 'ligth')? 'B' : 'P';
+      } else {
+        Jogo.getInstancia().vez = (cor == 'ligth')? 'P' : 'B';
+      }
+
+
       Jogo.getInstancia().contagem.ligth = data.count.ligth;
       Jogo.getInstancia().contagem.dark = data.count.dark;
       Jogo.getInstancia().contagem.empty = data.count.empty;

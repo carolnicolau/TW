@@ -5,19 +5,18 @@ function computador() {
   var jogo = Jogo.getInstancia();
   console.log("computador");
 
-  let cop = copia_tabuleiro(jogo.conteudo);
-
-  let jogada = minimax(cop, jogo.dificuldade, jogo.vez, -1, -1);
-
   if(jogo.pode_passar) {
     console.log("computador passou a vez");
     document.getElementById("mensagemdavez").innerText=("O computador passou a vez.");
     jogo.pode_passar = false;
   }
   else {
+    let cop = copia_tabuleiro(jogo.conteudo);
+    let jogada = minimax(cop, jogo.dificuldade, jogo.vez, -1, -1);
     play(jogada[1],jogada[2],jogo.conteudo,jogo.vez,false);
   }
 
+  atualiza_contagem();
   MudarDeVez();
 }
 
@@ -27,11 +26,12 @@ function humano(l, c) {
   var jogo = Jogo.getInstancia();
   console.log("humano");
 
+  if(vez_humano()) {
 
-  if(!vez_computador()) {
-    if(jogo.jogadas_legais[l][c] == jogo.vez){ //verificação passa para jogada válida
+    if(jogo.jogadas_legais[l][c] == jogo.vez){ 
       play(l, c,jogo.conteudo,jogo.vez,false);
-      MudarDeVez();
+        atualiza_contagem();
+        MudarDeVez();
     }
   } else {
     document.getElementById("mensagemdavez").innerText=("Não é a tua vez!");
@@ -70,7 +70,7 @@ function terminar() {
 
       jogo.user.n_derrotas++;
       //document.getElementById("nderrotasjogador").innerText=(n_derrotas);
-      document.getElementById("mensagemdavez").innerText=("Ganhou o computador!");
+      document.getElementById("mensagemdavez").innerText=("Ganhou o computador ...");
     }
     else {
       jogo.vencedor = "empate";
@@ -97,49 +97,24 @@ function atualiza_contagem() {
   document.getElementById("n_livres").innerText = jogo.contagem.empty;
 }
 
-function MudarDeVez(){
+function formata_validas() {
   var jogo = Jogo.getInstancia();
-  atualiza_contagem();
-
-
-  if(terminou() || jogo.desistiu) {
-    terminar();
-    return;
-  }      
-        
-  for(let l=0; l<8; l++) {
-    for(let c=0; c<8; c++) {
-      let peca1 = jogo.tabuleiro[l][c].firstChild;
-      peca1.classList.remove("validas_branco");
-      peca1.classList.remove("validas_preto");
-    }
-  }
-     
-  if(jogo.vez == 'B'){
-    jogo.vez='P';
-    document.getElementById("mensagemdavez").innerText="É a vez das peças pretas.";
-    console.log("vez do preto");
-  }
-  else if(jogo.vez =='P'){
-    jogo.vez='B';
-    document.getElementById("mensagemdavez").innerText="É a vez das peças brancas.";
-    console.log("vez do branco");
-  } 
-
-  jogo.jogadas_legais    = calcular_legais(jogo.conteudo, jogo.vez);
-  let n_jogadas_vez = count_legais(jogo.jogadas_legais);
-  if(n_jogadas_vez == 0)
-    jogo.pode_passar = true;
-
   let peca1;
+
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
       peca1 = jogo.tabuleiro[l][c].firstChild;
 
-      if(jogo.jogadas_legais[l][c] == jogo.vez) {
+      if(jogo.vez=='B') {
+        peca1.classList.remove("validas_preto");
+      }
+      else if (jogo.vez=='P') {
+        peca1.classList.remove("validas_branco");
+      }
 
+      if(jogo.jogadas_legais[l][c] == jogo.vez) { //se (l,c) é uma jogada legal de vez
         if(jogo.vez=='B') {
-          peca1.className += " validas_branco";
+          peca1.classList += " validas_branco";
         }
         else if (jogo.vez=='P') {
           peca1.className += " validas_preto";
@@ -147,9 +122,42 @@ function MudarDeVez(){
       }
     }
   }  
+}
+
+function comecar() {
+  oposto_vez(false);
+  MudarDeVez();
+}
+
+function MudarDeVez(){
+  var jogo = Jogo.getInstancia();
+
+  if(terminou() || jogo.desistiu) {
+    terminar();
+    return;
+  }
+     
+  oposto_vez(true);
+
+  jogo.jogadas_legais    = calcular_legais(jogo.conteudo, jogo.vez);
+  let n_jogadas_vez = count_legais(jogo.jogadas_legais);
+  if(n_jogadas_vez == 0)
+    jogo.pode_passar = true;
+
+  console.log(jogo.jogadas_legais);
+  formata_validas();
+
   if(vez_computador()) { //vez do oponente oponente(oponente==computador? computador() : timeout/update )
     setTimeout(function(){ computador(); }, 1000);
   }     
+}
+function vez_humano() {
+  var jogo = Jogo.getInstancia();
+
+  if((jogo.cor=="Branco" && jogo.vez=='B') || (jogo.cor=="Preto" && jogo.vez=='P')) {
+    return true;
+  }
+  return false;
 }
 
 //retorna true se é a vez do computador
@@ -157,17 +165,32 @@ function MudarDeVez(){
 function vez_computador() {
   var jogo = Jogo.getInstancia();
 
-  if((jogo.cor=="Branco" && jogo.vez=='P') || (jogo.cor=="Preto" && jogo.vez=='B') && jogo.oponente == "Computador") {
+  if(jogo.oponente == "Computador" && ((jogo.cor=="Branco" && jogo.vez=='P') || (jogo.cor=="Preto" && jogo.vez=='B'))) {
     return true;
   }
   return false;
 }
 
 //retorna a cor que não está na sua vez de jogar
-function oposto_vez(){
+function oposto_vez(imprime){
   var jogo = Jogo.getInstancia();
-  let oposta = (jogo.vez=='B')? 'P' : 'B';
-  return oposta;
+
+  if(jogo.vez == 'B'){
+    jogo.vez='P';
+
+    if(imprime) {
+      document.getElementById("mensagemdavez").innerText="É a vez das peças pretas.";
+      console.log("vez do preto");
+    }
+  }
+  else if(jogo.vez =='P'){
+    jogo.vez='B';
+
+    if(imprime) {
+      document.getElementById("mensagemdavez").innerText="É a vez das peças brancas.";
+      console.log("vez do branco");
+    }
+  }
 }
 
 function mostraMostra() {

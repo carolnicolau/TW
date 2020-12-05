@@ -1,7 +1,6 @@
 ///////////////////////////////
 //retorna o número de peças brancas, pretas e livres
 function soma_pecas(t) {
-  console.log("Contando peças");
 
   let dark=0;
   let ligth=0;
@@ -18,7 +17,7 @@ function soma_pecas(t) {
     }
   }
   
-  let somas = {dark, ligth, empty}
+  let somas = {dark, ligth, empty};
   return somas;
 }
 
@@ -50,10 +49,10 @@ function play(l, c,conteudo_,vez_,simulacao) {
   
   //notificar servidor da jogada
   if(jogo.oponente == "Outro Jogador") {
-    const user = document.getElementById("User").value;
-    const pass = document.getElementById("Pass").value;
-    var move = {"row":l, "column":c};
-    notify(user, pass, move);
+    const nick = jogo.user.nick;
+    const pass = jogo.user.pass;
+    var move = {row:l, column:c};
+    notify(nick, pass, move);
   }
   
   if(!simulacao) {

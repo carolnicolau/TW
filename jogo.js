@@ -10,7 +10,7 @@ class Jogo {
       this.dificuldade = configs.dificuldade;
       this.game = configs.game;
 
-      this.vez = 'B';
+      this.vez = 'P';
       this.user = user;
 
       this.conteudo = new Array(8);
@@ -18,8 +18,8 @@ class Jogo {
       this.jogadas_legais;
       this.desistiu = false;
       this.pode_passar = false;
-      this.vencedor;
-      this.contagem;
+      this.vencedor = '';
+      this.contagem = {dark:"2", ligth:"2", empty:"60"};
 
       const base = document.getElementById("base");
       const tabul = document.createElement("div");
