@@ -101,8 +101,6 @@ window.onload = function() {
     } else {
       if(configs.oponente == "Outro Jogador" && user.nick != "") {
 
-        document.getElementById("mensagemdavez").innerText=("À espera de um jogador.");
-
         const nick = user.nick;
         const pass = user.pass;
 

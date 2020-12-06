@@ -22,7 +22,7 @@ class Jogo {
       this.jogadas_legais;
       this.desistiu = false;
       this.pode_passar = false;
-      this.vencedor = '';
+      this.vencedor = "";
       this.contagem = {dark:"2", light:"2", empty:"60"};
 
       const base = document.getElementById("base");
@@ -65,22 +65,19 @@ class Jogo {
 
           linha.appendChild(celula);
 
-          const peca =document.createElement("div");
+          const peca =document.createElement("CANVAS");
+          peca.width = 96;
+          peca.height = 98;
+
+          this.conteudo[l][c] = ' '; 
 
           if((l==3 & c==3) || (l==4 & c==4)) {
-            peca.className="peca branco";            
             this.conteudo[l][c] = 'B'; 
-
+            animar1(peca, "black", "red");
           }
           else if((l==3 & c==4) || (l==4 & c==3)) {
-            peca.className="peca preto";
             this.conteudo[l][c] = 'P'; 
-
-          }
-          else {
-            peca.className="peca livre";
-            this.conteudo[l][c] = ' '; 
-
+            animar1(peca, "red", "black");
           }
           celula.appendChild(peca);
 

@@ -105,13 +105,18 @@ function join(nick, pass) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
+          let configs = Configs.getInstancia();
 
           if(data.color == 'light') {
-            Configs.getInstancia().cor = "Branco";
-            mensagem("Ficaste com as peças brancas.");
+            configs.cor = "Branco";
+            mensagem("Ficaste com as peças brancas.\nÀ espera de um jogador.");
+            mensagem("");
+          } else if(data.color == 'dark') {
+            configs.cor = "Preto";
+            mensagem("Ficaste com as peças pretas.\nÀ espera de um jogador.");
           } else {
-            Configs.getInstancia().cor = "Preto";
-            mensagem("Ficaste com as peças pretas.");
+            configs.cor = "Preto";
+            mensagem("À espera de um jogador.");
           }
   				game = data.game;
 
@@ -149,10 +154,21 @@ function leave(nick, pass, id) {
           eventSource.close();
        	} else {
        		mensagem(data.error); 
+          
+          if(data.error == "Not a valid game")  {
+            console.log("NÃO É VÁLIDO");
+            console.log(Jogo.getInstancia());
+            if(eventSource)
+              eventSource.close();
+            terminar();
+            console.log(Jogo.getInstancia());
+          }
        	}
   		});
     })
-    .catch(()=>mensagem("Erro na saída."));
+    .catch( function() {
+      mensagem("Erro na saída.");
+    })
 }
 
 function notify(nick, pass, move) {
@@ -183,53 +199,74 @@ function notify(nick, pass, move) {
 
 
 function update(nick, cor) {
-  console.log("update");
+  console.log("UPDATE");
   console.log("id: " + game);
-
+  var jogo = Jogo.getInstancia();
   
   var object = "update?nick=" + nick + "&game=" + game;
   let encoded = encodeURI(object);
-  eventSource = new EventSource(server + encoded); //??? with credentials
+  eventSource = new EventSource(server + encoded);
   
   //eventSource = new EventSource(server + "update?nick=" + nick + "&game=" + game);
   
   eventSource.onmessage = function(event) {
-    
+
       const data = JSON.parse(event.data);
-      console.log(data); //?
+
+      console.log("on message: "); 
+      console.log(data);     
 
       if(!data.board) {
-        Jogo.getInstancia().vencedor = data.winner;
+        jogo.vencedor = data.winner;
         terminar();
       }
       else {
+        
         for(let i=0; i<8; i++) {
           for(let j=0; j<8; j++) {
-            if(data.board[i][j] == "empty")
-              Jogo.getInstancia().conteudo[i][j] = ' ';
-            else if(data.board[i][j] == "dark")
-              Jogo.getInstancia().conteudo[i][j] = 'P';
-            else if(data.board[i][j] == "light")
-              Jogo.getInstancia().conteudo[i][j] = 'B';
+
+            if(data.board[i][j] == "empty") {
+              jogo.conteudo[i][j] = ' ';
+            }
+
+            else if(data.board[i][j] == "dark") {
+              let peca = jogo.tabuleiro[i][j].firstChild;
+
+              if(jogo.conteudo[i][j] == '')
+                animar1(peca, "black", "black");
+              else if(jogo.conteudo[i][j] == 'B')
+                animar1(peca, "red", "black");
+              jogo.conteudo[i][j] = 'P';
+            }
+
+            else if(data.board[i][j] == "light") {
+              let peca = jogo.tabuleiro[i][j].firstChild;
+
+              if(jogo.conteudo[i][j] == '')
+                animar1(peca, "black", "red");
+              else if(jogo.conteudo[i][j] == 'P')
+                animar1(peca, "black", "red");
+              jogo.conteudo[i][j] = 'B';
+            }
           }
         }
-        atualizar_tabuleiro();
+        //atualizar_tabuleiro();
 
-        Jogo.getInstancia().vez = data.turn; 
+        jogo.vez = data.turn; 
         mensagem("É a vez de " + data.turn);
 
-        Jogo.getInstancia().contagem.light = data.count.light;
-        Jogo.getInstancia().contagem.dark = data.count.dark;
-        Jogo.getInstancia().contagem.empty = data.count.empty;
+        jogo.contagem.light = data.count.light;
+        jogo.contagem.dark = data.count.dark;
+        jogo.contagem.empty = data.count.empty;
         atualiza_contagem();
 
-        Jogo.getInstancia().pode_passar = data.skip;
+        jogo.pode_passar = data.skip;
       }
 
   }
 
+
   eventSource.onerror = function(event) {
-    //error("Erro no update.");
-    mensagem(event.error); 
+    mensagem("Erro no update."); 
   }
 }

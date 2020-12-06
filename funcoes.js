@@ -1,5 +1,3 @@
-
-
 //calcula jogada com minimax e joga ou passa (soma_peças no fim) 
 //muda de vez 
 //fazia mais sentido usar minimax só no else?
@@ -7,6 +5,61 @@ function mensagem(msg) {
   document.getElementById("mensagemdavez").innerText=(msg);
   console.log(msg);
 }
+
+function animar_validas(peca, cor) {
+  let raio = (peca.width)/2;
+  let velocity = 3;
+
+  console.log(peca.width);
+
+  peca.width = peca.width;
+
+  let ctx = peca.getContext("2d");
+  
+  ctx.beginPath();
+  ctx.lineWidth = 2;   
+  //context.arc(x,y,r,sAngle,eAngle,counterclockwise);  
+  ctx.arc(raio, raio, raio, 0, 2*Math.PI, false);
+  ctx.strokeStyle = cor;
+  ctx.stroke();
+}
+
+
+function animar1(peca, cor, outra) {
+  let raio = (peca.width)/2;
+  let alpha = raio;
+  let velocity = 3;
+
+  let ctx = peca.getContext("2d");
+
+  animar_aux(peca, raio, alpha, velocity, cor, outra);
+}
+
+function animar_aux(peca, r, alpha, velocity, cor, outra) {
+
+  peca.width = peca.width;
+
+  let ctx = peca.getContext("2d");
+  
+  ctx.beginPath()
+  ctx.ellipse(r, r, alpha, r, 0, 0, Math.PI * 2, false);
+  ctx.fillStyle = cor;
+  ctx.fill();
+ 
+  alpha -= velocity;
+    
+  if(alpha < velocity) {
+    velocity = -velocity;
+    cor = outra;
+  }
+  
+  if(alpha > r) {
+    return;
+  }
+  
+  requestAnimationFrame(()=>(animar_aux(peca, r, alpha, velocity, cor, outra)));
+}
+
 
 
 function computador() {
@@ -109,13 +162,17 @@ function store(n_vitorias) {
 }
 
 function terminar_online() {
+  var jogo = Jogo.getInstancia();
+
   if(jogo.vencedor == null) {
       mensagem("Foi empate.");
       alert("Foi empate.");
-    } else {
+  } else if(jogo.vencedor == "") {
+      console.log("saiu.");
+  } else {
       mensagem( jogo.vencedor + " ganhou o jogo!");
       alert( jogo.vencedor + " ganhou o jogo!");
-    }
+  }
 }
 
 function terminar_offline() {
@@ -194,7 +251,7 @@ function atualiza_contagem() {
 function formata_validas() {
   var jogo = Jogo.getInstancia();
   let peca1;
-
+  /*
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
       peca1 = jogo.tabuleiro[l][c].firstChild;
@@ -207,17 +264,19 @@ function formata_validas() {
       }
     }
   }  
-
+  */
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
       peca1 = jogo.tabuleiro[l][c].firstChild;
 
       if(jogo.jogadas_legais[l][c] == jogo.vez) { //se (l,c) é uma jogada legal de vez
         if(jogo.vez=='B') {
-          peca1.classList += " validas_branco";
+          //peca1.classList += " validas_branco";
+          animar_validas(peca1, "yellow");
         }
         else if (jogo.vez=='P') {
-          peca1.className += " validas_preto";
+          //peca1.className += " validas_preto";
+          animar_validas(peca1, "purple");
         }
       }
     }

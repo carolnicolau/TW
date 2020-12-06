@@ -148,8 +148,8 @@ h2 {
 }
 
 .tabuleiro {
-  width: 80vmin;
-  height: 80vmin;
+  width: 800px;
+  height: 800px;
 
   display:          flex;
   flex-wrap:        nowrap;
@@ -157,13 +157,6 @@ h2 {
   justify-content:  center;
   align-items:      center;
   
-  /*align-content:    center;
-  background-color: red
-  */
-  /*
-  border-style:     outset;
-  border-width:     2px;
-  padding:          10px;*/  
   margin:           auto;
   margin-top:       10px;
   margin-bottom:    10px;
@@ -171,8 +164,8 @@ h2 {
 
 
 .linha {
-  width:            80vmin;
-  height:           10vmin;
+  width:            800px;
+  height:           100px;
 
   display:          flex;
   flex-wrap:        nowrap;
@@ -181,9 +174,8 @@ h2 {
 }
 
 .celula {
-  width:            10vmin;
-  height:           10vmin;
-  /*height:           100%;*/
+  width:            100px;
+  height:           100px;
 
   display:          flex-inline;
   flex-wrap:        wrap;
@@ -191,30 +183,21 @@ h2 {
   align-items:      center;
   align-content:    center;
 
-  border:           0.2vmin;
+  border:           2px;
   border-style:     outset;
   border-collapse:  collapse;
-  background:       DarkGreen;/*orange;*/
+  background:       DarkGreen;
 }
 
 .peca {
-  width:            90%;
-  height:           90%;
+  width:            90px;
+  height:           90px;
 
-  /* visibility:       hidden; */
-
-  margin:           auto;
-  margin-top:       5%;
-  margin-bottom:    5%;
-    /*
-    position:         relative; 
-    top:              50%; 
-    margin-top:       -45%;
-    */
-  border-radius:    50%;
-    
+  margin-top:       2px;
+  margin-bottom:    2px;
+  margin-left:      1px;
+  margin-right:     1px;    
   }
-
 
   table {
     width:            50%;
@@ -244,10 +227,22 @@ h2 {
   }
   .validas_preto{
     border:           2px solid purple;
+
+    margin-top:       2px;
+    margin-bottom:    1px;
+    margin-left:      1px;
+    margin-right:     1px;
+
     border-radius:    50%;
   }
   .validas_branco{
     border:           2px solid yellow;
+
+    margin-top:       2px;
+    margin-bottom:    1px;
+    margin-left:      1px;
+    margin-right:     1px;
+
     border-radius:    50%;
   }
 

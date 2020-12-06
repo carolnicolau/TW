@@ -11,9 +11,11 @@ function flip_celula(l,c,conteudo_, vez_, simulacao) {
     let peca = jogo.tabuleiro[l][c].firstChild;
 
     if(vez_=='P') {//antes estava vez
-      peca.className = "peca preto";
+      //peca.className = "peca preto";
+      animar1(peca, "red", "black");
     } else {
-      peca.className = "peca branco";
+      //peca.className = "peca branco";
+      animar1(peca, "black", "red");
     }
   }
 }

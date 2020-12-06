@@ -21,7 +21,7 @@ function soma_pecas(t) {
   return somas;
 }
 
-
+/*
 function atualizar_tabuleiro() {
   var jogo = Jogo.getInstancia();
   var peca;
@@ -37,7 +37,7 @@ function atualizar_tabuleiro() {
         peca.className = "peca";
     }
   }
-}
+}*/
 
 
 //atualiza o elem tabuleiro (se não é uma simulação - dentro do minimax)
@@ -49,14 +49,17 @@ function play(l, c,conteudo_,vez_,simulacao) {
   if(vez_ =='P') {
     if(!simulacao) {
       let peca1 = jogo.tabuleiro[l][c].firstChild;
-      peca1.className = "peca preto";
+      animar1(peca1, "red", "black");
+      //peca1.className = "peca preto";
       console.log("Preto jogou (" + l + "," + c + ")");
     }
     conteudo_[l][c] = 'P';
   } else {
     if(!simulacao) {
       let peca1 = jogo.tabuleiro[l][c].firstChild;
-      peca1.className = "peca branco";
+      animar1(peca1, "black", "red");
+
+      //peca1.className = "peca branco";
       console.log("Branco jogou (" + l + "," + c + ")");
     }
     conteudo_[l][c] = 'B';
