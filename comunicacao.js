@@ -244,9 +244,9 @@ function update(nick, cor) {
               let peca = jogo.tabuleiro[i][j].firstChild;
 
               if(jogo.conteudo[i][j] == ' ')
-                animar1(i, j, "red");
+                animar1(peca, "red");
               else if(jogo.conteudo[i][j] == 'P')
-                animar2(i, j, "black", "red");
+                animar2(peca, "black", "red");
               
               jogo.conteudo[i][j] = 'B';
             }

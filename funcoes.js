@@ -37,7 +37,6 @@ animar1_aux(c, x, y, cw, ch, velocidade, raio, cor);
 
   
 function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
-  requestAnimationFrame(()=>(animar1_aux(c, x, y, cw, ch, velocidade, raio, cor)));
   
   c.clearRect(0,0,cw,ch);
   c.beginPath();    
@@ -49,9 +48,12 @@ function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
 
   if (x+raio>cw || raio<0) {
     velocidade=-velocidade;
-    return;    
-  }
+    return;  
+  }  
+  
   raio+=velocidade;
+
+  requestAnimationFrame(()=>(animar1_aux(c, x, y, cw, ch, velocidade, raio, cor)));
 }
 
 function animar2(peca, cor, outra) {
@@ -335,7 +337,8 @@ function formata_validas() {
   
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
-      
+
+
       if(jogo.conteudo[l][c] == ' ') {
         peca1 = jogo.tabuleiro[l][c].firstChild;
         peca1.width = peca1.width;
