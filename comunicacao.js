@@ -267,6 +267,7 @@ function update(nick, cor) {
         atualiza_contagem();
 
         jogo.pode_passar = data.skip;
+        jogo.entrou = true;
       }
 
   }

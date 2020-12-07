@@ -7,8 +7,12 @@ function terminar_online() {
   var jogo = Jogo.getInstancia();
 
   if(jogo.vencedor == null) {
+    if(jogo.entrou) {
       mensagem("Foi empate.");
       alert("Foi empate.");
+    } else {
+      mensagem("Saiu da espera.");
+    }
   } else if(jogo.vencedor == "") {
       //console.log(.log("saiu.");
   } else {

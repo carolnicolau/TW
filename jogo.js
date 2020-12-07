@@ -25,6 +25,7 @@ class Jogo {
       this.pode_passar = false;
       this.vencedor = "";
       this.contagem = {dark:"2", light:"2", empty:"60"};
+      this.entrou = false;
 
       const base = document.getElementById("base");
       const tabul = document.createElement("div");
