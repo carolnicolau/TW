@@ -216,12 +216,15 @@ function update(nick, cor) {
       console.log("on message: "); 
       console.log(data);     
 
-      if(!data.board) {
+      if(data.winner != undefined) {
+        jogo.vencedor = data.winner;
+        terminar();
+      }
+      else if(data.winner == null) {
         jogo.vencedor = data.winner;
         terminar();
       }
       else {
-        
         for(let i=0; i<8; i++) {
           for(let j=0; j<8; j++) {
 
