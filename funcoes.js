@@ -386,8 +386,6 @@ function comecar() {
   oposto_vez(false);
   var jogo = Jogo.getInstancia();
   
-
-  /*
   let peca1 = jogo.tabuleiro[3][3].firstChild;
   let peca2 = jogo.tabuleiro[4][4].firstChild;
   let peca3 = jogo.tabuleiro[3][4].firstChild;
@@ -398,30 +396,10 @@ function comecar() {
   jogo.conteudo[3][4] = 'P'; 
   jogo.conteudo[4][3] = 'P'; 
 
-  animar1(peca1, "red");
-  animar1(peca2, "red");
+  animar1(peca1, "FloralWhite");
+  animar1(peca2, "FloralWhite");
   animar1(peca3, "black");
   animar1(peca4, "black");
-  */
-
-
-  //teste passar
-  let peca1 = jogo.tabuleiro[0][0].firstChild;
-  let peca2 = jogo.tabuleiro[0][1].firstChild;
-  let peca3 = jogo.tabuleiro[1][0].firstChild;
-  let peca4 = jogo.tabuleiro[1][1].firstChild;
-
-  jogo.conteudo[0][0] = 'B'; 
-  jogo.conteudo[0][1] = 'B'; 
-  jogo.conteudo[1][0] = 'P'; 
-  jogo.conteudo[1][1] = 'P'; 
-
-  animar1(peca1, "red");
-  animar1(peca2, "red");
-  animar1(peca3, "black");
-  animar1(peca4, "black");
-  
-
 
   MudarDeVez();
 }

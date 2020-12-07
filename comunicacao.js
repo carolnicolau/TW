@@ -239,7 +239,7 @@ function update(nick, cor) {
               if(jogo.conteudo[i][j] == ' ')
                 animar1(peca, "black");
               else if(jogo.conteudo[i][j] == 'B')
-                animar2(peca, "red", "black");
+                animar2(peca, "FloralWhite", "black");
               
               jogo.conteudo[i][j] = 'P';
             }
@@ -248,9 +248,9 @@ function update(nick, cor) {
               let peca = jogo.tabuleiro[i][j].firstChild;
 
               if(jogo.conteudo[i][j] == ' ')
-                animar1(peca, "red");
+                animar1(peca, "FloralWhite");
               else if(jogo.conteudo[i][j] == 'P')
-                animar2(peca, "black", "red");
+                animar2(peca, "black", "FloralWhite");
               
               jogo.conteudo[i][j] = 'B';
             }

@@ -58,7 +58,7 @@ function play(l, c,conteudo_,vez_,simulacao) {
   } else {
     if(!simulacao) {
       let peca1 = jogo.tabuleiro[l][c].firstChild;
-      animar1(peca1, "red");
+      animar1(peca1, "FloralWhite");
 
       //peca1.className = "peca branco";
       //console.log("Branco jogou (" + l + "," + c + ")");
