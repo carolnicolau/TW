@@ -37,7 +37,7 @@ animar1_aux(c, x, y, cw, ch, velocidade, raio, cor);
 
   
 function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
-  
+
   c.clearRect(0,0,cw,ch);
   c.beginPath();    
   c.arc(x,y,raio,0,Math.PI*2,false);
@@ -57,6 +57,9 @@ function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
 }
 
 function animar2(peca, cor, outra) {
+  console.log("animando");
+
+
   let raio = (peca.width)/2;
   let alpha = raio;
   let velocity = 3;
@@ -373,8 +376,10 @@ function formata_validas() {
 }
 
 function comecar() {
+    console.log("comecando");
   oposto_vez(false);
   var jogo = Jogo.getInstancia();
+  /*
   let peca1 = jogo.tabuleiro[3][3].firstChild;
   let peca2 = jogo.tabuleiro[4][4].firstChild;
   let peca3 = jogo.tabuleiro[3][4].firstChild;
@@ -384,6 +389,22 @@ function comecar() {
   jogo.conteudo[4][4] = 'B'; 
   jogo.conteudo[3][4] = 'P'; 
   jogo.conteudo[4][3] = 'P'; 
+
+  animar1(peca1, "red");
+  animar1(peca2, "red");
+  animar1(peca3, "black");
+  animar1(peca4, "black");
+  */
+  //teste passar
+  let peca1 = jogo.tabuleiro[0][0].firstChild;
+  let peca2 = jogo.tabuleiro[0][1].firstChild;
+  let peca3 = jogo.tabuleiro[1][0].firstChild;
+  let peca4 = jogo.tabuleiro[1][1].firstChild;
+
+  jogo.conteudo[0][0] = 'B'; 
+  jogo.conteudo[0][1] = 'B'; 
+  jogo.conteudo[1][0] = 'P'; 
+  jogo.conteudo[1][1] = 'P'; 
 
   animar1(peca1, "red");
   animar1(peca2, "red");
@@ -493,11 +514,24 @@ function passa() {
   var jogo = Jogo.getInstancia();
 
   if(jogo.pode_passar && vez_humano()) {
-    console.log("jogador passou!");
-    jogo.pode_passar = false;
-    MudarDeVez();
+      console.log("jogador passou!");
+
+      if(jogo.oponente == "Computador")  {
+        jogo.pode_passar = false;
+
+        MudarDeVez();
+      } else {
+        let nick = jogo.user.nick;
+        let pass = jogo.user.pass;
+
+        notify(nick, pass , null);
+      }
+      
   } else {
-    mensagem("Ainda tens jogadas possíveis! Não podes passar a vez.");
+    if(vez_humano())
+      mensagem("Ainda tens jogadas possíveis! Não podes passar a vez.");
+    else      
+      mensagem("Não é a tua vez de jogar.");
   }
 }
 
