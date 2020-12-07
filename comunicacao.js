@@ -232,20 +232,22 @@ function update(nick, cor) {
             else if(data.board[i][j] == "dark") {
               let peca = jogo.tabuleiro[i][j].firstChild;
 
-              if(jogo.conteudo[i][j] == '')
-                animar1(peca, "black", "black");
+              if(jogo.conteudo[i][j] == ' ')
+                animar1(peca, "black");
               else if(jogo.conteudo[i][j] == 'B')
-                animar1(peca, "red", "black");
+                animar2(peca, "red", "black");
+              
               jogo.conteudo[i][j] = 'P';
             }
 
             else if(data.board[i][j] == "light") {
               let peca = jogo.tabuleiro[i][j].firstChild;
 
-              if(jogo.conteudo[i][j] == '')
-                animar1(peca, "black", "red");
+              if(jogo.conteudo[i][j] == ' ')
+                animar1(i, j, "red");
               else if(jogo.conteudo[i][j] == 'P')
-                animar1(peca, "black", "red");
+                animar2(i, j, "black", "red");
+              
               jogo.conteudo[i][j] = 'B';
             }
           }

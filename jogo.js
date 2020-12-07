@@ -2,6 +2,7 @@ class Jogo {
 
   constructor(user) {
     if (!Jogo.instancia) {  
+      console.log("criando instancia");
       Jogo.instancia = this;
       var configs = Configs.getInstancia();
 
@@ -70,15 +71,6 @@ class Jogo {
           peca.height = 98;
 
           this.conteudo[l][c] = ' '; 
-
-          if((l==3 & c==3) || (l==4 & c==4)) {
-            this.conteudo[l][c] = 'B'; 
-            animar1(peca, "black", "red");
-          }
-          else if((l==3 & c==4) || (l==4 & c==3)) {
-            this.conteudo[l][c] = 'P'; 
-            animar1(peca, "red", "black");
-          }
           celula.appendChild(peca);
 
           celula.onclick = ((fun, posl, posc) => {
@@ -91,7 +83,7 @@ class Jogo {
       document.getElementById("n_brancas").innerText=("2");
       document.getElementById("n_livres").innerText=("60");      
     } else {
-      alert("jogo já criado");
+      console.log("jogo já criado");
       return Jogo.instancia;
     }
   }
@@ -101,6 +93,7 @@ class Jogo {
   }
 
   static elimina() {
+    console.log("apagando instancia");
     Jogo.instancia = null;
   }
 }

@@ -49,15 +49,16 @@ function play(l, c,conteudo_,vez_,simulacao) {
   if(vez_ =='P') {
     if(!simulacao) {
       let peca1 = jogo.tabuleiro[l][c].firstChild;
-      animar1(peca1, "red", "black");
+      animar1(peca1, "black");
       //peca1.className = "peca preto";
       console.log("Preto jogou (" + l + "," + c + ")");
     }
     conteudo_[l][c] = 'P';
+    
   } else {
     if(!simulacao) {
       let peca1 = jogo.tabuleiro[l][c].firstChild;
-      animar1(peca1, "black", "red");
+      animar1(peca1, "red");
 
       //peca1.className = "peca branco";
       console.log("Branco jogou (" + l + "," + c + ")");

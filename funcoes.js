@@ -10,8 +10,6 @@ function animar_validas(peca, cor) {
   let raio = (peca.width)/2;
   let velocity = 3;
 
-  console.log(peca.width);
-
   peca.width = peca.width;
 
   let ctx = peca.getContext("2d");
@@ -24,18 +22,49 @@ function animar_validas(peca, cor) {
   ctx.stroke();
 }
 
+function animar1(canvas, cor) {
+var c=canvas.getContext("2d");
+var cw=canvas.width;
+var ch=canvas.height;
 
-function animar1(peca, cor, outra) {
+var x=cw/2;
+var y=ch/2;
+var velocidade=2;
+var raio=4;
+
+animar1_aux(c, x, y, cw, ch, velocidade, raio, cor);
+}
+
+  
+function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
+  requestAnimationFrame(()=>(animar1_aux(c, x, y, cw, ch, velocidade, raio, cor)));
+  
+  c.clearRect(0,0,cw,ch);
+  c.beginPath();    
+  c.arc(x,y,raio,0,Math.PI*2,false);
+  c.strokeStyle=cor;
+  c.stroke(); 
+  c.fillStyle=cor;
+  c.fill();
+
+  if (x+raio>cw || raio<0) {
+    velocidade=-velocidade;
+    return;    
+  }
+  raio+=velocidade;
+}
+
+function animar2(peca, cor, outra) {
   let raio = (peca.width)/2;
   let alpha = raio;
   let velocity = 3;
 
   let ctx = peca.getContext("2d");
 
-  animar_aux(peca, raio, alpha, velocity, cor, outra);
+  animar2_aux(peca, raio, alpha, velocity, cor, outra);
 }
 
-function animar_aux(peca, r, alpha, velocity, cor, outra) {
+function animar2_aux(peca, r, alpha, velocity, cor, outra) {
 
   peca.width = peca.width;
 
@@ -57,14 +86,60 @@ function animar_aux(peca, r, alpha, velocity, cor, outra) {
     return;
   }
   
-  requestAnimationFrame(()=>(animar_aux(peca, r, alpha, velocity, cor, outra)));
+  requestAnimationFrame(()=>(animar2_aux(peca, r, alpha, velocity, cor, outra)));
 }
+
+/*
+function animar2(l, c, cor1, cor2) { 
+  var jogo = Jogo.getInstancia();
+  let canvas = jogo.tabuleiro[l][c].firstChild;
+
+  let raioY = (canvas.width)/2; // 96/2 = 48 (mod 3 = 0)
+  let raioX = raioY;
+  let delta = 3;
+
+  let ctx = canvas.getContext("2d");
+  console.log("comecou com cor = " + cor1);
+
+  animar2_aux(canvas, raioX, raioY, delta, cor1, cor2);
+}
+
+function animar2_aux(canvas, raioX, raioY, delta, cor1, cor2) {
+  canvas.width = canvas.width;
+  let ctx = canvas.getContext("2d");
+  
+  ctx.beginPath();
+  //ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle [, anticlockwise]);
+  ctx.ellipse(raioY, raioY, raioX, raioY, 0, 0, Math.PI * 2, false);
+  ctx.fillStyle = cor1;
+  ctx.fill();
+ 
+  raioX -= delta;
+    
+  if(raioX < delta) { //se largura é menor que delta(3) -> só raioX=0
+    delta = -delta;   //começa a aumentar
+    cor1 = cor2;
+    console.log("mudou!! cor = " + cor1);
+  }
+
+  
+  if(raioX >= raioY) { //se é circulo sai
+    console.log("parou com cor = " + cor1);
+    //ctx.restore();
+    //return;
+  } else {  
+    //setInterval(animar2_aux(canvas, raioX, raioY, delta, cor1, cor2), 1000);
+    requestAnimationFrame(()=>(animar2_aux(canvas, raioX, raioY, delta, cor1, cor2)));
+  }
+}*/
 
 
 
 function computador() {
   var jogo = Jogo.getInstancia();
   console.log("computador");
+    console.log(jogo.conteudo);
+
 
   if(jogo.pode_passar) {
     console.log("computador passou a vez");
@@ -74,7 +149,10 @@ function computador() {
   else {
     let cop = copia_tabuleiro(jogo.conteudo);
     let jogada = minimax(cop, jogo.dificuldade, jogo.vez, -1, -1);
-    play(jogada[1],jogada[2],jogo.conteudo,jogo.vez,false);
+    let l = jogada[1];
+    let c = jogada[2];
+    play(l,c,jogo.conteudo,jogo.vez,false);
+    console.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
   }
 
   atualiza_contagem();
@@ -83,12 +161,15 @@ function computador() {
 
 function humano_offline(l, c) {
   var jogo = Jogo.getInstancia();
+    console.log(jogo.conteudo);
+
 
   if(vez_humano()) {
       console.log("jogadas legais: " + jogo.jogadas_legais[l][c]);
       
       if(jogo.jogadas_legais[l][c] == jogo.vez){ 
         play(l, c,jogo.conteudo,jogo.vez,false);
+        console.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
         atualiza_contagem();
         MudarDeVez();
       }
@@ -251,20 +332,25 @@ function atualiza_contagem() {
 function formata_validas() {
   var jogo = Jogo.getInstancia();
   let peca1;
-  /*
+  
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
-      peca1 = jogo.tabuleiro[l][c].firstChild;
+      
+      if(jogo.conteudo[l][c] == ' ') {
+        peca1 = jogo.tabuleiro[l][c].firstChild;
+        peca1.width = peca1.width;
+      }
 
+      /*
       if(jogo.vez=='B') {
         peca1.classList.remove("validas_preto");
       }
       else if (jogo.vez=='P') {
         peca1.classList.remove("validas_branco");
-      }
+      }*/
     }
   }  
-  */
+  
   for(let l=0; l<8; l++) {
     for(let c=0; c<8; c++) {
       peca1 = jogo.tabuleiro[l][c].firstChild;
@@ -285,11 +371,29 @@ function formata_validas() {
 
 function comecar() {
   oposto_vez(false);
+  var jogo = Jogo.getInstancia();
+  let peca1 = jogo.tabuleiro[3][3].firstChild;
+  let peca2 = jogo.tabuleiro[4][4].firstChild;
+  let peca3 = jogo.tabuleiro[3][4].firstChild;
+  let peca4 = jogo.tabuleiro[4][3].firstChild;
+
+  jogo.conteudo[3][3] = 'B'; 
+  jogo.conteudo[4][4] = 'B'; 
+  jogo.conteudo[3][4] = 'P'; 
+  jogo.conteudo[4][3] = 'P'; 
+
+  animar1(peca1, "red");
+  animar1(peca2, "red");
+  animar1(peca3, "black");
+  animar1(peca4, "black");
+
   MudarDeVez();
 }
 
 function MudarDeVez(){
   var jogo = Jogo.getInstancia();
+
+  console.log(jogo.conteudo);
 
   if(terminou() || jogo.desistiu == true) {
     terminar();
@@ -303,11 +407,11 @@ function MudarDeVez(){
   if(n_jogadas_vez == 0)
     jogo.pode_passar = true;
 
-  console.log(jogo.jogadas_legais);
+  //console.log(jogo.jogadas_legais);
   formata_validas();
 
   if(vez_computador()) { //vez do oponente oponente(oponente==computador? computador() : timeout/update )
-    setTimeout(function(){ computador(); }, 1000);
+    setTimeout(function(){ computador(); }, 3000);
   }     
 }
 
@@ -423,11 +527,12 @@ function terminou() {
   let jogadas_legaisP  = calcular_legais(jogo.conteudo, 'P');
   let nP               = count_legais(jogadas_legaisP);
 
+  /*
   console.log("Jogadas legais de preto:");
   console.log(jogadas_legaisP);
   console.log("Jogadas legais de branco:");
   console.log(jogadas_legaisB);
-
+  */
   if(nB == 0 && nP == 0) {
     console.log("jogo terminou");
     return true;

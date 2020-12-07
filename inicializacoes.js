@@ -94,7 +94,7 @@ window.onload = function() {
     selectOponente();
     
     if(configs.oponente == "Outro Jogador" && user.nick == "" ) {
-      alert("User=null");
+      console.log("User=null");
       document.getElementById("mensagemdavez").innerText=("Para jogar com outros jogadores online, por favor registe-se.");
       return;
 

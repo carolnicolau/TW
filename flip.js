@@ -5,17 +5,21 @@
 function flip_celula(l,c,conteudo_, vez_, simulacao) {
 
   conteudo_[l][c] = vez_;
+  console.log("("+l+","+c+") = " + conteudo_[l][c]);
 
+  
   if(!simulacao) {
     let jogo = Jogo.getInstancia();
     let peca = jogo.tabuleiro[l][c].firstChild;
 
-    if(vez_=='P') {//antes estava vez
+    if(vez_=='P') {
       //peca.className = "peca preto";
-      animar1(peca, "red", "black");
+      //animar1(peca, "black");
+      animar2(peca, "red", "black");
     } else {
       //peca.className = "peca branco";
-      animar1(peca, "black", "red");
+      //animar1(peca, "red");
+      animar2(peca, "black","red");
     }
   }
 }
