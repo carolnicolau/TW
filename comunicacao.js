@@ -17,6 +17,7 @@ function register(nick, pass) {
     })
     .then(function(response) {
        if(response.ok) { //200
+          mensagem("Entrou!");
           response.text().then(console.log);
        } else {
           response.json().then((response) => mensagem(response.error));
@@ -216,11 +217,11 @@ function update(nick, cor) {
       console.log("on message: "); 
       console.log(data);     
 
-      if(data.winner != undefined) {
+      if(data.winner !== undefined) {
         jogo.vencedor = data.winner;
         terminar();
       }
-      else if(data.winner == null) {
+      else if(data.winner === null) {
         jogo.vencedor = data.winner;
         terminar();
       }
@@ -269,7 +270,6 @@ function update(nick, cor) {
       }
 
   }
-
 
   eventSource.onerror = function(event) {
     mensagem("Erro no update."); 
