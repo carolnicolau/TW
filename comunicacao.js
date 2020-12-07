@@ -7,7 +7,7 @@ var game;
 var eventSource;
 
 function register(nick, pass) {
-  console.log("register");
+  //console.log("register");
 	var object = {nick, pass};
 	var JSONData = JSON.stringify(object);
 
@@ -65,7 +65,7 @@ function atualizar_classific(ranking) {
 }
 
 function ranking() {
-    console.log("ranking");
+    //console.log("ranking");
 
 	var object = {};
 	var JSONData = JSON.stringify(object); 
@@ -80,7 +80,7 @@ function ranking() {
   		response.json().then( function(data) {
   			if(response.ok) { //200
   				let rank = data.ranking;
-  				console.log(rank);
+  				//console.log(rank);
   				atualizar_classific(rank);
        		} else {
             mensagem(data.error);
@@ -91,10 +91,10 @@ function ranking() {
 }
 
 function join(nick, pass) {
-  console.log("join");
+  ////console.log("join");
 
 	var object = {group, nick, pass};
-  console.log(object);
+  //console.log(object);
 	var JSONData = JSON.stringify(object); 
 
 
@@ -121,8 +121,8 @@ function join(nick, pass) {
           }
   				game = data.game;
 
-  				console.log(data);
-          console.log("cor = " + Configs.getInstancia().cor);
+  				//console.log(data);
+          //console.log("cor = " + Configs.getInstancia().cor);
           
           update(nick, data.color);
 
@@ -135,10 +135,10 @@ function join(nick, pass) {
 }
 
 function leave(nick, pass, id) {
-      console.log("leave");
+      //console.log("leave");
 
 	var object = {nick, pass, game};
-        console.log(object);
+        //console.log(object);
 
 	var JSONData = JSON.stringify(object); 
 
@@ -151,18 +151,18 @@ function leave(nick, pass, id) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				console.log(data);
+  				//console.log(data);
           eventSource.close();
        	} else {
        		mensagem(data.error); 
           
           if(data.error == "Not a valid game")  {
-            console.log("NÃO É VÁLIDO");
-            console.log(Jogo.getInstancia());
+            //console.log("NÃO É VÁLIDO");
+            //console.log(Jogo.getInstancia());
             if(eventSource)
               eventSource.close();
             terminar();
-            console.log(Jogo.getInstancia());
+            //console.log(Jogo.getInstancia());
           }
        	}
   		});
@@ -173,12 +173,12 @@ function leave(nick, pass, id) {
 }
 
 function notify(nick, pass, move) {
-  console.log("notify");
+  //console.log("notify");
 
 	var object = {nick, pass, game, move};
 	var JSONData = JSON.stringify(object); 
 
-  console.log(JSONData);
+  //console.log(JSONData);
 
 	fetch(server + "notify" , {
 	    method: 'POST',
@@ -188,7 +188,7 @@ function notify(nick, pass, move) {
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				console.log(data); 
+  				//console.log(data); 
 
        		} else {
        			mensagem(data.error); //?
@@ -200,8 +200,8 @@ function notify(nick, pass, move) {
 
 
 function update(nick, cor) {
-  console.log("UPDATE");
-  console.log("id: " + game);
+  //console.log("UPDATE");
+  //console.log("id: " + game);
   var jogo = Jogo.getInstancia();
   
   var object = "update?nick=" + nick + "&game=" + game;
@@ -214,8 +214,8 @@ function update(nick, cor) {
 
       const data = JSON.parse(event.data);
 
-      console.log("on message: "); 
-      console.log(data);     
+      //console.log("on message: "); 
+      //console.log(data);     
 
       if(data.winner !== undefined) {
         jogo.vencedor = data.winner;

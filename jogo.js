@@ -2,14 +2,14 @@ class Jogo {
 
   constructor(user) {
     if (!Jogo.instancia) {  
-      console.log("criando instancia");
+      //console.log("criando instancia");
       Jogo.instancia = this;
       var configs = Configs.getInstancia();
 
       //configs
       this.cor = configs.cor;
-      console.log("this.cor = " + this.cor);
-      console.log("configs.cor = " + configs.cor);
+      //console.log("this.cor = " + this.cor);
+      //console.log("configs.cor = " + configs.cor);
 
       this.oponente = configs.oponente;
       this.dificuldade = configs.dificuldade;
@@ -83,7 +83,7 @@ class Jogo {
       document.getElementById("n_brancas").innerText=("2");
       document.getElementById("n_livres").innerText=("60");      
     } else {
-      console.log("jogo já criado");
+      //console.log("jogo já criado");
       return Jogo.instancia;
     }
   }
@@ -93,7 +93,7 @@ class Jogo {
   }
 
   static elimina() {
-    console.log("apagando instancia");
+    //console.log("apagando instancia");
     Jogo.instancia = null;
   }
 }

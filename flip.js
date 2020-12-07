@@ -2,6 +2,7 @@
 //o booleano simulação indica se esta jogada l,c está a acontecer dentro de um minimax
 //para que, caso seja verdadeiro, não sejam modificados elementos html
 
+
 function flip_celula(l,c,conteudo_, vez_, simulacao) {
 
   conteudo_[l][c] = vez_;
@@ -25,6 +26,40 @@ function flip_celula(l,c,conteudo_, vez_, simulacao) {
     }
   }
 }
+
+/*
+async function flip_celula(l,c,conteudo_, vez_, simulacao) {
+
+  conteudo_[l][c] = vez_;
+  
+  if(!simulacao) {
+    let jogo = Jogo.getInstancia();
+    let peca = jogo.tabuleiro[l][c].firstChild;
+
+
+  //console.log("("+l+","+c+") = " + conteudo_[l][c]);
+
+
+    if(vez_=='P') {
+      //peca.className = "peca preto";
+      //animar1(peca, "black");
+      let string = await animar2(peca, "red","black");
+      console.log("flip terminou");
+      resolve(string);
+
+      } else {
+      //peca.className = "peca branco";
+      //animar1(peca, "red");
+
+      return new Promise(async (resolve, reject) => {
+        let string = await animar2(peca, "black","red");
+        console.log("flip terminou");
+        resolve(string);
+      })
+    }
+  }
+}
+*/
 
 function flip_linha(dl, dc, l, c, conteudo_, vez_, simulacao) {     
   if((l+dl < 0) || (l+dl > 7)) {

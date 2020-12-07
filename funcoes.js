@@ -3,7 +3,7 @@
 //fazia mais sentido usar minimax só no else?
 function mensagem(msg) {
   document.getElementById("mensagemdavez").innerText=(msg);
-  console.log(msg);
+  //console.log(.log(msg);
 }
 
 function animar_validas(peca, cor) {
@@ -57,7 +57,7 @@ function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
 }
 
 function animar2(peca, cor, outra) {
-  console.log("animando");
+  //console.log("animando");
 
 
   let raio = (peca.width)/2;
@@ -95,59 +95,65 @@ function animar2_aux(peca, r, alpha, velocity, cor, outra) {
 }
 
 /*
-function animar2(l, c, cor1, cor2) { 
-  var jogo = Jogo.getInstancia();
-  let canvas = jogo.tabuleiro[l][c].firstChild;
+async function animar2(peca, cor, outra) {
+  //console.log(.log("animando");
 
-  let raioY = (canvas.width)/2; // 96/2 = 48 (mod 3 = 0)
-  let raioX = raioY;
-  let delta = 3;
 
-  let ctx = canvas.getContext("2d");
-  console.log("comecou com cor = " + cor1);
+  let r = (peca.width)/2;
+  let alpha = r;
+  let velocity = 3;
 
-  animar2_aux(canvas, raioX, raioY, delta, cor1, cor2);
+  let ctx = peca.getContext("2d");
+
+
+  return new Promise( async (resolve, reject) => {
+    let string = await animar2_aux(peca, r, alpha, velocity, cor, outra);
+    console.log("1 terminou");
+    resolve(string);
+  })
+  
 }
 
-function animar2_aux(canvas, raioX, raioY, delta, cor1, cor2) {
-  canvas.width = canvas.width;
-  let ctx = canvas.getContext("2d");
-  
-  ctx.beginPath();
-  //ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle [, anticlockwise]);
-  ctx.ellipse(raioY, raioY, raioX, raioY, 0, 0, Math.PI * 2, false);
-  ctx.fillStyle = cor1;
-  ctx.fill();
- 
-  raioX -= delta;
+async function animar2_aux(peca, r, alpha, velocity, cor, outra) {
+  return new Promise((resolve, reject) => {
+    peca.width = peca.width;
+    let ctx = peca.getContext("2d");
     
-  if(raioX < delta) { //se largura é menor que delta(3) -> só raioX=0
-    delta = -delta;   //começa a aumentar
-    cor1 = cor2;
-    console.log("mudou!! cor = " + cor1);
-  }
+    ctx.beginPath()
+    ctx.ellipse(r, r, alpha, r, 0, 0, Math.PI * 2, false);
+    ctx.fillStyle = cor;
+    ctx.fill();
+   
+    alpha -= velocity;
+      
+    if(alpha < velocity) {
+      velocity = -velocity;
+      cor = outra;
+    }
+    
+    if(alpha > r) {
+      console.log("2 terminou");
+      resolve("terminei!");
+    }
+    
 
-  
-  if(raioX >= raioY) { //se é circulo sai
-    console.log("parou com cor = " + cor1);
-    //ctx.restore();
-    //return;
-  } else {  
-    //setInterval(animar2_aux(canvas, raioX, raioY, delta, cor1, cor2), 1000);
-    requestAnimationFrame(()=>(animar2_aux(canvas, raioX, raioY, delta, cor1, cor2)));
-  }
-}*/
+    return new Promise( async (resolve, reject) => {
+      let string = await animar2_aux(peca, r, alpha, velocity, cor, outra);
+      resolve(string);
 
-
+    })
+  })
+}
+*/
 
 function computador() {
   var jogo = Jogo.getInstancia();
-  console.log("computador");
-    console.log(jogo.conteudo);
+  //console.log(.log("computador");
+    //console.log(.log(jogo.conteudo);
 
 
   if(jogo.pode_passar) {
-    console.log("computador passou a vez");
+    //console.log(.log("computador passou a vez");
     document.getElementById("mensagemdavez").innerText=("O computador passou a vez.");
     jogo.pode_passar = false;
   }
@@ -157,7 +163,7 @@ function computador() {
     let l = jogada[1];
     let c = jogada[2];
     play(l,c,jogo.conteudo,jogo.vez,false);
-    console.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
+    //console.log(.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
   }
 
   atualiza_contagem();
@@ -166,15 +172,15 @@ function computador() {
 
 function humano_offline(l, c) {
   var jogo = Jogo.getInstancia();
-    console.log(jogo.conteudo);
+    //console.log(.log(jogo.conteudo);
 
 
   if(vez_humano()) {
-      console.log("jogadas legais: " + jogo.jogadas_legais[l][c]);
+      //console.log(.log("jogadas legais: " + jogo.jogadas_legais[l][c]);
       
       if(jogo.jogadas_legais[l][c] == jogo.vez){ 
         play(l, c,jogo.conteudo,jogo.vez,false);
-        console.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
+        //console.log(.log("("+l+","+c+") = " + jogo.conteudo[l][c]);
         atualiza_contagem();
         MudarDeVez();
       }
@@ -196,7 +202,7 @@ function humano_online(l, c) {
 //joga essa jogada, soma_pecas e muda de vez
 function humano(l, c) {
   var jogo = Jogo.getInstancia();
-  console.log("humano");
+  //console.log(.log("humano");
 
   if(jogo.oponente == "Computador") {
     humano_offline(l,c);
@@ -254,7 +260,7 @@ function terminar_online() {
       mensagem("Foi empate.");
       alert("Foi empate.");
   } else if(jogo.vencedor == "") {
-      console.log("saiu.");
+      //console.log(.log("saiu.");
   } else {
       mensagem( jogo.vencedor + " ganhou o jogo!");
       alert( jogo.vencedor + " ganhou o jogo!");
@@ -292,9 +298,9 @@ function terminar_offline() {
       }
       else {
         jogo.vencedor = "empate";
-        console.log("pretas: " + p);
-        console.log("brancas: " + b);
-        console.log("livres: " + li);
+        //console.log(.log("pretas: " + p);
+        //console.log(.log("brancas: " + b);
+        //console.log(.log("livres: " + li);
         mensagem("Foi um empate!");
         alert("Foi um empate!");
       }
@@ -308,7 +314,7 @@ function terminar_offline() {
 //acrescentar timeout antes de apagar para dar tempo de ler as msgs???
 function terminar() {
   var jogo = Jogo.getInstancia();
-  console.log("terminando....");
+  //console.log(.log("terminando....");
 
   if(jogo.oponente == "Computador") {    
     terminar_offline();
@@ -376,9 +382,11 @@ function formata_validas() {
 }
 
 function comecar() {
-    console.log("comecando");
+    //console.log(.log("comecando");
   oposto_vez(false);
   var jogo = Jogo.getInstancia();
+  
+
   /*
   let peca1 = jogo.tabuleiro[3][3].firstChild;
   let peca2 = jogo.tabuleiro[4][4].firstChild;
@@ -395,6 +403,8 @@ function comecar() {
   animar1(peca3, "black");
   animar1(peca4, "black");
   */
+
+
   //teste passar
   let peca1 = jogo.tabuleiro[0][0].firstChild;
   let peca2 = jogo.tabuleiro[0][1].firstChild;
@@ -410,6 +420,8 @@ function comecar() {
   animar1(peca2, "red");
   animar1(peca3, "black");
   animar1(peca4, "black");
+  
+
 
   MudarDeVez();
 }
@@ -417,7 +429,7 @@ function comecar() {
 function MudarDeVez(){
   var jogo = Jogo.getInstancia();
 
-  console.log(jogo.conteudo);
+  //console.log(.log(jogo.conteudo);
 
   if(terminou() || jogo.desistiu == true) {
     terminar();
@@ -431,11 +443,11 @@ function MudarDeVez(){
   if(n_jogadas_vez == 0)
     jogo.pode_passar = true;
 
-  //console.log(jogo.jogadas_legais);
+  ////console.log(.log(jogo.jogadas_legais);
   formata_validas();
 
   if(vez_computador()) { //vez do oponente oponente(oponente==computador? computador() : timeout/update )
-    setTimeout(function(){ computador(); }, 3000);
+    setTimeout(function(){ computador(); }, 1500);
   }     
 }
 
@@ -471,7 +483,7 @@ function oposto_vez(imprime){
 
     if(imprime) {
       document.getElementById("mensagemdavez").innerText="É a vez das peças pretas.";
-      console.log("vez do preto");
+      //console.log(.log("vez do preto");
     }
   }
   else if(jogo.vez =='P'){
@@ -479,7 +491,7 @@ function oposto_vez(imprime){
 
     if(imprime) {
       document.getElementById("mensagemdavez").innerText="É a vez das peças brancas.";
-      console.log("vez do branco");
+      //console.log(.log("vez do branco");
     }
   }
 }
@@ -492,7 +504,7 @@ function mostraMostra() {
 //informa o servidor que sai do jogo
 function apagar() {
   var jogo = Jogo.getInstancia();
-  console.log("apagando");
+  //console.log(.log("apagando");
 
   Configs.reset();
   mostraMostra();
@@ -514,7 +526,7 @@ function passa() {
   var jogo = Jogo.getInstancia();
 
   if(jogo.pode_passar && vez_humano()) {
-      console.log("jogador passou!");
+      //console.log(.log("jogador passou!");
 
       if(jogo.oponente == "Computador")  {
         jogo.pode_passar = false;
@@ -526,7 +538,7 @@ function passa() {
 
         notify(nick, pass , null);
       }
-      
+
   } else {
     if(vez_humano())
       mensagem("Ainda tens jogadas possíveis! Não podes passar a vez.");
@@ -538,7 +550,7 @@ function passa() {
 //se utilizador clica desistiu esta função é chamada
 //e desistiu passa a ter valor true
 function desistir() {
-  console.log("jogador desistiu!");
+  //console.log(.log("jogador desistiu!");
 
   var jogo = Jogo.getInstancia();
   jogo.desistiu = true;
@@ -564,14 +576,8 @@ function terminou() {
   let jogadas_legaisP  = calcular_legais(jogo.conteudo, 'P');
   let nP               = count_legais(jogadas_legaisP);
 
-  /*
-  console.log("Jogadas legais de preto:");
-  console.log(jogadas_legaisP);
-  console.log("Jogadas legais de branco:");
-  console.log(jogadas_legaisB);
-  */
   if(nB == 0 && nP == 0) {
-    console.log("jogo terminou");
+    //console.log(.log("jogo terminou");
     return true;
   }
   else

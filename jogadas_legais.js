@@ -75,7 +75,7 @@ function is_legal(conteudo_, v, dl, dc, l, c) {
     for(let l = 0; l<8; l++) {    
       for(let c=0; c<8; c++) {
         if(legais[l][c] != ' ') {
-          //console.log(legais[l][c]);
+          ////console.log(legais[l][c]);
           count ++;
         }
       }
