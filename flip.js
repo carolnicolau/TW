@@ -11,10 +11,6 @@ function flip_celula(l,c,conteudo_, vez_, simulacao) {
     let jogo = Jogo.getInstancia();
     let peca = jogo.tabuleiro[l][c].firstChild;
 
-    
-  console.log("("+l+","+c+") = " + conteudo_[l][c]);
-
-
     if(vez_=='P') {
       //peca.className = "peca preto";
       //animar1(peca, "black");

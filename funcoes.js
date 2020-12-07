@@ -46,8 +46,9 @@ function animar1_aux(c, x, y, cw, ch, velocidade, raio, cor) {
   c.fillStyle=cor;
   c.fill();
 
-  if (x+raio>cw || raio<0) {
-    velocidade=-velocidade;
+  //if(x+raio>cw || raio<0) {
+    //velocidade=-velocidade;
+  if(x+raio>=cw) {
     return;  
   }  
   
