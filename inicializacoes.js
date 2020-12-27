@@ -12,6 +12,7 @@ window.onload = function() {
   document.getElementById("Login").onclick = function() {
     const nick = document.getElementById("User").value;
     const pass = document.getElementById("Pass").value;
+
     if(nick=='' || pass=='') {
       document.getElementById("mensagemdavez").innerText=("Preencha os campos username e password.");
       return;
@@ -32,7 +33,7 @@ window.onload = function() {
     } else {
       ranking();
     }
-  } 
+  }
   span[0].onclick = function() { //regras
     janela[0].style.display = "none";
   }
@@ -52,7 +53,7 @@ window.onload = function() {
   document.getElementById("preto").onclick = function() {
     configs.cor = (document.getElementById("preto").value);
     document.getElementById("mensagemdavez").innerText=("Escolheste as peças pretas.");
-  } 
+  }
 
   document.getElementById("branco").onclick = function() {
     configs.cor = (document.getElementById("branco").value);
@@ -63,7 +64,7 @@ window.onload = function() {
   document.getElementById("computador").onclick = function() {
     document.getElementsByClassName("cor")[0].style.visibility = "visible";
     document.getElementsByClassName("dificuldade")[0].style.visibility = "visible";
-  } 
+  }
 
   document.getElementById("jogador").onclick = function() {
     document.getElementsByClassName("cor")[0].style.visibility = "hidden";
@@ -92,7 +93,7 @@ window.onload = function() {
   document.getElementById("iniciar").onclick = function() {
     selectDificuldade();
     selectOponente();
-    
+
     if(configs.oponente == "Outro Jogador" && user.nick == "" ) {
       ////console.log("User=null");
       document.getElementById("mensagemdavez").innerText=("Para jogar com outros jogadores online, por favor registe-se.");
@@ -105,16 +106,16 @@ window.onload = function() {
         const pass = user.pass;
 
         join(nick, pass);
-        new Jogo(user);  
-        escondeEsconde(); 
+        new Jogo(user);
+        escondeEsconde();
 
       } else if (configs.oponente == "Computador") {
-        
-        new Jogo(user);  
+
+        new Jogo(user);
         comecar();
-        escondeEsconde(); 
- 
-      }      
+        escondeEsconde();
+
+      }
     }
   }
 }
