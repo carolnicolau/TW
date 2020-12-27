@@ -2,13 +2,16 @@ const http = require('http');
 const fs = require('fs');
 const url  = require('url');
 
+fs.readFile('./index.html', function (err, html) {
+    if (err) {
+        throw err;
+    }
 const server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url,true);
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
 
-  const dados = {frase: 'olá'};
-  escrever(dados, 'ranking.json');
+  inicializarFichs();
 
   switch(request.method) {
     case 'GET':
@@ -24,6 +27,7 @@ const server = http.createServer(function (request, response) {
 });
 
 server.listen(8155);
+});
 
 function path(pathname, query, request, response) {
   switch(pathname) {
@@ -65,50 +69,57 @@ function check(query, response) {
   } else if(typeof(query.nick) == "string" && typeof(query.pass) == "string") {
     console.log("Entrou");
 
-    fs.readFile('utilizadores.json',function(err,data) {
-      if(err) { //criar ao inicializar?
-        console.log("Criando ficheiro");
-        mapa.set(query.nick, query.pass);
+    fs.readFile('utilizadores.json', function(err,data) {
+      if(!err) {
+        //let mapa = new ObjectMapper().readValue(data.toString(), HashMap.class);
+        let serialMap = JSON.parse(data.toString());
+        //let mapa = new Map(Object.entries(obj));
 
-        try { escrever(mapa, 'utilizadores.json');
-        } catch(err) {  console.log("Erro escrita ficheiro"); }
 
-        response.writeHead(200);
-        response.write(JSON.stringify({}));
+        let mapa = new Map(JSON.parse(serialMap));
+
+        console.log(mapa);
+        console.log(serialMap);
+
+
+
+        let pass = mapa.get(query.nick);
+
+        if(pass == undefined) { //se não está definido, regista
+          console.log("Registando utilizador.");
+          mapa.set(query.nick, query.pass);
+
+          try {
+            let serialMap = JSON.stringify(Array.from(mapa.entries()));
+            console.log(serialMap);
+            escrever(serialMap, 'utilizadores.json');
+        } catch(err) {  console.log("Erro escrita ficheiro."); }
+
+          response.writeHead(200);
+          let msg = JSON.stringify({});
+          response.write(msg);
+          response.end();
+          console.log("aqui");
+        }
+        else if(query.pass === pass) { //se está definido e com a pass correta dá 200
+          console.log("OK");
+          response.writeHead(200);
+          response.write(JSON.stringify({}));
+          response.end();
+        }
+        else {
+          console.log("Password errada.");
+          response.writeHead(401);
+          response.write(JSON.stringify({ error : "Password errada." }));
+          response.end();
+        }
+      } else {
+        console.log("Erro interno do servidor");
+        response.writeHead(500);
+        response.write(JSON.stringify({ error : "Erro interno do servidor." }));
         response.end();
       }
-          let mapa = JSON.parse(data.toString());
-          let pass = mapa.get(query.nick);
-
-          if(query.pass === undefined) { //se não está definido, regista
-            console.log("Registando user");
-            mapa.set(query.nick, query.pass);
-
-            try { escrever(mapa, 'utilizadores.json');
-            } catch(err) {  console.log("Erro escrita ficheiro"); }
-
-            response.writeHead(200);
-            response.write(JSON.stringify({}));
-            response.end();
-          }
-          else if(query.pass === pass) { //se está definido e com a pass correta dá 200
-            console.log("OK");
-            response.writeHead(200);
-            response.write(JSON.stringify({}));
-            response.end();
-          }
-          else {
-            console.log("Utilizador registou-se com password diferente");
-            response.writeHead(401);
-            response.write(JSON.stringify({ error : "Utilizador registou-se com password diferente" }));
-            response.end();
-          }
     });
-  } else {
-    console.log("Erro interno do servidor");
-    response.writeHead(500);
-    response.write(JSON.stringify({ error : "Erro interno do servidor" }));
-    response.end();
   }
 }
 
@@ -138,8 +149,20 @@ function ranking(response) {
   });
 }
 
-function escrever(dados, file) {
-  fs.writeFile(file, JSON.stringify(dados),(err) => {
+function inicializarFichs() {
+  let mapa = new Map();
+  let serialMap = JSON.stringify(Array.from(mapa.entries()));
+  console.log(serialMap);
+
+  try { escrever(serialMap, 'utilizadores.json');}
+  catch(err) { console.log("Erro na criação do ficheiro " + fileName ); }
+
+  try { escrever({}, 'ranking.json');}
+  catch(err) { console.log("Erro na criação do ficheiro " + fileName ); }
+}
+
+function escrever(dados, fileName) {
+  fs.writeFile(fileName, JSON.stringify(dados),(err) => {
       if(err) throw err;
   });
 }
