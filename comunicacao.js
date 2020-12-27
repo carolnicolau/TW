@@ -1,7 +1,8 @@
 /*
   registar.onclick usar requires
 */
-var server = "http://twserver.alunos.dcc.fc.up.pt:8008/";
+//var server = "http://twserver.alunos.dcc.fc.up.pt:8008/";
+var server = "http://localhost:8155/";
 var group = 55;
 var game;
 var eventSource;
@@ -23,12 +24,12 @@ function register(nick, pass) {
           response.json().then((response) => mensagem(response.error));
        }
     })
-	.catch(()=>mensagem("Erro na autenticação.")); 
+	.catch(()=>mensagem("Erro na autenticação."));
 }
 
 function atualizar_classific(ranking) {
   const tabela = document.getElementById("classifacoes");
-    
+
   const h_linha = document.createElement("tr");
 	const h_jogador = document.createElement("th");
 	const h_vitorias = document.createElement("th");
@@ -36,7 +37,7 @@ function atualizar_classific(ranking) {
 	const h_jog = document.createTextNode("Jogador");
 	const h_vit = document.createTextNode("Vitórias");
 	const h_jogo = document.createTextNode("Jogos");
-    
+
   tabela.appendChild(h_linha);
   h_linha.appendChild(h_jogador);
   h_linha.appendChild(h_vitorias);
@@ -44,7 +45,7 @@ function atualizar_classific(ranking) {
   h_jogador.appendChild(h_jog);
   h_vitorias.appendChild(h_vit);
   h_jogos.appendChild(h_jogo);
-	
+
   for(let i=0; i<ranking.length; i++) {
     const linha = document.createElement("tr");
     const jogador = document.createElement("td");
@@ -68,14 +69,14 @@ function ranking() {
     //console.log("ranking");
 
 	var object = {};
-	var JSONData = JSON.stringify(object); 
+	var JSONData = JSON.stringify(object);
 
 
 	fetch(server + "ranking" , {
     method: 'POST',
     body: JSONData
     })
-    
+
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
@@ -95,14 +96,14 @@ function join(nick, pass) {
 
 	var object = {group, nick, pass};
   //console.log(object);
-	var JSONData = JSON.stringify(object); 
+	var JSONData = JSON.stringify(object);
 
 
 	fetch(server + "join" , {
 	    method: 'POST',
 	    body: JSONData
     })
-    
+
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
@@ -123,7 +124,7 @@ function join(nick, pass) {
 
   				//console.log(data);
           //console.log("cor = " + Configs.getInstancia().cor);
-          
+
           update(nick, data.color);
 
        		} else {
@@ -140,22 +141,22 @@ function leave(nick, pass, id) {
 	var object = {nick, pass, game};
         //console.log(object);
 
-	var JSONData = JSON.stringify(object); 
+	var JSONData = JSON.stringify(object);
 
 
 	fetch(server + "leave" , {
 	    method: 'POST',
 	    body: JSONData
     })
-    
+
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
   				//console.log(data);
           eventSource.close();
        	} else {
-       		mensagem(data.error); 
-          
+       		mensagem(data.error);
+
           if(data.error == "Not a valid game")  {
             //console.log("NÃO É VÁLIDO");
             //console.log(Jogo.getInstancia());
@@ -176,7 +177,7 @@ function notify(nick, pass, move) {
   //console.log("notify");
 
 	var object = {nick, pass, game, move};
-	var JSONData = JSON.stringify(object); 
+	var JSONData = JSON.stringify(object);
 
   //console.log(JSONData);
 
@@ -184,11 +185,11 @@ function notify(nick, pass, move) {
 	    method: 'POST',
 	    body: JSONData
     })
-    
+
   	.then( function(response) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
-  				//console.log(data); 
+  				//console.log(data);
 
        		} else {
        			mensagem(data.error); //?
@@ -203,19 +204,19 @@ function update(nick, cor) {
   //console.log("UPDATE");
   //console.log("id: " + game);
   var jogo = Jogo.getInstancia();
-  
+
   var object = "update?nick=" + nick + "&game=" + game;
   let encoded = encodeURI(object);
   eventSource = new EventSource(server + encoded);
-  
+
   //eventSource = new EventSource(server + "update?nick=" + nick + "&game=" + game);
-  
+
   eventSource.onmessage = function(event) {
 
       const data = JSON.parse(event.data);
 
-      //console.log("on message: "); 
-      //console.log(data);     
+      //console.log("on message: ");
+      //console.log(data);
 
       if(data.winner !== undefined) {
         jogo.vencedor = data.winner;
@@ -240,7 +241,7 @@ function update(nick, cor) {
                 animar1(peca, "black");
               else if(jogo.conteudo[i][j] == 'B')
                 animar2(peca, "FloralWhite", "black");
-              
+
               jogo.conteudo[i][j] = 'P';
             }
 
@@ -251,14 +252,14 @@ function update(nick, cor) {
                 animar1(peca, "FloralWhite");
               else if(jogo.conteudo[i][j] == 'P')
                 animar2(peca, "black", "FloralWhite");
-              
+
               jogo.conteudo[i][j] = 'B';
             }
           }
         }
         //atualizar_tabuleiro();
 
-        jogo.vez = data.turn; 
+        jogo.vez = data.turn;
         mensagem("É a vez de " + data.turn);
 
         jogo.contagem.light = data.count.light;
@@ -273,6 +274,6 @@ function update(nick, cor) {
   }
 
   eventSource.onerror = function(event) {
-    mensagem("Erro no update."); 
+    mensagem("Erro no update.");
   }
 }
