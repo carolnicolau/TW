@@ -1,35 +1,109 @@
 const http = require('http');
 const fs = require('fs');
 const url  = require('url');
+const path = require('path');
+const conf = require('./conf.js');
 
 const server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url,true);
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
 
-  inicializarFichs();
+  //inicializarFichs();
 
   switch(request.method) {
     case 'GET':
-      path(pathname, query, request, response);
+      doGetRequest(pathname, query, request, response);
       break;
     case 'POST':
-      path(pathname, query, request, response);
+      doPostRequest(pathname, query, request, response);
       break;
     default:
-      response.writeHead(500);
+      response.writeHead(501);
       response.end();
     }
 });
 
-server.listen(8155);
+server.listen(conf.port);
 
-function path(pathname, query, request, response) {
+function doGetRequest(pathn, query, request, response) {
+  const pathname = getPathname(request);
+  console.log("GET request: " + pathn);
+  console.log("Pathname: " + pathname);
+
+    if(pathname === null) {
+        response.writeHead(403); // Forbidden
+        response.end();
+        console.log("Forbidden");
+    } else
+        fs.stat(pathname,(err,stats) => {
+            if(err) {
+                response.writeHead(500); // Internal Server Error
+                response.end();
+                console.log("Internal Server Error");
+
+            } else if(stats.isDirectory()) {
+                if(pathname.endsWith('/')) {
+                  console.log("do GET pathname: " + pathname+conf.defaultIndex);
+                   doGetPathname(pathname+conf.defaultIndex,response);
+                } else {
+                  console.log("Moved Permanently");
+
+                   response.writeHead(301, // Moved Permanently
+                                      {'Location': pathname+'/' });
+                   response.end();
+                }
+            } else
+                doGetPathname(pathname,response);
+       });
+}
+
+function getPathname(request) {
+    const purl = url.parse(request.url);
+    let pathname = path.normalize(conf.documentRoot+purl.pathname);
+
+    if(! pathname.startsWith(conf.documentRoot))
+       pathname = null;
+
+    return pathname;
+}
+
+function doGetPathname(pathname,response) {
+    const mediaType = getMediaType(pathname);
+    const encoding = isText(mediaType) ? "utf8" : null;
+
+    fs.readFile(pathname,encoding,(err,data) => {
+    if(err) {
+        response.writeHead(404); // Not Found
+        response.end();
+    } else {
+        response.writeHead(200, { 'Content-Type': mediaType });
+        response.end(data);
+    }
+  });
+}
+
+function getMediaType(pathname) {
+    const pos = pathname.lastIndexOf('.');
+    let mediaType;
+
+    if(pos !== -1)
+       mediaType = conf.mediaTypes[pathname.substring(pos+1)];
+
+    if(mediaType === undefined)
+       mediaType = 'text/plain';
+    return mediaType;
+}
+
+function isText(mediaType) {
+    if(mediaType.startsWith('image'))
+      return false;
+    else
+      return true;
+}
+
+function doPostRequest(pathname, query, request, response) {
   switch(pathname) {
-      case '/index.html':
-        console.log('index!');
-        pagina(response);
-        break;
       case '/ranking':
         console.log('ranking');
         ranking(response);
@@ -43,13 +117,6 @@ function path(pathname, query, request, response) {
 }
 
 function check(query, response) {
-  console.log("olá");
-
-  console.log("nick: " + query.nick);
-  console.log("pass: " + query.pass);
-  console.log("type of nick: " + typeof(query.nick));
-  console.log("type of pass: " + typeof(query.pass));
-
   if(query == undefined || query == null) {
     console.log("User e password não definidos");
     response.writeHead(400);
@@ -66,31 +133,36 @@ function check(query, response) {
     response.write(JSON.stringify({ error : "Password não definida" }));
     response.end();
   } else if(typeof(query.nick) == "string" && typeof(query.pass) == "string") {
-    console.log("Entrou");
 
     fs.readFile('utilizadores.json', function(err,data) {
       if(!err) {
-        //let mapa = new ObjectMapper().readValue(data.toString(), HashMap.class);
+
+        console.log(data);
+
+        console.log(data.toString());
+
         let serialMap = JSON.parse(data.toString());
-        //let mapa = new Map(Object.entries(obj));
-
-
         let mapa = new Map(JSON.parse(serialMap));
 
+
+
         console.log(mapa);
-        console.log(serialMap);
+        console.log("Mapa serializado: " + serialMap);
 
 
 
         let pass = mapa.get(query.nick);
 
-        if(pass == undefined) { //se não está definido, regista
+        if(pass === undefined) { //se não está definido, regista
           console.log("Registando utilizador.");
-          mapa.set(query.nick, query.pass);
+          //mapa.set(query.nick, query.pass);
+          mapa.push({""});
 
           try {
-            let serialMap = JSON.stringify(Array.from(mapa.entries()));
-            console.log(serialMap);
+            //let serialMap = JSON.stringify(Array.from(mapa.entries()));
+            let serialMap = JSON.stringify(mapa);
+
+            console.log("Mapa serializado: " + serialMap);
             escrever(serialMap, 'utilizadores.json');
         } catch(err) {  console.log("Erro escrita ficheiro."); }
 
@@ -98,7 +170,6 @@ function check(query, response) {
           let msg = JSON.stringify({});
           response.write(msg);
           response.end();
-          console.log("aqui");
         }
         else if(query.pass === pass) { //se está definido e com a pass correta dá 200
           console.log("OK");
@@ -132,7 +203,6 @@ function register(request, response) {
                query = JSON.parse(body);  /* processar query */
              } catch(err) {  console.log("Erro json"); }
              console.log("O pedido: " + body);
-             console.log(query);
              check(query, response);
       })
       .on('error', (err) => { console.log(err.message); });
@@ -141,32 +211,29 @@ function register(request, response) {
 function ranking(response) {
   fs.readFile('ranking.json',function(err,data) {
       if(! err) {
-          //dados = JSON.parse(data.toString());
+          dados = JSON.parse(data.toString());
           response.writeHead(200, {'Content-Type': 'application/json'});
-          response.end(data);
+          response.end(dados);
+          console.log(dados);
       }
   });
 }
 
-function pagina(response) {
-  fs.readFile('index.html',function(err,data) {
-      if(! err) {
-          //dados = JSON.parse(data.toString());
-          response.writeHead(200, {'Content-Type': 'text/html'});
-          response.end(data);
-      }
-  });
-}
+
 
 function inicializarFichs() {
-  let mapa = new Map();
-  let serialMap = JSON.stringify(Array.from(mapa.entries()));
-  console.log(serialMap);
+  //let mapa = new Map();
+  //let serialMap = JSON.stringify(Array.from(mapa.entries()));
+  let obj = {ranking : []};
+  let serialObj = JSON.stringify(obj);
 
-  try { escrever(serialMap, 'utilizadores.json');}
+  let array = {utilizadores : []}
+  let serialArr = JSON.stringify(obj);
+
+  try { escrever(serialArr, 'utilizadores.json');}
   catch(err) { console.log("Erro na criação do ficheiro utilizadores.json"); }
 
-  try { escrever({}, 'ranking.json');}
+  try { escrever(serialObj, 'ranking.json');}
   catch(err) { console.log("Erro na criação do ficheiro ranking.json"); }
 }
 
