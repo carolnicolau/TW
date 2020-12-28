@@ -1,8 +1,8 @@
 /*
   registar.onclick usar requires
 */
-//var server = "http://twserver.alunos.dcc.fc.up.pt:8008/";
-var server = "http://localhost:8155/";
+var server = "http://twserver.alunos.dcc.fc.up.pt:8155/public_html/";
+//var server = "http://localhost:8155/";
 var group = 55;
 var game;
 var eventSource;

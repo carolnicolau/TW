@@ -2,10 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const url  = require('url');
 
-fs.readFile('./index.html', function (err, html) {
-    if (err) {
-        throw err;
-    }
 const server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url,true);
   const pathname = parsedUrl.pathname;
@@ -27,10 +23,13 @@ const server = http.createServer(function (request, response) {
 });
 
 server.listen(8155);
-});
 
 function path(pathname, query, request, response) {
   switch(pathname) {
+      case '/index.html':
+        console.log('index!');
+        pagina(response);
+        break;
       case '/ranking':
         console.log('ranking');
         ranking(response);
@@ -149,16 +148,26 @@ function ranking(response) {
   });
 }
 
+function pagina(response) {
+  fs.readFile('index.html',function(err,data) {
+      if(! err) {
+          //dados = JSON.parse(data.toString());
+          response.writeHead(200, {'Content-Type': 'text/html'});
+          response.end(data);
+      }
+  });
+}
+
 function inicializarFichs() {
   let mapa = new Map();
   let serialMap = JSON.stringify(Array.from(mapa.entries()));
   console.log(serialMap);
 
   try { escrever(serialMap, 'utilizadores.json');}
-  catch(err) { console.log("Erro na criação do ficheiro " + fileName ); }
+  catch(err) { console.log("Erro na criação do ficheiro utilizadores.json"); }
 
   try { escrever({}, 'ranking.json');}
-  catch(err) { console.log("Erro na criação do ficheiro " + fileName ); }
+  catch(err) { console.log("Erro na criação do ficheiro ranking.json"); }
 }
 
 function escrever(dados, fileName) {
