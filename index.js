@@ -151,26 +151,27 @@ function register(query, response) {
     response.end();
   } else if(typeof(query.nick) == "string" && typeof(query.pass) == "string") {
 
-    let data = fs.readFileSync('utilizadores.json');
-    //fs.readFile('utilizadores.json', function(err,data) {
-      //if(!err) {
+    //let data = fs.readFileSync('utilizadores.json');
+    fs.readFile('utilizadores.json', function(err,data) {
+      if(!err) {
         //let serialMap = JSON.parse(data.toString());
         //let mapa = new Map(JSON.parse(serialMap));
+
 
         let users;
         try {users = JSON.parse(data);}
         catch(err) {console.log("ERRO!");}
 
-        let arr = users.users;
+        //let arr = users.users;
         console.log("users:")
-        console.log(arr);
+        console.log(users);
 
         //let mapa = new Map(users.users);
 
         let pass = null;
         let nick = null;
 
-        for(let user of arr) {
+        for(let user of users) {
           console.log("user of users: " + user);
           if(user.nick === query.nick) {
             console.log("Existe!");
@@ -186,9 +187,12 @@ function register(query, response) {
         if(pass == null) { //se não está definido, regista
           console.log("Registando utilizador.");
           //mapa.set(query.nick, query.pass);
-          arr.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
 
-          users.users = arr;
+          /*arr.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
+          users.users = arr;*/
+
+          users.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
+
           escrever(users, 'utilizadores.json');
           /*
           try {
@@ -219,13 +223,13 @@ function register(query, response) {
           response.write(JSON.stringify({ error : "Password errada." }));
           response.end();
         }
-      /*} else {
+      } else {
         console.log("Erro interno do servidor");
         response.writeHead(500);
         response.write(JSON.stringify({ error : "Erro interno do servidor." }));
         response.end();
       }
-    });*/
+    });
   }
 }
 
@@ -256,7 +260,7 @@ function join(query, response) {
 
 
 function inicializarFichs() {
-  let users = {users : []};
+  let users = [];
 //let serialUsers = JSON.stringify(users);
 
   let ranking = {ranking : []};
@@ -284,8 +288,8 @@ function escrever(dados, fileName) {
   console.log("dados: " + dados);
   console.log("dados serializ: " + serialDados);
 
-  fs.writeFileSync(fileName, serialDados);
-  /*fs.writeFile(fileName, serialDados,(err) => {
+  //fs.writeFileSync(fileName, serialDados);
+  fs.writeFile(fileName, serialDados,(err) => {
       if(err) throw err;
-  });*/
+  });
 }
