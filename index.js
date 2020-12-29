@@ -2,6 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const url  = require('url');
 const path = require('path');
+const crypto = require('crypto');
 const conf = require('./conf.js');
 
 const server = http.createServer(function (request, response) {
@@ -9,7 +10,7 @@ const server = http.createServer(function (request, response) {
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
 
-  inicializarFichs();
+  //inicializarFichs();
 
   switch(request.method) {
     case 'GET':
@@ -103,20 +104,36 @@ function isText(mediaType) {
 }
 
 function doPostRequest(pathname, query, request, response) {
-  switch(pathname) {
-      case '/ranking':
-        console.log('ranking');
-        ranking(response);
-        break;
-      case '/register':
-        console.log('register');
-        register(request, response);
-        break;
-      default:
-    }
+  let body = '';
+
+  request
+      .on('data', (chunk) => { body += chunk;  })
+      .on('end', () => {
+             try {
+               query = JSON.parse(body);  /* processar query */
+             } catch(err) {  console.log("Erro json"); }
+             //console.log("O pedido: " + body);
+
+             switch(pathname) {
+                 case '/ranking':
+                   console.log('ranking');
+                   ranking(response);
+                   break;
+                 case '/register':
+                   console.log('register');
+                   register(query, response);
+                   break;
+                 case '/join':
+                   console.log('join');
+                   join(query, response);
+                   break;
+                 default:
+               }
+      })
+      .on('error', (err) => { console.log(err.message); });
 }
 
-function check(query, response) {
+function register(query, response) {
   if(query == undefined || query == null) {
     console.log("User e password não definidos");
     response.writeHead(400);
@@ -140,10 +157,13 @@ function check(query, response) {
         //let serialMap = JSON.parse(data.toString());
         //let mapa = new Map(JSON.parse(serialMap));
 
-        let users = JSON.parse(data.toString());
-        let arr = users.users;
+        let users;
+        try {users = JSON.parse(data);}
+        catch(err) {console.log("ERRO!");}
 
-        console.log("users: " + arr);
+        let arr = users.users;
+        console.log("users:")
+        console.log(arr);
 
         //let mapa = new Map(users.users);
 
@@ -169,8 +189,7 @@ function check(query, response) {
           arr.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
 
           users.users = arr;
-          let serialUsers = JSON.stringify(users);
-          escrever(serialUsers, 'utilizadores.json');
+          escrever(users, 'utilizadores.json');
           /*
           try {
             //let serialMap = JSON.stringify(Array.from(mapa.entries()));
@@ -210,21 +229,6 @@ function check(query, response) {
   }
 }
 
-function register(request, response) {
-  let body = '';
-
-  request
-      .on('data', (chunk) => { body += chunk;  })
-      .on('end', () => {
-             try {
-               query = JSON.parse(body);  /* processar query */
-             } catch(err) {  console.log("Erro json"); }
-             console.log("O pedido: " + body);
-             check(query, response);
-      })
-      .on('error', (err) => { console.log(err.message); });
-}
-
 function ranking(response) {
   fs.readFile('ranking.json',function(err,data) {
       if(! err) {
@@ -234,6 +238,19 @@ function ranking(response) {
           console.log(dados);
       }
   });
+}
+
+function join(query, response) {
+  //group, nick, pass
+  let value = Number(new Date).toString(36);
+  const hash = crypto
+               .createHash('md5')
+               .update(value)
+               .digest('hex');
+  console.log("value: " + value);
+  console.log("game: " + value);
+
+  //game, nick1, nick2
 }
 
 
@@ -249,7 +266,7 @@ function inicializarFichs() {
   //let serialArr = JSON.stringify(obj);
 
   escrever(users, 'utilizadores.json');
-  escrever(users, 'ranking.json');
+  escrever(ranking, 'ranking.json');
   /*
   try { escrever(users, 'utilizadores.json');}
   catch(err) { console.log("Erro na criação do ficheiro utilizadores.json"); }
@@ -260,8 +277,15 @@ function inicializarFichs() {
 }
 
 function escrever(dados, fileName) {
-  fs.writeFileSync(fileName, JSON.stringify(dados));
-  /*fs.writeFile(fileName, JSON.stringify(dados),(err) => {
+  let serialDados;
+  try {serialDados = JSON.stringify(dados);}
+  catch(err) {console.log("ERRO escrita!");}
+
+  console.log("dados: " + dados);
+  console.log("dados serializ: " + serialDados);
+
+  fs.writeFileSync(fileName, serialDados);
+  /*fs.writeFile(fileName, serialDados,(err) => {
       if(err) throw err;
   });*/
 }
