@@ -151,22 +151,15 @@ function register(query, response) {
     response.end();
   } else if(typeof(query.nick) == "string" && typeof(query.pass) == "string") {
 
-    //let data = fs.readFileSync('utilizadores.json');
-    fs.readFile('utilizadores.json', function(err,data) {
+    fs.readFile('dados/utilizadores.json', function(err,data) {
       if(!err) {
-        //let serialMap = JSON.parse(data.toString());
-        //let mapa = new Map(JSON.parse(serialMap));
-
 
         let users;
         try {users = JSON.parse(data);}
         catch(err) {console.log("ERRO!");}
 
-        //let arr = users.users;
         console.log("users:")
         console.log(users);
-
-        //let mapa = new Map(users.users);
 
         let pass = null;
         let nick = null;
@@ -179,32 +172,15 @@ function register(query, response) {
             nick = user.nick;
           }
         }
-
         console.log("\nuser: " + nick + " pass: " + pass);
 
-        //let pass = mapa.get(query.nick);
 
         if(pass == null) { //se não está definido, regista
           console.log("Registando utilizador.");
-          //mapa.set(query.nick, query.pass);
-
-          /*arr.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
-          users.users = arr;*/
 
           users.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
 
-          escrever(users, 'utilizadores.json');
-          /*
-          try {
-            //let serialMap = JSON.stringify(Array.from(mapa.entries()));
-            //let serialMap = JSON.stringify(mapa);
-
-            users.users = arr;
-            let serialUsers = JSON.stringify(users);
-
-            console.log("Users atual: " + serialUsers);
-            escrever(serialUsers, 'utilizadores.json');
-        } catch(err) {  console.log("Erro escrita ficheiro."); }*/
+          escrever(users, 'dados/utilizadores.json');
 
           response.writeHead(200);
           let msg = JSON.stringify({});
@@ -234,12 +210,13 @@ function register(query, response) {
 }
 
 function ranking(response) {
-  fs.readFile('ranking.json',function(err,data) {
+  fs.readFile('dados/ranking.json',function(err,data) {
       if(! err) {
-          dados = JSON.parse(data.toString());
+          dados = data.toString();
           response.writeHead(200, {'Content-Type': 'application/json'});
-          response.end(dados);
           console.log(dados);
+
+          response.end(dados);
       }
   });
 }
@@ -261,23 +238,13 @@ function join(query, response) {
 
 function inicializarFichs() {
   let users = [];
-//let serialUsers = JSON.stringify(users);
-
   let ranking = {ranking : []};
-  //let serialRanking = JSON.stringify(ranking);
 
-  //let array = {users : []};
-  //let serialArr = JSON.stringify(obj);
-
-  escrever(users, 'utilizadores.json');
-  escrever(ranking, 'ranking.json');
-  /*
-  try { escrever(users, 'utilizadores.json');}
+  try { escrever(users, 'dados/utilizadores.json');}
   catch(err) { console.log("Erro na criação do ficheiro utilizadores.json"); }
 
-  try { escrever(users, 'ranking.json');}
+  try { escrever(ranking, 'dados/ranking.json');}
   catch(err) { console.log("Erro na criação do ficheiro ranking.json"); }
-  */
 }
 
 function escrever(dados, fileName) {
@@ -288,7 +255,6 @@ function escrever(dados, fileName) {
   console.log("dados: " + dados);
   console.log("dados serializ: " + serialDados);
 
-  //fs.writeFileSync(fileName, serialDados);
   fs.writeFile(fileName, serialDados,(err) => {
       if(err) throw err;
   });
