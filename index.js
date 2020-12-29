@@ -9,7 +9,7 @@ const server = http.createServer(function (request, response) {
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
 
-  //inicializarFichs();
+  inicializarFichs();
 
   switch(request.method) {
     case 'GET':
@@ -134,37 +134,54 @@ function check(query, response) {
     response.end();
   } else if(typeof(query.nick) == "string" && typeof(query.pass) == "string") {
 
-    fs.readFile('utilizadores.json', function(err,data) {
-      if(!err) {
+    let data = fs.readFileSync('utilizadores.json');
+    //fs.readFile('utilizadores.json', function(err,data) {
+      //if(!err) {
+        //let serialMap = JSON.parse(data.toString());
+        //let mapa = new Map(JSON.parse(serialMap));
 
-        console.log(data);
+        let users = JSON.parse(data.toString());
+        let arr = users.users;
 
-        console.log(data.toString());
+        console.log("users: " + arr);
 
-        let serialMap = JSON.parse(data.toString());
-        let mapa = new Map(JSON.parse(serialMap));
+        //let mapa = new Map(users.users);
 
+        let pass = null;
+        let nick = null;
 
+        for(let user of arr) {
+          console.log("user of users: " + user);
+          if(user.nick === query.nick) {
+            console.log("Existe!");
+            pass = user.pass;
+            nick = user.nick;
+          }
+        }
 
-        console.log(mapa);
-        console.log("Mapa serializado: " + serialMap);
+        console.log("\nuser: " + nick + " pass: " + pass);
 
+        //let pass = mapa.get(query.nick);
 
-
-        let pass = mapa.get(query.nick);
-
-        if(pass === undefined) { //se não está definido, regista
+        if(pass == null) { //se não está definido, regista
           console.log("Registando utilizador.");
           //mapa.set(query.nick, query.pass);
-          mapa.push({""});
+          arr.push({nick : query.nick , pass: query.pass , victories : 0, games: 0});
 
+          users.users = arr;
+          let serialUsers = JSON.stringify(users);
+          escrever(serialUsers, 'utilizadores.json');
+          /*
           try {
             //let serialMap = JSON.stringify(Array.from(mapa.entries()));
-            let serialMap = JSON.stringify(mapa);
+            //let serialMap = JSON.stringify(mapa);
 
-            console.log("Mapa serializado: " + serialMap);
-            escrever(serialMap, 'utilizadores.json');
-        } catch(err) {  console.log("Erro escrita ficheiro."); }
+            users.users = arr;
+            let serialUsers = JSON.stringify(users);
+
+            console.log("Users atual: " + serialUsers);
+            escrever(serialUsers, 'utilizadores.json');
+        } catch(err) {  console.log("Erro escrita ficheiro."); }*/
 
           response.writeHead(200);
           let msg = JSON.stringify({});
@@ -183,13 +200,13 @@ function check(query, response) {
           response.write(JSON.stringify({ error : "Password errada." }));
           response.end();
         }
-      } else {
+      /*} else {
         console.log("Erro interno do servidor");
         response.writeHead(500);
         response.write(JSON.stringify({ error : "Erro interno do servidor." }));
         response.end();
       }
-    });
+    });*/
   }
 }
 
@@ -222,23 +239,29 @@ function ranking(response) {
 
 
 function inicializarFichs() {
-  //let mapa = new Map();
-  //let serialMap = JSON.stringify(Array.from(mapa.entries()));
-  let obj = {ranking : []};
-  let serialObj = JSON.stringify(obj);
+  let users = {users : []};
+//let serialUsers = JSON.stringify(users);
 
-  let array = {utilizadores : []}
-  let serialArr = JSON.stringify(obj);
+  let ranking = {ranking : []};
+  //let serialRanking = JSON.stringify(ranking);
 
-  try { escrever(serialArr, 'utilizadores.json');}
+  //let array = {users : []};
+  //let serialArr = JSON.stringify(obj);
+
+  escrever(users, 'utilizadores.json');
+  escrever(users, 'ranking.json');
+  /*
+  try { escrever(users, 'utilizadores.json');}
   catch(err) { console.log("Erro na criação do ficheiro utilizadores.json"); }
 
-  try { escrever(serialObj, 'ranking.json');}
+  try { escrever(users, 'ranking.json');}
   catch(err) { console.log("Erro na criação do ficheiro ranking.json"); }
+  */
 }
 
 function escrever(dados, fileName) {
-  fs.writeFile(fileName, JSON.stringify(dados),(err) => {
+  fs.writeFileSync(fileName, JSON.stringify(dados));
+  /*fs.writeFile(fileName, JSON.stringify(dados),(err) => {
       if(err) throw err;
-  });
+  });*/
 }
