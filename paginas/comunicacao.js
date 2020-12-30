@@ -122,6 +122,7 @@ function join(nick, pass) {
           }
   				game = data.game;
 
+					console.log(game);
   				//console.log(data);
           //console.log("cor = " + Configs.getInstancia().cor);
 
