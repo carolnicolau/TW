@@ -45,10 +45,9 @@ exports.doPostRequest = function(pathname, query, request, response) {
 function register(query, response) {
   if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
     console.log("args checked");
-    if(check.user(query, true, response)) {
-      console.log("aqui");
-      c.responder(response, 200, {});
-    }
+    check.user(query, true, response)
+      .then(() => c.responder(response, 200, {}))
+      .catch(()=>(console.log("Promessa rejeitada")));
   }
 }
 
@@ -147,7 +146,6 @@ function leave(query, response) {
           let i = 0, index = -1;
 
           for(let jogo of jogos) {
-            console.log("jogo of jogos: " + jogo);
             if(jogo.id === query.game && jogo.winner == undefined) {
               console.log("Existe jogo!");
 

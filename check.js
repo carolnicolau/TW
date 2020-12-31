@@ -21,23 +21,11 @@ exports.string = function(string, nome, response) {
   return true;
 }
 
-/*
-const readFile = filePath => {
- return new Promise((resolve, reject) => {
-  fs.readFile(filePath, 'utf8', (error, fileContent) => {
-   if (error != null) {
-    reject(error);
-    return;
-   }
-
-   resolve(fileContent);
-  });
- });
-}*/
-
 exports.user = function(query, registar, response) { //verifica user e se registar=true, regista se não existir esse user
-  fs.readFile('dados/utilizadores.json', function(err,data) {
-    if(!err) {
+  return new Promise((resolve, reject) => {
+   fs.readFile('dados/utilizadores.json', (err, data) => {
+    if (!err) {
+
       let users;
       try {users = JSON.parse(data);}
       catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
@@ -64,15 +52,19 @@ exports.user = function(query, registar, response) { //verifica user e se regist
         users.push({nick : query.nick , pass: hash , victories : 0, games: 0});
         try { c.escrever(users, 'dados/utilizadores.json'); }
         catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-        return true;
+        //return true;
+        resolve();
       }
       else if(hash === pass) { //se está definido e com a pass correta dá 200
         console.log("encontrou o utilizador!")
-        return true;
+        //return true;
+        resolve();
+
       }
       else if(registar) { c.responder(response, 401, { error : "Password errada." }); }
       else { c.responder(response, 402, { error : "Não está autenticado." }); } //???
-    } else { c.responder(response, 500, { error : "Erro interno do servidor." }); }
-  });
-  return false;
-}
+    } else {c.responder(response, 500, { error :"Erro interno do servidor." });}
+     reject(err);
+    });
+   });
+  }
