@@ -4,6 +4,8 @@ const url  = require('url');
 const path = require('path');
 const crypto = require('crypto');
 const conf = require('./conf.js');
+const game = require('./game.js');
+
 
 exports.doGetRequest = function(pathn, query, request, response) {
   if(pathn === '/update') {
