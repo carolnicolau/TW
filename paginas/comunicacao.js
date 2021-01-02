@@ -154,7 +154,7 @@ function leave(nick, pass, id) {
   		response.json().then( function(data) {
   			if(response.ok) { //200
   				//console.log(data);
-          eventSource.close();
+          //eventSource.close();
        	} else {
        		mensagem(data.error);
 
@@ -222,11 +222,13 @@ function update(nick, cor) {
       if(data.winner !== undefined) {
         jogo.vencedor = data.winner;
         terminar();
-      }
+				eventSource.close();
+      }/*
       else if(data.winner === null) {
         jogo.vencedor = data.winner;
         terminar();
-      }
+				eventSource.close();
+      }*/
       else {
         for(let i=0; i<8; i++) {
           for(let j=0; j<8; j++) {
@@ -271,10 +273,10 @@ function update(nick, cor) {
         jogo.pode_passar = data.skip;
         jogo.entrou = true;
       }
-
   }
 
   eventSource.onerror = function(event) {
-    mensagem("Erro no update.");
+    //mensagem("Erro no update.");
+		console.error("EventSource failed:", event);
   }
 }
