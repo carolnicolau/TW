@@ -26,13 +26,13 @@ module.exports.forget = function(response) {
 }
 
 module.exports.update = function(message) {
-    console.log('data: '+ message +'\n\n');
+    //console.log('data:');
+    //console.log(message );
 
     for(let response of responses) {
         let msg = JSON.stringify(message);
 
         response.writeHead(200, headers.sse);
-        console.log('data: '+ msg+'\n\n');
         response.write('data: '+ msg+'\n\n');
     }
 }

@@ -9,7 +9,7 @@ const c = require('./comunication.js');
 const check = require('./check.js');
 const updater = require('./updater.js');
 
-exports.doPostRequest = function(pathname, query, request, response) {
+exports.doPostRequest = function(pathname, query, request, response, jogos) {
   let body = '';
 
   request
@@ -31,15 +31,15 @@ exports.doPostRequest = function(pathname, query, request, response) {
                    break;
                  case '/join':
                    console.log('join');
-                   join(query, response);
+                   join(query, response, jogos);
                    break;
                  case '/leave':
                    console.log('leave');
-                   leave(query, response);
+                   leave(query, response, jogos);
                    break;
                  case '/notify':
                    console.log('notify');
-                   notify(query, response);
+                   notify(query, response, jogos);
                    break;
                  default:
                }
@@ -67,32 +67,23 @@ function ranking(response) {
   });
 }
 
-function join(query, response) {
+function join(query, response, jogos) {
   console.log("pedido:");
   console.log(query);
   if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
     console.log("args checked");
-    if(check.user(query, false, response)) {
+    check.user(query, false, response).then(() => {
       console.log("user checked");
+      console.log("Jogos:"); console.log(jogos);
 
-          //existe jogo à espera ou cria-se
-          fs.readFile('dados/jogos.json', function(err,data) {
-            if(!err) {
-              console.log("Reading file");
-              let jogos;
-              try {jogos = JSON.parse(data);}
-              catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-
-              console.log("Jogos:"); console.log(jogos);
-
-              let encontrou = false, jogo;
+      let encontrou = false, jogo;
 
               for(jogo of jogos) {
                 if(jogo.player2 === null) {
                   console.log("Encontrou jogador para jogar! Jogo encontrado:");
 
                   jogo.player2 = query.nick;
-                  mensagem = {color : "light", game : jogo.id};
+                  mensagem = {color : "light", game : jogo.game};
                   encontrou = true;
                   console.log(jogo);
 
@@ -112,7 +103,7 @@ function join(query, response) {
 
                 // turn, board, count, [skip], [winner]
                 mensagem = {color : "dark", game : hash};
-                jogo = {id : hash ,
+                jogo = {game : hash ,
                         player1 : query.nick ,
                         player2 : null,
                         turn: query.nick,
@@ -126,48 +117,39 @@ function join(query, response) {
                 // jogo = {id, player1, player2, nascimento=new Date();}
                 // jogos = [....{id, player1, nick}...{id, nick, null}]
               }
-              try  { c.escrever(jogos, "dados/jogos.json"); }
-              catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-//throw error??????????
-              console.log("jogos:")
-              console.log(jogos);
-
               c.responder(response, 200, mensagem);
               updater.update(jogo);
-            } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-        });
+            });
+            //.catch(() => console.log("ERRO!"));
       }
     }
-}
 
-function leave(query, response) {
+
+function leave(query, response, jogos) {
   //pedido: game, nick, password
   //resposta: winner
 
   if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
     if(check.user(query, false, response)) {
-      fs.readFile('dados/jogos.json', function(err,data) {
+      /*fs.readFile('dados/jogos.json', function(err,data) {
         if(!err) {
           try {jogos = JSON.parse(data);}
-          catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+          catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }*/
 
-          let i = 0, index = -1, jogo;
+          let jogo, found = false;
 
           for(jogo of jogos) {
-            if(jogo.id === query.game && jogo.winner == undefined) {
+            if(jogo.game === query.game && jogo.winner == undefined) {
               console.log("Existe jogo!");
-
-              if(jogo.player1 === query.nick) {
-                index = i; //verificar pass!! logo no inicio
-                jogo.winner = jogo.player2;
-
-
-              } else if(jogo.player2 === query.nick) {
-                index = i; //verificar pass!! logo no inicio
-                jogo.winner = jogo.player1;
-              }
+              found = true;
+              break;
             }
-            i ++;
+          }
+
+          if(jogo.player1 === query.nick) {
+            jogo.winner = jogo.player2;
+          } else if(jogo.player2 === query.nick) {
+            jogo.winner = jogo.player1;
           }
 
           /*
@@ -175,19 +157,19 @@ function leave(query, response) {
             //checkVida -> terminado =true (2 min)
             */
 
-          if(index > -1) {
-            try { c.escrever(jogos, 'dados/jogos.json'); }
-            catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+          if(found) {
+            //try { c.escrever(jogos, 'dados/jogos.json'); }
+            //catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
             c.responder(response, 200, {});
             updater.update(jogo);
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
-        } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-      });
+        //} else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+      //});
     }
   }
 }
 
-function notify(query, response) {
+function notify(query, response, jogos) {
   //nick	pass	game	move
   //JOGO = turn, board, count, [skip], [winner]
   //verificar: game nick password
@@ -202,19 +184,18 @@ function notify(query, response) {
         ...
       }*/
 
-      fs.readFile('dados/jogos.json', function(err,data) {
+      /*fs.readFile('dados/jogos.json', function(err,data) {
         if(!err) {
           try {jogos = JSON.parse(data);}
-          catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+          catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }*/
 
-          let i = 0, found = false, jogo;
+          let found = false, jogo;
 
           for(jogo of jogos) {
-            if(jogo.id === query.game && jogo.winner == undefined) {
+            if(jogo.game === query.game && jogo.winner == undefined) {
               console.log("Existe!");
               found = true; break;
             }
-            i ++;
           }
 
           if(found) {
@@ -222,12 +203,13 @@ function notify(query, response) {
               try {c.escrever(jogos, 'dados/jogos.json');}
               catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
 
+              game.novaRonda(jogo);
               c.responder(response, 200, {});
               updater.update(jogo);
             }
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
-        } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-      });
+        //} else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+      //});
     }
   }
 }

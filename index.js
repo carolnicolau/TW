@@ -5,19 +5,21 @@ const post = require('./post.js');
 const conf = require('./conf.js');
 const c = require('./comunication.js');
 
+//c.inicializarFichs();
+
+let jogos = new Array();
+
 const server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url,true);
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
 
-  //c.inicializarFichs();
-
   switch(request.method) {
     case 'GET':
-      get.doGetRequest(pathname, query, request, response);
+      get.doGetRequest(pathname, query, request, response, jogos);
       break;
     case 'POST':
-      post.doPostRequest(pathname, query, request, response);
+      post.doPostRequest(pathname, query, request, response, jogos);
       break;
     default:
       response.writeHead(501);

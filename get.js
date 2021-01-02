@@ -8,38 +8,38 @@ const game = require('./game.js');
 const updater = require('./updater.js');
 const check = require('./check.js');
 
-//VERIFICAÇÕES
-function get(query) {
-  return new Promise((resolve, reject) => {
-    fs.readFile('dados/jogos.json', function(err,data) {
-      if(!err) {
-        try {jogos = JSON.parse(data);}
-        catch(erro) { reject(); }
 
-        for(jogo of jogos) {
-          if(jogo.id === query.game) {
-            console.log("Encontrei o jogo!");
-            resolve(jogo);
-          }
-        }
-        reject();
-      } else {
-        reject();
+
+//VERIFICAÇÕES
+function get(query, jogos) {
+    let found = false, i=0;
+
+    for(jogo of jogos) {
+      if(jogo.game === query.game) {
+        console.log("Encontrei o jogo!");
+        found = true;
+        break;
       }
-    })
-  });
+      i++;
+    }
+    if(found) {
+      if(jogo.winner != undefined) {
+        jogos.splice(i, 1); //remove jogo que já terminou
+      }
+      return jogo;
+    } else {
+      console.log("ERRO: JOGO NULL");
+      return null;
+    }
 }
 
-exports.doGetRequest = function(pathn, query, request, response) {
+exports.doGetRequest = function(pathn, query, request, response, jogos) {
   if(pathn === '/update') {
     console.log("update");
 
     updater.remember(response);
     request.on('close', () => updater.forget(response));
-
-    get(query)
-      .then((jogo) => ( setImmediate(() => updater.update(jogo)) ))
-      .catch(()=>(console.log("Promessa rejeitada")));
+    setImmediate(() => updater.update(get(query, jogos)));
 
   } else {
   const pathname = getPathname(request);
