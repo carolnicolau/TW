@@ -7,12 +7,13 @@ const conf = require('./conf.js');
 const game = require('./game.js');
 const c = require('./comunication.js');
 const check = require('./check.js');
+const updater = require('./updater.js');
 
 exports.doPostRequest = function(pathname, query, request, response) {
   let body = '';
 
   request
-      .on('data', (chunk) => { body += chunk;  })
+      .on('data', (chunk) => { body += chunk; })
       .on('end', () => {
              try {
                query = JSON.parse(body);  /* processar query */
@@ -35,6 +36,10 @@ exports.doPostRequest = function(pathname, query, request, response) {
                  case '/leave':
                    console.log('leave');
                    leave(query, response);
+                   break;
+                 case '/notify':
+                   console.log('notify');
+                   notify(query, response);
                    break;
                  default:
                }
@@ -80,16 +85,18 @@ function join(query, response) {
 
               console.log("Jogos:"); console.log(jogos);
 
-              let encontrou = false;
+              let encontrou = false, jogo;
 
-              for(let jogo of jogos) {
+              for(jogo of jogos) {
                 if(jogo.player2 === null) {
                   console.log("Encontrou jogador para jogar! Jogo encontrado:");
 
                   jogo.player2 = query.nick;
                   mensagem = {color : "light", game : jogo.id};
                   encontrou = true;
+                  console.log(jogo);
 
+                  break;
                 }
               }
 
@@ -113,19 +120,20 @@ function join(query, response) {
                         count: game.countInicial
                       };
                 jogos.push(jogo);
+                console.log(jogo);
 
                 //new Data() - nascimento >= 2
                 // jogo = {id, player1, player2, nascimento=new Date();}
                 // jogos = [....{id, player1, nick}...{id, nick, null}]
               }
-              console.log(jogo);
               try  { c.escrever(jogos, "dados/jogos.json"); }
               catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
-
+//throw error??????????
               console.log("jogos:")
               console.log(jogos);
 
               c.responder(response, 200, mensagem);
+              updater.update(jogo);
             } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
         });
       }
@@ -143,9 +151,9 @@ function leave(query, response) {
           try {jogos = JSON.parse(data);}
           catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
 
-          let i = 0, index = -1;
+          let i = 0, index = -1, jogo;
 
-          for(let jogo of jogos) {
+          for(jogo of jogos) {
             if(jogo.id === query.game && jogo.winner == undefined) {
               console.log("Existe jogo!");
 
@@ -168,9 +176,10 @@ function leave(query, response) {
             */
 
           if(index > -1) {
-            c.responder(response, 200, {});
             try { c.escrever(jogos, 'dados/jogos.json'); }
             catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+            c.responder(response, 200, {});
+            updater.update(jogo);
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
         } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
       });
@@ -183,27 +192,39 @@ function notify(query, response) {
   //JOGO = turn, board, count, [skip], [winner]
   //verificar: game nick password
 
-  if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
+  if(check.query(query, response) && check.object(query.move, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
     if(check.user(query, false, response)) {
+
+      /*
+      try{ler('dados/jogos.json', obj)}
+      catch{}
+      if(obj!=null) {
+        ...
+      }*/
+
       fs.readFile('dados/jogos.json', function(err,data) {
         if(!err) {
           try {jogos = JSON.parse(data);}
           catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
 
-          let i = 0, index = -1;
+          let i = 0, found = false, jogo;
 
-          for(let jogo of jogos) {
-            console.log("jogo of jogos: " + jogo);
+          for(jogo of jogos) {
             if(jogo.id === query.game && jogo.winner == undefined) {
               console.log("Existe!");
+              found = true; break;
             }
             i ++;
           }
 
-          if(index > -1) {
-            c.responder(response, 200, {});
-            try {c.escrever(jogos, 'dados/jogos.json');}
-            catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+          if(found) {
+            if(check.move(jogo, query, response)) {
+              try {c.escrever(jogos, 'dados/jogos.json');}
+              catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+
+              c.responder(response, 200, {});
+              updater.update(jogo);
+            }
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
         } else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
       });

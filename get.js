@@ -5,14 +5,42 @@ const path = require('path');
 const crypto = require('crypto');
 const conf = require('./conf.js');
 const game = require('./game.js');
+const updater = require('./updater.js');
+const check = require('./check.js');
 
+//VERIFICAÇÕES
+function get(query) {
+  return new Promise((resolve, reject) => {
+    fs.readFile('dados/jogos.json', function(err,data) {
+      if(!err) {
+        try {jogos = JSON.parse(data);}
+        catch(erro) { reject(); }
+
+        for(jogo of jogos) {
+          if(jogo.id === query.game) {
+            console.log("Encontrei o jogo!");
+            resolve(jogo);
+          }
+        }
+        reject();
+      } else {
+        reject();
+      }
+    })
+  });
+}
 
 exports.doGetRequest = function(pathn, query, request, response) {
   if(pathn === '/update') {
-      console.log("update");
-      response.writeHead(200);
-      //let msg = JSON.stringify({});
-      //response.write(msg);
+    console.log("update");
+
+    updater.remember(response);
+    request.on('close', () => updater.forget(response));
+
+    get(query)
+      .then((jogo) => ( setImmediate(() => updater.update(jogo)) ))
+      .catch(()=>(console.log("Promessa rejeitada")));
+
   } else {
   const pathname = getPathname(request);
   console.log("GET request: " + pathn);

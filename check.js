@@ -1,6 +1,7 @@
 const fs = require('fs');
 const crypto = require('crypto');
 const c = require('./comunication.js');
+const game = require('./game.js');
 
 exports.query = function(query, response) {
   if(query == undefined || query == null) {
@@ -8,6 +9,44 @@ exports.query = function(query, response) {
     return false;
   }
   return true;
+}
+
+exports.object = function(obj, response) {
+  if(obj == undefined) {
+    c.responder(response, 400, {error : "Jogada não definida."});
+    return false;
+  } else if(typeof(obj) != "object") {
+    c.responder(response, 400, {error : "Jogada devia ser um objeto."});
+    return false;
+  } else if(obj == null) {
+    return true;
+  } else if(obj.row == undefined) {
+    c.responder(response, 400, {error : "Jogada não tem a propriedade linha."});
+    return false;
+  } else if(obj.column == undefined) {
+    c.responder(response, 400, {error : "Jogada não tem a propriedade coluna."});
+    return false;
+  } else if(obj.row == null || typeof(obj.row) != "number" || obj.row <= 0 || obj.row >= 7) {
+    c.responder(response, 400, {error : "Valor de linha inválido."});
+    return false;
+  } else if(obj.column == null || typeof(obj.column) != "number" || obj.column <= 0 || obj.column >= 7) {
+    c.responder(response, 400, {error : "Valor de coluna inválido."});
+    return false;
+  } else {
+    return true;
+  }
+}
+
+exports.move = function(jogo, query, response) {
+  if(jogo.turn !== query.nick) {
+    c.responder(response, 400, {error : "Não é a tua vez de jogar."});
+    return false;
+  } else if(game.flip(jogo, query.move)) {
+    return true;
+  } else {
+    c.responder(response, 400, {error : "Jogada não é válida."});
+    return false;
+  }
 }
 
 exports.string = function(string, nome, response) {
