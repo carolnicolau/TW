@@ -1,0 +1,284 @@
+body { 
+  margin:0;
+  background-color: orange;
+  font-family: Arial, Lucida Sans Unicode;
+}
+
+h2 {
+  text-align: center;
+  color:white;
+  text-transform: capitalize;
+  font-size: 20px;
+}
+
+/*****************************/
+
+.barra {
+  display:flex;
+  width: 100%;
+  height: 5vh;
+  background-color: #333;
+  align-items:center;
+  justify-content:space-between;
+
+}
+
+.barra .login {
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  height: 5vh;
+  
+}
+
+
+.barra .login input[type=text] , [type=password] {
+  color: green;
+  justify-content: space-between;
+  height: 5vh;
+}
+
+.barra .login button {
+  font-weight: bold;
+  color: green;
+  cursor:pointer;
+  height: 5vh;
+  
+}
+
+.barra .login button:hover {
+  color:white;
+  background-color:green;
+}
+
+.barra .menu {
+  display:flex;
+  justify-content:flex-end;
+  align-items:space-around;
+  height: 5vh;
+}
+
+.barra .menu button { 
+  font-size: 15px;
+  display: flex;
+  align-self: flex-end;
+  color: #f2f2f2 ;
+  background-color: #333;
+  align-items:center;
+  text-align: center;
+  height: 5vh;
+}
+
+.barra .menu button:hover {
+  background: purple;
+  color: white;
+}
+
+.janela {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.conteudo {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+
+}
+
+.close { ;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,.close:focus {
+  color: red;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*****************************/
+
+.logo{
+ display:flex;
+ align-content:center;
+ justify-content:center;  
+}
+
+#ecra {
+  display: flex;
+  height: 95vh;
+}
+
+.coluna {
+  display:          flex-inline;
+  width:            20%;
+  height:           100%;
+  background-color: grey;
+  color:            black;
+
+  align-content:center;
+ justify-content:space-around;
+}
+
+#base {
+  width:            60%;
+  background-color: orange;
+  justify-content:  space-around;
+  align-items:center;
+}
+
+.meia_coluna {
+  display:          flex-inline;
+  align-items:center;
+  margin: 10px;
+
+}
+
+.tabuleiro {
+  width: 800px;
+  height: 800px;
+
+  display:          flex;
+  flex-wrap:        nowrap;
+  flex-direction:   column;
+  justify-content:  center;
+  align-items:      center;
+  
+  margin:           auto;
+  margin-top:       10px;
+  margin-bottom:    10px;
+}
+
+
+.linha {
+  width:            800px;
+  height:           100px;
+
+  display:          flex;
+  flex-wrap:        nowrap;
+  justify-content:  space-around;
+  align-items:      center;
+}
+
+.celula {
+  width:            100px;
+  height:           100px;
+
+  display:          flex-inline;
+  flex-wrap:        wrap;
+  justify-content:  space-around;
+  align-items:      center;
+  align-content:    center;
+
+  border:           2px;
+  border-style:     outset;
+  border-collapse:  collapse;
+  background:       DarkGreen;
+}
+
+.peca {
+  width:            90px;
+  height:           90px;
+
+  margin-top:       2px;
+  margin-bottom:    2px;
+  margin-left:      1px;
+  margin-right:     1px;    
+  }
+
+  table {
+    width:            50%;
+  }
+  table,td, th {
+    border:           5px;
+    border-collapse:  collapse;
+     text-align: center; 
+    vertical-align: middle;
+  }
+  td, th {
+    width:            12%;
+    height:           12%;
+  }
+
+  .branco { 
+    background-color: white;
+    color:            black;
+  }
+  .preto {
+    background-color: black;
+    color:            white;
+  }
+  .livres{
+    color: purple;
+    border:           2px solid grey;
+  }
+  .validas_preto{
+    border:           2px solid purple;
+
+    margin-top:       2px;
+    margin-bottom:    1px;
+    margin-left:      1px;
+    margin-right:     1px;
+
+    border-radius:    50%;
+  }
+  .validas_branco{
+    border:           2px solid yellow;
+
+    margin-top:       2px;
+    margin-bottom:    1px;
+    margin-left:      1px;
+    margin-right:     1px;
+
+    border-radius:    50%;
+  }
+
+  #branco{
+    background-color:white;
+    color: grey;
+    font-weight: bold;
+    padding: 10px;   
+  }
+
+  #preto{
+    background-color: black;
+    color:grey;
+    padding: 11px;
+    font-weight: bold;
+   
+  }
+
+  #iniciar{
+    background-color: Green;
+    color:white;
+    padding:17px;
+    font-weight: bold;
+    font-size:15px;
+    align-self: flex-end;
+  }
+
+.inicio{
+  display: flex;
+  justify-content: flex-end;
+  align-self:flex-end;
+}
+
+#desistir, #passar {
+  background-color:grey;
+  color:white;
+  font-weight:bold;
+  padding:10px;
+ }
