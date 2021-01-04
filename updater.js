@@ -19,6 +19,12 @@ module.exports.forget = function(response, jogo) {
     if(pos > -1) {
       jogo.responses.splice(pos,1);
     }
+    /* aqui deviamos esquecer também o jogo, mas por causa do erro no update o cliente nem sempre vê a resposta à primeira e manda o evento 'on close' a cada erro
+    let pos = jogos.findIndex((j) => j === jogo);
+    if(pos > -1) {
+      jogos.splice(pos,1);
+    }
+    */
 }
 
 module.exports.update = function(jogo) {

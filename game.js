@@ -17,23 +17,14 @@ exports.inicial = [
   ["empty","empty","empty","empty","empty","empty","empty","empty"]
 ];
 exports.countInicial = {"dark": 2, "light": 2, "empty": 60};
-//exports.jogadasLegais = function ou verificar jogada
-//atualizar contagem
+
 
 function flip_celula(l,c, jogo, vez) {
   jogo.board[l][c] = vez;
-
-  if(vez === 'light') {
-    jogo.count.light ++;
-    jogo.count.dark --;
-  } else {
-    jogo.count.light --;
-    jogo.count.dark ++;
-  }
 }
 
 
-function flip_linha(dl, dc, l, c, jogo, vez) {
+function flip_linha(dl, dc, l, c, jogo, vez, count) {
   if((l+dl < 0) || (l+dl > 7)) {
     return false;
   }
@@ -44,10 +35,11 @@ function flip_linha(dl, dc, l, c, jogo, vez) {
     return false;
   }
   if(jogo.board[l+dl][c+dc] == vez) {
-    return true;
+    if(count>0)
+      return true;
   }
   else {
-    if(flip_linha(dl,dc,l+dl,c+dc, jogo, vez)) {
+    if(flip_linha(dl,dc,l+dl,c+dc, jogo, vez, count+1)) {
       flip_celula(l+dl,c+dc, jogo, vez);
       return true;
     }
@@ -66,21 +58,41 @@ exports.flip = function(jogo, move) {
   else
     console.log("ERROOO!");
 
-  if(flip_linha(-1, -1, l, c, jogo, vez)||
-    flip_linha(-1,  0, l, c, jogo, vez)||
-    flip_linha(-1,  1, l, c, jogo, vez)||
+    let nw = flip_linha(-1, -1, l, c, jogo, vez, 0);
+    let nn = flip_linha(-1,  0, l, c, jogo, vez, 0);
+    let ne = flip_linha(-1,  1, l, c, jogo, vez, 0);
 
-    flip_linha(1, -1, l, c, jogo, vez)||
-    flip_linha(1,  0, l, c, jogo, vez)||
-    flip_linha(1,  1, l, c, jogo, vez)||
+    let sw = flip_linha(1, -1, l, c, jogo, vez, 0);
+    let ss = flip_linha(1,  0, l, c, jogo, vez, 0);
+    let se = flip_linha(1,  1, l, c, jogo, vez, 0);
 
-    flip_linha(0, -1, l, c, jogo, vez)||
-    flip_linha(0,  1, l, c, jogo, vez)) {
+    let ww = flip_linha(0, -1, l, c, jogo, vez, 0);
+    let ee = flip_linha(0,  1, l, c, jogo, vez, 0);
 
+    if(nw || nn || ne || sw || ss || se || ww || ee) {
       flip_celula(l,c, jogo, vez);
+      contagem(jogo);
       return true;
     }
   return false;
+}
+
+function contagem(jogo) {
+  jogo.count.light = 0;
+  jogo.count.dark = 0;
+  jogo.count.empty = 0;
+
+  for(let i=0; i<8; i++) {
+    for(let j=0; j<8; j++) {
+      if(jogo.board[i][j] === 'light') {
+        jogo.count.light ++;
+      } else if(jogo.board[i][j] === 'dark') {
+        jogo.count.dark ++;
+      } else if(jogo.board[i][j] === 'empty') {
+        jogo.count.empty ++;
+      }
+    }
+  }
 }
 
 exports.novaRonda = function(jogo) { //depois de um jogador1 jogar
@@ -90,7 +102,7 @@ exports.novaRonda = function(jogo) { //depois de um jogador1 jogar
     jogo.skip = true;
 
     jogo.turn = mudar_vez(jogo);
-    if(calcular_legais() == 0) { //verifica se o jogo acabou (se jogador1 não tem jogadas)
+    if(calcular_legais(jogo) == 0) { //verifica se o jogo acabou (se jogador1 não tem jogadas)
       vencedor(jogo);
     } else
       jogo.turn = mudar_vez(jogo);
@@ -153,9 +165,22 @@ exports.ranking = function(player1, vict1, player2, vict2) {
 
                     console.log(ranking);
 
-                    if(obj1)
+                    let found1 = false, found2 = false;
+                    for(let usr of ranking) {
+                      if(usr.nick === player1) {
+                        usr.victories += vict1;
+                        usr.games ++;
+                        found1 = true;
+                      }
+                      else if(usr.nick === player2) {
+                        usr.victories += vict2;
+                        usr.games ++;
+                        found2 = true;
+                      }
+                    }
+                    if(!found1)
                       ranking.push(obj1);
-                    if(obj2)
+                    if(!found2)
                       ranking.push(obj2);
 
                     ranking.sort(comparar);
@@ -168,7 +193,7 @@ exports.ranking = function(player1, vict1, player2, vict2) {
                     catch(e) { throw e; }
                 } else { throw err1; }
             });
-          } else { console.log("NAo LEU");}
+          } else { c.responder(response, 500, {error : "Erro interno do servidor."});}
       } else { throw err; }
   });
 }

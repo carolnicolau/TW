@@ -11,8 +11,6 @@ const updater = require('./updater.js');
 const check = require('./check.js');
 const c = require('./comunication.js');
 
-
-//VERIFICAÇÕES
 function get(query, jogos) {
     let found = false, i=0, jogo;
 
@@ -36,8 +34,6 @@ function get(query, jogos) {
 exports.doGetRequest = function(pathn, query, request, response, jogos) {
   if(pathn === '/update') {
     let jogo = get(query, jogos);
-
-      //verificar jogador
 
     if(jogo) {
       updater.remember(response, jogo);
