@@ -61,7 +61,7 @@ function register(query, response) {
 function ranking(response) {
   fs.readFile('dados/ranking.json',function(err,data) {
       if(! err) {
-          dados = data.toString();
+          let dados = data.toString();
           response.writeHead(200, {'Content-Type': 'application/json'});
           console.log(dados);
           response.end(dados);
@@ -162,8 +162,10 @@ function leave(query, response, jogos) {
 
             if(jogo.player1 === query.nick) {
               jogo.winner = jogo.player2;
+              game.ranking(jogo.player1, 0, jogo.player2, 1);
             } else if(jogo.player2 === query.nick) {
               jogo.winner = jogo.player1;
+              game.ranking(jogo.player1, 1, jogo.player2, 0);
             }
 
             c.responder(response, 200, {});

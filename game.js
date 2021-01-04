@@ -1,5 +1,11 @@
 "use strict";
 
+const game = require('./game.js');
+const fs = require('fs');
+const c = require('./comunication.js');
+
+
+
 exports.inicial = [
   ["empty","empty","empty","empty","empty","empty","empty","empty"],
   ["empty","empty","empty","empty","empty","empty","empty","empty"],
@@ -84,24 +90,26 @@ exports.novaRonda = function(jogo) { //depois de um jogador1 jogar
     jogo.skip = true;
 
     jogo.turn = mudar_vez(jogo);
-    if(calcular_legais() == 0) //verifica se o jogo acabou (se jogador1 não tem jogadas)
+    if(calcular_legais() == 0) { //verifica se o jogo acabou (se jogador1 não tem jogadas)
       vencedor(jogo);
-    else
+    } else
       jogo.turn = mudar_vez(jogo);
   }
 }
-/*
+
 function comparar(a, b) {
   if (a.victories > b.victories) { return -1; }
   if (a.victories < b.victories) { return 1; }
   return 0;
 }
 
-function atual_ranking(winner) {
-  fs.readFile('dados/users.json',function(err,data) {
+exports.ranking = function(player1, vict1, player2, vict2) {
+  console.log("player1: " + player1 + " vitorias: " + vict1);
+  console.log("player2: " + player2 + " vitorias: " + vict2);
+  fs.readFile('dados/utilizadores.json',function(err,data) {
       if(! err) {
-          let dados;
-          try { dados = data.toString(); }
+          let dados, obj1=null, obj2=null;
+          try { dados = JSON.parse(data.toString()); }
           catch(e) { throw e; }
 
           let users;
@@ -109,52 +117,73 @@ function atual_ranking(winner) {
           catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
           //console.log("users:"); console.log(users);
 
-          let pass = null, nick = null;
-
           for(let user of users) {
-            if(user.nick === query.nick) {
-              pass = user.pass;
-              nick = user.nick;
+            if(user.nick === player1) {
+              user.victories += vict1;
+              user.games ++;
+              obj1 = user;
+            }
+            else if(user.nick === player2) {
+              user.victories += vict2;
+              user.games ++;
+              obj2 = user;
             }
           }
 
-          console.log(dados);
-          try {c.escrever(dados, 'dados/ranking.json');}
-          catch(e) { throw e; }
-      } else { throw err }
+          console.log("player1:");
+          console.log(obj1);
+          console.log("player2:");
+          console.log(obj2);
+
+          if(obj1 || obj2) {
+
+            console.log(dados);
+            try {c.escrever(dados, 'dados/utilizadores.json');}
+            catch(e) { throw e; }
+
+            fs.readFile('dados/ranking.json',function(err1,data1) {
+                if(! err1) {
+                    let dados;
+                    try { dados = JSON.parse(data1); }
+                    catch(e) { throw e; }
+
+                    console.log(dados);
+
+                    let ranking = dados.ranking;
+
+                    console.log(ranking);
+
+                    if(obj1)
+                      ranking.push(obj1);
+                    if(obj2)
+                      ranking.push(obj2);
+
+                    ranking.sort(comparar);
+                    ranking.slice(0,9);
+
+                    console.log("novo ranking: ");
+                    console.log(ranking);
+
+                    try {c.escrever(dados, 'dados/ranking.json');}
+                    catch(e) { throw e; }
+                } else { throw err1; }
+            });
+          } else { console.log("NAo LEU");}
+      } else { throw err; }
   });
-
-  fs.readFile('dados/ranking.json',function(err,data1) {
-      if(! err) {
-          let dados;
-          try { dados = data1.toString(); }
-          catch(e) { throw e; }
-
-          console.log(dados);
-
-          let ranking = dados.ranking;
-
-          console.log(ranking);
-
-          let obj = {}
-
-          ranking.push({nick: winner, }});
-          ranking.sort(comparar);
-          ranking.slice(0,9);
-
-          try {c.escrever(dados, 'dados/ranking.json');}
-          catch(e) { throw e; }
-      } else { throw err }
-  });
-}*/
+}
 
 function vencedor(jogo) { //player1=dark, player2=light
-  if (jogo.count.light > jogo.count.dark)
+  if (jogo.count.light > jogo.count.dark) {
     jogo.winner = jogo.player2;
-  else if (jogo.count.light < jogo.count.dark)
+    game.ranking(jogo.player1, 0, jogo.player2, 1);
+  } else if (jogo.count.light < jogo.count.dark) {
     jogo.winner = jogo.player1;
-  else
+    game.ranking(jogo.player1, 1, jogo.player2, 0);
+  } else {
     jogo.winner = null;
+    game.ranking(jogo.player1, 0,  jogo.player2, 0);
+  }
 }
 
 function vez(jogo) { //player1=dark, player2=light
