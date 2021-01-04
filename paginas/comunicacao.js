@@ -1,7 +1,7 @@
 /*
   registar.onclick usar requires
 */
-//var server = "http://twserver.alunos.dcc.fc.up.pt:8155/public_html/";
+//var server = "http://twserver.alunos.dcc.fc.up.pt:8155/";
 var server = "http://localhost:8155/";
 var group = 55;
 var game;
@@ -158,7 +158,7 @@ function leave(nick, pass, id) {
        	} else {
        		mensagem(data.error);
 
-          if(data.error == "Not a valid game")  {
+          if(data.error == "Referência de jogo inválida.")  {
             //console.log("NÃO É VÁLIDO");
             //console.log(Jogo.getInstancia());
             if(eventSource)
@@ -216,19 +216,15 @@ function update(nick, cor) {
 
       const data = JSON.parse(event.data);
 
-      //console.log("on message: ");
-      //console.log(data);
+      console.log("on message: ");
+      console.log(data);
 
       if(data.winner !== undefined) {
         jogo.vencedor = data.winner;
+				console.log("vencedor: " + data.winner);
         terminar();
 				eventSource.close();
-      }/*
-      else if(data.winner === null) {
-        jogo.vencedor = data.winner;
-        terminar();
-				eventSource.close();
-      }*/
+      }
       else {
         for(let i=0; i<8; i++) {
           for(let j=0; j<8; j++) {
@@ -277,6 +273,6 @@ function update(nick, cor) {
 
   eventSource.onerror = function(event) {
     //mensagem("Erro no update.");
-		console.error("EventSource failed:", event);
+		console.error("EventSource failed");
   }
 }
