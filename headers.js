@@ -1,3 +1,5 @@
+"use strict";
+
 const headers = {
     plain: {
         'Content-Type': 'application/javascript',

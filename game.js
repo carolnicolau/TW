@@ -1,3 +1,5 @@
+"use strict";
+
 exports.inicial = [
   ["empty","empty","empty","empty","empty","empty","empty","empty"],
   ["empty","empty","empty","empty","empty","empty","empty","empty"],
@@ -96,10 +98,36 @@ function comparar(a, b) {
 }
 
 function atual_ranking(winner) {
-  fs.readFile('dados/ranking.json',function(err,data) {
+  fs.readFile('dados/users.json',function(err,data) {
       if(! err) {
           let dados;
           try { dados = data.toString(); }
+          catch(e) { throw e; }
+
+          let users;
+          try {users = JSON.parse(data);}
+          catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+          //console.log("users:"); console.log(users);
+
+          let pass = null, nick = null;
+
+          for(let user of users) {
+            if(user.nick === query.nick) {
+              pass = user.pass;
+              nick = user.nick;
+            }
+          }
+
+          console.log(dados);
+          try {c.escrever(dados, 'dados/ranking.json');}
+          catch(e) { throw e; }
+      } else { throw err }
+  });
+
+  fs.readFile('dados/ranking.json',function(err,data1) {
+      if(! err) {
+          let dados;
+          try { dados = data1.toString(); }
           catch(e) { throw e; }
 
           console.log(dados);
@@ -110,7 +138,7 @@ function atual_ranking(winner) {
 
           let obj = {}
 
-          ranking.push({nick: winner}});
+          ranking.push({nick: winner, }});
           ranking.sort(comparar);
           ranking.slice(0,9);
 
@@ -118,8 +146,8 @@ function atual_ranking(winner) {
           catch(e) { throw e; }
       } else { throw err }
   });
-}
-*/
+}*/
+
 function vencedor(jogo) { //player1=dark, player2=light
   if (jogo.count.light > jogo.count.dark)
     jogo.winner = jogo.player2;

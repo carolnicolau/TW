@@ -1,3 +1,5 @@
+"use strict";
+
 const fs = require('fs');
 const crypto = require('crypto');
 const c = require('./comunication.js');
@@ -26,10 +28,10 @@ exports.object = function(obj, response) {
   } else if(obj.column == undefined) {
     c.responder(response, 400, {error : "Jogada não tem a propriedade coluna."});
     return false;
-  } else if(obj.row == null || typeof(obj.row) != "number" || obj.row <= 0 || obj.row >= 7) {
+  } else if(obj.row == null || typeof(obj.row) != "number" || obj.row < 0 || obj.row > 7) {
     c.responder(response, 400, {error : "Valor de linha inválido."});
     return false;
-  } else if(obj.column == null || typeof(obj.column) != "number" || obj.column <= 0 || obj.column >= 7) {
+  } else if(obj.column == null || typeof(obj.column) != "number" || obj.column < 0 || obj.column > 7) {
     c.responder(response, 400, {error : "Valor de coluna inválido."});
     return false;
   } else {
@@ -90,7 +92,7 @@ exports.user = function(query, registar, response) { //verifica user e se regist
         //console.log("Registando utilizador.");
         users.push({nick : query.nick , pass: hash , victories : 0, games: 0});
         try { c.escrever(users, 'dados/utilizadores.json'); }
-        catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+        catch(e) { c.responder(response, 500, {error : "Erro interno do servidor."}); reject(e); }
         //return true;
         resolve();
       }

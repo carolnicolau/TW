@@ -1,3 +1,5 @@
+"use strict";
+
 const http = require('http');
 const fs = require('fs');
 const url  = require('url');
@@ -68,15 +70,13 @@ function ranking(response) {
 }
 
 function join(query, response, jogos) {
-  console.log("pedido:");
-  console.log(query);
   if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
     console.log("args checked");
+
     check.user(query, false, response).then(() => {
       console.log("user checked");
-      console.log("Jogos:"); console.log(jogos);
 
-      let encontrou = false, jogo;
+      let encontrou = false, jogo, mensagem;
 
               for(jogo of jogos) {
                 if(jogo.player2 === null) {
@@ -85,7 +85,7 @@ function join(query, response, jogos) {
                   jogo.player2 = query.nick;
                   mensagem = {color : "light", game : jogo.game};
                   encontrou = true;
-                  console.log(jogo);
+                  //console.log(jogo);
 
                   break;
                 }
@@ -103,15 +103,17 @@ function join(query, response, jogos) {
 
                 // turn, board, count, [skip], [winner]
                 mensagem = {color : "dark", game : hash};
+                let responses = new Array();
                 jogo = {game : hash ,
                         player1 : query.nick ,
                         player2 : null,
                         turn: query.nick,
                         board: game.inicial,
-                        count: game.countInicial
+                        count: game.countInicial,
+                        responses
                       };
                 jogos.push(jogo);
-                console.log(jogo);
+                //console.log(jogo);
 
                 //new Data() - nascimento >= 2
                 // jogo = {id, player1, player2, nascimento=new Date();}
@@ -119,8 +121,8 @@ function join(query, response, jogos) {
               }
               c.responder(response, 200, mensagem);
               updater.update(jogo);
-            });
-            //.catch(() => console.log("ERRO!"));
+            })
+            .catch(err => console.log(err));
       }
     }
 
@@ -130,7 +132,7 @@ function leave(query, response, jogos) {
   //resposta: winner
 
   if(check.query(query, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
-    if(check.user(query, false, response)) {
+    check.user(query, false, response).then(() => {
       /*fs.readFile('dados/jogos.json', function(err,data) {
         if(!err) {
           try {jogos = JSON.parse(data);}
@@ -146,11 +148,7 @@ function leave(query, response, jogos) {
             }
           }
 
-          if(jogo.player1 === query.nick) {
-            jogo.winner = jogo.player2;
-          } else if(jogo.player2 === query.nick) {
-            jogo.winner = jogo.player1;
-          }
+
 
           /*
             jogos.splice(index, 1); //NÃO -> terminado = true
@@ -160,12 +158,22 @@ function leave(query, response, jogos) {
           if(found) {
             //try { c.escrever(jogos, 'dados/jogos.json'); }
             //catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+
+
+            if(jogo.player1 === query.nick) {
+              jogo.winner = jogo.player2;
+            } else if(jogo.player2 === query.nick) {
+              jogo.winner = jogo.player1;
+            }
+
             c.responder(response, 200, {});
             updater.update(jogo);
+
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
         //} else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
       //});
-    }
+    })
+    .catch(err => console.log(err));
   }
 }
 
@@ -175,7 +183,7 @@ function notify(query, response, jogos) {
   //verificar: game nick password
 
   if(check.query(query, response) && check.object(query.move, response) && check.string(query.nick, "User", response) && check.string(query.pass, "Password", response)) {
-    if(check.user(query, false, response)) {
+    check.user(query, false, response).then(() => {
 
       /*
       try{ler('dados/jogos.json', obj)}
@@ -192,7 +200,7 @@ function notify(query, response, jogos) {
           let found = false, jogo;
 
           for(jogo of jogos) {
-            if(jogo.game === query.game && jogo.winner == undefined) {
+            if(jogo.game === query.game && jogo.winner == undefined && jogo.player1 != null && jogo.player2 != null) {
               console.log("Existe!");
               found = true; break;
             }
@@ -200,8 +208,8 @@ function notify(query, response, jogos) {
 
           if(found) {
             if(check.move(jogo, query, response)) {
-              try {c.escrever(jogos, 'dados/jogos.json');}
-              catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
+              //try {c.escrever(jogos, 'dados/jogos.json');} //????
+              //catch(err) { c.responder(response, 500, {error : "Erro interno do servidor."}); }
 
               game.novaRonda(jogo);
               c.responder(response, 200, {});
@@ -210,6 +218,7 @@ function notify(query, response, jogos) {
           } else { c.responder(response, 400, {error : "Referência de jogo inválida."}); }
         //} else { c.responder(response, 500, {error : "Erro interno do servidor."}); }
       //});
-    }
+    })
+    .catch(err => console.log(err));
   }
 }

@@ -1,3 +1,5 @@
+"use strict";
+
 const http = require('http');
 const fs = require('fs');
 const url  = require('url');
@@ -7,25 +9,23 @@ const conf = require('./conf.js');
 const game = require('./game.js');
 const updater = require('./updater.js');
 const check = require('./check.js');
-
+const c = require('./comunication.js');
 
 
 //VERIFICAÇÕES
 function get(query, jogos) {
-    let found = false, i=0;
+    let found = false, i=0, jogo;
+
 
     for(jogo of jogos) {
+      console.log(jogo.game);
       if(jogo.game === query.game) {
-        console.log("Encontrei o jogo!");
         found = true;
         break;
       }
       i++;
     }
     if(found) {
-      if(jogo.winner != undefined) {
-        jogos.splice(i, 1); //remove jogo que já terminou
-      }
       return jogo;
     } else {
       console.log("ERRO: JOGO NULL");
@@ -35,11 +35,15 @@ function get(query, jogos) {
 
 exports.doGetRequest = function(pathn, query, request, response, jogos) {
   if(pathn === '/update') {
-    console.log("update");
+    let jogo = get(query, jogos);
 
-    updater.remember(response);
-    request.on('close', () => updater.forget(response));
-    setImmediate(() => updater.update(get(query, jogos)));
+      //verificar jogador
+
+    if(jogo) {
+      updater.remember(response, jogo);
+      request.on('close', () => updater.forget(response, jogo));
+      setImmediate(() => updater.update(jogo));
+    }
 
   } else {
   const pathname = getPathname(request);
@@ -77,8 +81,12 @@ exports.doGetRequest = function(pathn, query, request, response, jogos) {
 
 function getPathname(request) {
     const purl = url.parse(request.url);
-    let pathname = path.normalize(conf.documentRoot + purl.pathname);
-
+    let pathname;
+    if(purl.pathname === '/') {
+      pathname = path.normalize(conf.documentRoot + purl.pathname);
+    } else {
+      pathname = path.normalize(conf.documentRoot + 'paginas/' + purl.pathname);
+    }
     if(! pathname.startsWith(conf.documentRoot))
        pathname = null;
 

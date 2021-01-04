@@ -1,3 +1,5 @@
+"use strict";
+
 const http = require('http');
 const url  = require('url');
 const get = require('./get.js');
@@ -13,6 +15,9 @@ const server = http.createServer(function (request, response) {
   const parsedUrl = url.parse(request.url,true);
   const pathname = parsedUrl.pathname;
   const query = parsedUrl.query;
+
+  console.log("pedido: " + pathname);
+  console.log(query);
 
   switch(request.method) {
     case 'GET':

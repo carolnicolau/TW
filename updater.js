@@ -1,38 +1,41 @@
-let responses = [];
+"use strict";
 
-const headers = {
-    plain: {
-        'Content-Type': 'application/javascript',
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
-    },
-    sse: {
+const sse = {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Access-Control-Allow-Origin': '*',
-        'Connection': 'keep-alive'
-    }
+        'Connection': 'keep-alive',
+
+        'Transfer-Encoding': 'chunked'
 };
 
 
-module.exports.remember = function(response) {
-    responses.push(response);
+module.exports.remember = function(response, jogo) {
+    jogo.responses.push(response);
 }
 
-module.exports.forget = function(response) {
-    let pos = responses.findIndex((resp) => resp === response);
-    if(pos > -1)
-      responses.splice(pos,1);
+module.exports.forget = function(response, jogo) {
+    let pos = jogo.responses.findIndex((resp) => resp === response);
+    if(pos > -1) {
+      jogo.responses.splice(pos,1);
+    }
 }
 
-module.exports.update = function(message) {
-    //console.log('data:');
-    //console.log(message );
+module.exports.update = function(jogo) {
+    let mensagem = {game : jogo.game ,
+                    player1 : jogo.player1 ,
+                    player2 : jogo.player2,
+                    turn: jogo.turn,
+                    board: jogo.board,
+                    count: jogo.count,
+                    skip: jogo.skip,
+                    winner: jogo.winner
+                    }
+    let msg = JSON.stringify(mensagem);
 
-    for(let response of responses) {
-        let msg = JSON.stringify(message);
+    for(let response of jogo.responses) {
 
-        response.writeHead(200, headers.sse);
-        response.write('data: '+ msg+'\n\n');
+        response.writeHead(200, sse);
+        response.write('data: '+ msg + '\n\n');
     }
 }
