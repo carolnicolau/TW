@@ -2,10 +2,10 @@
 
 const http = require('http');
 const url  = require('url');
-const get = require('./get.js');
-const post = require('./post.js');
-const conf = require('./conf.js');
-const c = require('./comunication.js');
+const get = require('./server/get.js');
+const post = require('./server/post.js');
+const conf = require('./server/conf.js');
+const c = require('./server/comunication.js');
 
 //c.inicializarFichs();
 
