@@ -88,7 +88,7 @@ function ranking() {
        		}
   		});
     })
-    .catch(()=>error("Erro na classificação."));
+    .catch(()=>mensagem("Erro na classificação."));
 }
 
 function join(nick, pass) {
